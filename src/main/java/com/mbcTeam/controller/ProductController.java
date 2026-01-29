@@ -1,6 +1,6 @@
 package com.mbcTeam.controller;
 
-import java.io.File; 
+import java.io.File;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -19,7 +19,6 @@ import org.springframework.web.multipart.MultipartFile;
 import com.mbcTeam.product.ProductService;
 import com.mbcTeam.product.ProductVO;
 import com.mbcTeam.product.ProductImgVO;
-
 
 @RequestMapping("/product")
 @Controller
@@ -61,25 +60,31 @@ public class ProductController {
 				imgVO.setPImgPath(dbPath);
 				imgVO.setPImgOrder(String.valueOf(order++));
 				imgList.add(imgVO);
-				
+
 			}
 		}
 
 		// 3. 서비스 호출 (상품 + 이미지 + 옵션 등록)
 		service.insert(vo, imgList, vo.getOptions());
-		
+
 		return "redirect:/product/list.do";
 	}
-
 
 	// 상품 목록
 	@GetMapping("/list.do")
 	public String list(ProductVO vo, Model model) {
-	    List<ProductVO> productList = service.select(vo);
-	    model.addAttribute("li", productList);
-	    return "product/list"; // /WEB-INF/view/product/list.jsp
+		List<ProductVO> productList = service.select(vo);
+		model.addAttribute("li", productList);
+		return "product/list"; // /WEB-INF/view/product/list.jsp
 	}
 
+	// 유저 상품 리스트
+	@GetMapping("/userproduclist.do")
+	public String userproduclist(ProductVO vo, Model model) {
+		List<ProductVO> productList = service.select(vo);
+		model.addAttribute("li", productList);
+		return "userproduc/userproduclist"; // /WEB-INF/view/product/list.jsp
+	}
 
 	// 상품 수정 폼
 	@GetMapping("/edit.do")
@@ -87,4 +92,8 @@ public class ProductController {
 		model.addAttribute("product", service.edit(vo));
 		return "product/edit";
 	}
+	
+	
+	
+
 }

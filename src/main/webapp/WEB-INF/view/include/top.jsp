@@ -4,14 +4,9 @@
     
 <c:set var="path" scope="request" value="${pageContext.request.contextPath }"/>    
     
-<!DOCTYPE html>
-<html>
-<head>
-<meta charset="UTF-8">
-<title>Insert title here</title>
-<link href="${path}/resources/css/top.css" rel="stylesheet">
-<style type="text/css">
 
+<<<<<<< HEAD
+=======
 </style>
 </head>
 <body>
@@ -61,6 +56,7 @@ top.jsp에 들어가야할것들
 
 </nav>
 =======
+>>>>>>> 1a229ecbc0482a73e203950239b320e66b37877a
 <title>의류 쇼핑몰</title>
 <link href="${path}/resources/css/top.css" rel="stylesheet">
 </head>
@@ -76,7 +72,7 @@ top.jsp에 들어가야할것들
         <!-- 중앙 메뉴 -->
         <nav class="main-nav">
             <ul class="menu">
-                <li><a href="${path}/user/list.do">세일</a></li>
+                <li><a href="${path}/userproduct/userproductlist.do">세일</a></li>
                 <li><a href="${path}/user/form.do">추천</a></li>
                 
                 <li><a href="${path}/product/form.do">상품 등록 페이지</a></li>
@@ -174,4 +170,3 @@ top.jsp에 들어가야할것들
 
 
 <c:import url="/WEB-INF/view/include/bottom.jsp" />
->>>>>>> 81e971079fd15db00250af3a3ed514e226581a22

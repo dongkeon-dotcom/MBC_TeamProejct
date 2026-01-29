@@ -11,4 +11,6 @@ public class ProductOptionVO {
 	private String optionSize; // 사이즈
 	private String productStock; // 재고
 
+	
+	
 }

@@ -76,12 +76,18 @@
 					<th>재고</th>
 					<th>삭제</th>
 				</tr>
-				<tr>
+				<tr> 
 					<td><select name="options[0].optionColor">
 							<option value="Black">Black</option>
 							<option value="White">White</option>
 							<option value="Red">Red</option>
 							<option value="Blue">Blue</option>
+							<option value="orange">orange</option>
+							<option value="green">green</option>
+							<option value="navy">navy</option>
+							<option value="yellow">yellow</option>
+							
+							
 					</select></td>
 					<td><select name="options[0].optionSize">
 							<option value="S">S</option>
