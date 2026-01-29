@@ -78,14 +78,6 @@ public class ProductController {
 		return "product/list"; // /WEB-INF/view/product/list.jsp
 	}
 
-	// 유저 상품 리스트
-	@GetMapping("/userproduclist.do")
-	public String userproduclist(ProductVO vo, Model model) {
-		List<ProductVO> productList = service.select(vo);
-		model.addAttribute("li", productList);
-		return "userproduc/userproduclist"; // /WEB-INF/view/product/list.jsp
-	}
-
 	// 상품 수정 폼
 	@GetMapping("/edit.do")
 	public String edit(Model model, ProductVO vo) {

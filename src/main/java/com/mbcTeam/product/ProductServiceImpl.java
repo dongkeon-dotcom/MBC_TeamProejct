@@ -58,4 +58,18 @@ public class ProductServiceImpl implements ProductService {
 		dao.insertOption(option);
 
 	}
+
+	// ProductServiceImpl.java
+	@Override
+	public ProductVO detail(int productIdx) {
+	    //return dao.detail(productIdx); // DAO에서 ProductVO 반환
+		return null;
+	}
+
+
+	@Override
+	public List<ProductOptionVO> selectOptions(int productIdx) {
+		// return dao.insertOption(null);;
+		return null;
+	}
 }

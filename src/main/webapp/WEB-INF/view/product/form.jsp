@@ -9,7 +9,7 @@
 <head>
 <title>상품 등록</title>
 <!-- 외부 JS 파일 불러오기 -->
-<script src="${path}/resources/js/productForm.js"></script>
+<script src="${path}/resources/js/productForm.js">   </script>
 <script src="${path}/resources/js/productOption.js"> </script>
 
 </head>

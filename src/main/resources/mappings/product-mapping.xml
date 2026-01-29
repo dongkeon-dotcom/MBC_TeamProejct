@@ -5,40 +5,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
 <mapper namespace="PRODUCT">
  
-	<insert id="INSERT" parameterType="ProductVO" useGeneratedKeys="true" keyProperty="productIdx">
-	 
-	 insert into Product(product_id, product_name,category, 
-	                      product_price, product_desc, quantity, 
-	                      product_img, product_admin  )
-     values(#{product_id},#{product_name},#{category}, 
-	                      #{product_price}, #{product_desc}, #{quantity}, 
-	                      #{product_img}, #{product_admin})
-	</insert>
-	
-	<insert id="INSERT" parameterType="ProductVO">
-	 
-	 insert into Product(product_id, product_name,category, 
-	                      product_price, product_desc, quantity, 
-	                      product_img, product_admin  )
-     values(#{product_id},#{product_name},#{category}, 
-	                      #{product_price}, #{product_desc}, #{quantity}, 
-	                      #{product_img}, #{product_admin})
-	</insert>
-	
-	<insert id="INSERT" parameterType="ProductVO">
-	 
-	 insert into Product(product_id, product_name,category, 
-	                      product_price, product_desc, quantity, 
-	                      product_img, product_admin  )
-     values(#{product_id},#{product_name},#{category}, 
-	                      #{product_price}, #{product_desc}, #{quantity}, 
-	                      #{product_img}, #{product_admin})
-	</insert>
-	
-	<select  id="SELECT" resultType ="ProductVO">
-	   SELECT * FROM product  order  by idx desc 
-	</select>	
-
 
 	<insert id="INSERT_PRODUCT"
 		parameterType="com.mbcTeam.product.ProductVO" useGeneratedKeys="true"
@@ -61,7 +27,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
 		VALUES (#{productIdx}, #{pImgPath}, #{pImgOrder} )
 	</insert>
-
 
 	<insert id="INSERT_PRODUCT_OPTION"
 		parameterType="com.mbcTeam.product.ProductOptionVO">

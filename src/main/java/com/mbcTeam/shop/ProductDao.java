@@ -1,3 +1,4 @@
+/*
 package com.mbcTeam.shop;
 
 import java.util.List;
@@ -8,8 +9,6 @@ public interface ProductDao {
     void adminProductInsert(ProductDescImgVO vo);
     
     List<ProductVO> getSelect(ProductVO vo);
-    
-    
-    
-    
+       
 }
+*/

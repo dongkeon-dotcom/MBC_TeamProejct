@@ -1,3 +1,4 @@
+/*
 package com.mbcTeam.shop;
 
 import lombok.Data;
@@ -10,3 +11,4 @@ public class ProductOptionVO {
     private String optionSize;        // 사이즈
     private int productStock;        // 재고
 }
+*/

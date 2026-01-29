@@ -3,8 +3,9 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
     
 <c:set var="path" scope="request" value="${pageContext.request.contextPath }"/>    
-    
 
+<<<<<<< HEAD
+=======
 <<<<<<< HEAD
 =======
 </style>
@@ -39,9 +40,10 @@ top.jsp에 들어가야할것들
 
 &emsp;<a href=${path}/test/board.do>테스트 등록하기</a>
 &emsp;<a href=${path}/test/list.do>테스트 목록보기</a>
-
+<!-- 우선영 매뉴 관리테스트중!!!  -->
 <a href="${path}/customerMyPage/mypage.do"> 마이페이</a>
-
+	<a href="${path}/memberLogin/login.do"> 로그인</a>
+<!-- /우선영 매뉴 관리테스트중!!!  -->
 &emsp;&emsp;&emsp;
 
 <!-- null 과 공배 모두 체크 -->
@@ -57,6 +59,7 @@ top.jsp에 들어가야할것들
 </nav>
 =======
 >>>>>>> 1a229ecbc0482a73e203950239b320e66b37877a
+>>>>>>> 5d163e62497f8b095fa357a87cf0043faae199ed
 <title>의류 쇼핑몰</title>
 <link href="${path}/resources/css/top.css" rel="stylesheet">
 </head>
@@ -72,11 +75,12 @@ top.jsp에 들어가야할것들
         <!-- 중앙 메뉴 -->
         <nav class="main-nav">
             <ul class="menu">
-                <li><a href="${path}/userproduct/userproductlist.do">세일</a></li>
-                <li><a href="${path}/user/form.do">추천</a></li>
+                <li><a href="${path}/userproduct/userproductlist.do">상품상세보기(고객용)</a></li>
+                <li><a href="${path}/userproduct/userproductdetail.do">상품리스트(고객용)</a></li>
+           
                 
-                <li><a href="${path}/product/form.do">상품 등록 페이지</a></li>
-                <li><a href="${path}/product/list.do">상품 목폭 페이지</a></li>
+                <li><a href="${path}/product/form.do">상품등록(관리자)</a></li>
+                <li><a href="${path}/product/list.do">상품목폭(관리자) </a></li>
                 
                 <li class="has-submenu"><a href="#">아우터</a>
                     <ul class="submenu">

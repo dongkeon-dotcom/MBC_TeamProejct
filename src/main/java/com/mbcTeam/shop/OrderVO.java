@@ -1,3 +1,4 @@
+/*
 package com.mbcTeam.shop;
 
 import lombok.Data;
@@ -14,3 +15,4 @@ public class OrderVO {
     private String deliveryZipcode;                // 우편번호
     private String orderRegDate;                // 주문일자
 }
+*/
