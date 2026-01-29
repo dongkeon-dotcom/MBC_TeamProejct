@@ -2,18 +2,6 @@
     pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <c:import url="/WEB-INF/view/include/top.jsp" />
-<section>
-<br>
-<div align="center">
-<h1> Spring MVC </h1>
-
-<a href=index.do> index 확인 </a>
-
-</div>
-=======
-	pageEncoding="UTF-8"%>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<c:import url="/WEB-INF/view/include/top.jsp" />
 
 <link href="${path}/resources/css/main.css" rel="stylesheet">
 <section>
@@ -112,8 +100,6 @@ document.querySelectorAll(".slide img").forEach(img => {
 });
 </script>
 
-
->>>>>>> 81e971079fd15db00250af3a3ed514e226581a22
 <br>
 </section>
 <c:import url="/WEB-INF/view/include/bottom.jsp" />
