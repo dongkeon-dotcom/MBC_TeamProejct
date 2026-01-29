@@ -36,4 +36,20 @@ public class UserDaoImpl implements UserDao {
 		return mybatis.selectOne("MEMBER.EDIT", vo);
 	}
 
+	@Override
+	public boolean existsByEmail(String userID) {
+		// TODO Auto-generated method stub
+		
+		Integer count = mybatis.selectOne("MEMBER.countByEmail", userID);
+		return count != null && count > 0;
+
+	}
+
+	@Override
+	public UserVO getByEmail(String userID) {
+		// TODO Auto-generated method stub
+
+		 return mybatis.selectOne("MEMBER.getByEmail", userID);
+	}
+
 }

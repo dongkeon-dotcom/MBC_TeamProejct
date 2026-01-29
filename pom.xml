@@ -12,7 +12,19 @@
 		<org.springframework-version>5.3.9</org.springframework-version>
 		<org.aspectj-version>1.6.10</org.aspectj-version>
 		<org.slf4j-version>1.6.6</org.slf4j-version>
+	
+		<!-- 구글 로그인 연동을 위한 세큐리티 추가  -->
+		<spring.security.version>5.7.12</spring.security.version>
+		<maven.compiler.source>11</maven.compiler.source>
+        <maven.compiler.target>11</maven.compiler.target>
+	
 	</properties>
+	
+	
+	
+	
+	
+	
 	<dependencies>
 
 	<!-- mysql JDBC 드라이버 설정[1] --> <!-- DB사용 -->
@@ -202,6 +214,37 @@
 			<artifactId>jstl</artifactId>
 			<version>1.2</version>
 		</dependency>
+
+
+
+<!-- 소셜 연동을 위한 dependency 추가 -->
+<dependency>
+    <groupId>org.springframework.security</groupId>
+    <artifactId>spring-security-web</artifactId>
+    <version>${spring.security.version}</version>
+</dependency>
+
+<dependency>
+    <groupId>org.springframework.security</groupId>
+    <artifactId>spring-security-config</artifactId>
+    <version>${spring.security.version}</version>
+</dependency>
+
+<dependency>
+    <groupId>org.springframework.security</groupId>
+    <artifactId>spring-security-oauth2-client</artifactId>
+    <version>${spring.security.version}</version>
+</dependency>
+
+<dependency>
+    <groupId>org.springframework.security</groupId>
+    <artifactId>spring-security-taglibs</artifactId>
+    <version>${spring.security.version}</version>
+</dependency>
+
+
+
+
 
 		<!-- Test -->
 		<dependency>

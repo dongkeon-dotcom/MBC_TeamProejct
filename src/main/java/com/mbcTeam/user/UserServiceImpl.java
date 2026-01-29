@@ -34,4 +34,16 @@ public class UserServiceImpl implements UserService  {
 		return dao.Edit(vo);
 	}
 
+	@Override
+	public boolean existsByEmail(String userID) {
+		// TODO Auto-generated method stub
+		return dao.existsByEmail(userID);
+	}
+
+	@Override
+	public UserVO getByEmail(String userID) {
+		// TODO Auto-generated method stub
+		return dao.getByEmail(userID);
+	}
+
 }
