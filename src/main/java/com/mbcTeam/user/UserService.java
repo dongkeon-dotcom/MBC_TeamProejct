@@ -13,4 +13,9 @@ public interface UserService {
   
   UserVO Edit(UserVO vo);
   
+  // 이메일 중복 체크
+  boolean existsByEmail(String userID);
+  
+  UserVO getByEmail(String userID);
+
 }
