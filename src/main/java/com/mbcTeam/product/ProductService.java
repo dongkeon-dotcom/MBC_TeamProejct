@@ -10,4 +10,5 @@ public interface ProductService {
     void delete(ProductVO vo);                             // 상품 삭제
     List<ProductVO> select(ProductVO vo);                  // 상품 목록 조회
     ProductVO edit(ProductVO vo);                          // 상품 상세 조회
+    
 }

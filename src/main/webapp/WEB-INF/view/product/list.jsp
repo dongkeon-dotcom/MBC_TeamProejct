@@ -33,12 +33,7 @@
 					<td>${m.productPrice}</td>
 					<td>${m.productRegDate}</td>
 					<td>${m.productDesc}</td>
-					
-					<td>
-							 ${path} -- ${m.getPMainImgPath()}
-					</td>
-				
-						
+
 
 					<td>${m.productDiscountPer}</td>
 					<td>${m.productRecomm}</td>
