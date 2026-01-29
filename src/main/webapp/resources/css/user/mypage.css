@@ -1,0 +1,36 @@
+@charset "UTF-8";
+/* 전체 레이아웃 */
+
+.mypage-section {
+  max-width: 600px;
+  margin: 50px auto;
+  background: #fff;
+  padding: 30px;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+
+.mypage-section h1 {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.mypage-menu {
+  list-style: none;
+  padding: 0;
+}
+
+.mypage-menu li {
+  margin: 15px 0;
+}
+
+.mypage-menu a {
+  text-decoration: none;
+  color: #0077FF;
+  font-weight: bold;
+}
+
+.mypage-menu a:hover {
+  color: #ff6600;
+}
+
