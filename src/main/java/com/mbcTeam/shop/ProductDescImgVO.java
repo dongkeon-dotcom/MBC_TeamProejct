@@ -1,3 +1,4 @@
+/*
 package com.mbcTeam.shop;
 
 import lombok.Data;
@@ -9,3 +10,4 @@ public class ProductDescImgVO {
     private String pDescImgPath;        //이미지경로
     private Integer pDescImgOrder;        //이미지순서
 }
+*/

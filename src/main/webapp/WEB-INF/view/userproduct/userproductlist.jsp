@@ -10,8 +10,8 @@
 	<div class="product-grid">
 		<c:forEach var="p" items="${li}">
 			<div class="product-card">
-				<a href="${pageContext.request.contextPath}/userproduct/detail.do?productIdx=${p.productIdx}">
-				<img src="${pageContext.request.contextPath}${p.pMainImgPath}" alt="${p.productName}"> </a>
+				<a href="${path}/userproduct/detail.do?productIdx=${p.productIdx}">
+				<img src="${path}${p.pMainImgPath}" alt="${p.productName}"> </a>
 				<div class="product-info">
 					<div class="product-name">${p.productName}</div>
 					<div class="product-price">${p.productPrice}원</div>

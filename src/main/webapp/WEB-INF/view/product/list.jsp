@@ -33,8 +33,8 @@
 					<td>${m.productPrice}</td>
 					<td>${m.productRegDate}</td>
 					<td>${m.productDesc}</td>
-
-
+					<th>${getpMainImgPath}</th>
+					<th></th>
 					<td>${m.productDiscountPer}</td>
 					<td>${m.productRecomm}</td>
 					<td><c:forEach var="opt" items="${m.options}">
