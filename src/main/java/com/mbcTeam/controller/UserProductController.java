@@ -33,19 +33,7 @@ public class UserProductController {
     }
     
     
-    @GetMapping("/userproductdetail.do")
-    public String detail(@RequestParam("productIdx") int productIdx, Model model) {
-        ProductVO product = service.userproductdetail(productIdx); // 상품 기본 정보
-        model.addAttribute("product", product);
-
-        List<ProductImgVO> imgList = service.selectImg(productIdx); // 이미지 목록
-        model.addAttribute("imgList", imgList);
-
-        List<ProductOptionVO> optionList = service.selectOption(productIdx); // 옵션 + 재고
-        model.addAttribute("optionList", optionList);
-
-        return "userproduct/detail"; 
-    }
+  
 
     
 

@@ -1,10 +1,14 @@
 package com.mbcTeam.shop;
 
-import java.util.List;
+import java.util.List; 
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import com.mbcTeam.product.ProductDescImgVO;
+
+
 
 @Service
 public class ProductServiceImpl implements ProductService {
@@ -13,15 +17,16 @@ public class ProductServiceImpl implements ProductService {
 	private ProductDao dao;
 	
 	
+
 	@Transactional
-	@Override
+	@Override   
 	public void adminProductInsert(ProductVO vo, ProductImgVO imgVO, ProductDescImgVO DImgVO) {
 		dao.adminProductInsert(vo);
 		Long pidx = vo.getProductIdx();
 		imgVO.setProductIdx(pidx);
-		dao.adminProductImgInsert(imgVO);
+		dao.adminProductInsert(imgVO);
 		DImgVO.setProductIdx(pidx);
-		dao.adminProductDescImgInsert(DImgVO);
+		dao.adminProductInsert(DImgVO);
 		
 	}
 
@@ -30,4 +35,15 @@ public class ProductServiceImpl implements ProductService {
 		return dao.getSelect(vo);
 	}
 
+	
+	@Override
+	public void adminProductInsert(ProductVO vo) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }
+
+
+
+
