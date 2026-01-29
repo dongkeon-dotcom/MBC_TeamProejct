@@ -1,17 +1,21 @@
-package com.mbcTeam.member;
+package com.mbcTeam.user;
 
 import lombok.Data;
 
 @Data
-public class MemberVO {
-	private int uidx;				// 유저번호 / PK
-	private String user_id;			// 이메일 형식
-	private String name;			// 이름
-	private String tel;				// 전화번호
-	private String address;			// 주소
-	private String addressExtra;	// 상세주소		
-	private String password;		// 비밀번호
-	private String role;			// 권한
-	private String age;				// 나이
-	private String createdate;		// 생성일 
+public class UserVO {
+	
+	
+	private int userIdx;			// 유저번호 / PK
+	private String user_id;			// 사용자 ID(E-mail)
+	private String userPW;			// PW
+	private String userName;		// 이름
+	private String userPhone;		// 연락처
+	private String userRegDate;	    // 등록일		
+	private String userRole;		// 권한(관리자/유저)
+	private String userEasyLogin;	// 외부로그인유무
+	private String userIsDeleted;	// 탈퇴유무
+	
+	
+									
 }

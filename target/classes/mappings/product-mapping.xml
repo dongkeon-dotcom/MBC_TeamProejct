@@ -4,48 +4,68 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="PRODUCT">
- 
-	<insert id="INSERT" parameterType="ProductVO">
-	 
-	 insert  into product(product_id, product_name,category, 
-	                      product_price, product_desc, quantity, 
-	                      product_img, product_admin  )
-     values(#{product_id},#{product_name},#{category}, 
-	                      #{product_price}, #{product_desc}, #{quantity}, 
-	                      #{product_img}, #{product_admin})
+
+
+	<insert id="INSERT_PRODUCT"
+		parameterType="com.mbcTeam.product.ProductVO" useGeneratedKeys="true"
+		keyProperty="productIdx">
+		INSERT INTO Product (productCategory, productSubCategory, productName,
+						     productPrice, productRegDate, productDesc, pMainImgPath, pSizeImgPath
+							 productDiscountPer, productRecomm )
+							 
+		VALUES (#{productCategory}, #{productSubCategory}, #{productName}, #{productPrice},
+				NOW(), #{productDesc}, #{pMainImgPath}, #{pSizeImgPath},
+				#{productDiscountPer}, #{productRecomm} )
+				
 	</insert>
-	
-	<select  id="CARTLIST" resultType ="ProductVO">
-	  select  c.cart_id , c.product_id ,c.user_id ,c.amount 
-	          , p.product_name , p.product_price , p.product_img 
-      from tbl_cart c join product p on c.product_id = p.product_id 
-      
-      <if test="user_id !='admin'">      
-      where c.user_id =#{user_id}
-      </if>
+
+
+	<insert id="INSERT_PRODUCT_IMG"
+		parameterType="com.mbcTeam.product.ProductImgVO">
+		INSERT INTO ProductImg (productIdx, pImgPath, pImgOrder
+		)
+
+		VALUES (#{productIdx}, #{pImgPath}, #{pImgOrder} )
+	</insert>
+
+
+	<insert id="INSERT_PRODUCT_OPTION"
+		parameterType="com.mbcTeam.product.ProductOptionVO">
+		INSERT INTO ProductOption (productIdx, optionColor, optionSize, productStock
+		)
+		VALUES (#{productIdx}, #{optionColor}, #{optionSize}, #{productStock})
+	</insert>
+
+
+	<select id="SELECT_PRODUCT_OPTIONS"
+		resultType="com.mbcTeam.product.ProductOptionVO">
+		SELECT optionColor, optionSize, productStock
+		FROM ProductOption
+		WHERE productIdx = #{productIdx}
 	</select>
 	
-	<select  id="ID" resultType ="String">
-	   SELECT 
-         IFNULL(MAX(CAST(SUBSTRING(product_id, 2) AS UNSIGNED)), 0)
-       AS max_num  FROM product
-	</select>
+
+
 	
-	<select  id="SELECT" resultType ="ProductVO">
-	   SELECT * FROM product  order  by idx desc 
-	</select>
-	
-	<select  id="EDIT"  parameterType="ProductVO" resultType ="ProductVO">
-	   SELECT * FROM product  where idx=#{idx} 
-	</select>
-	
-	<select  id="CARTCHECK"  parameterType="ProductVO" resultType ="ProductVO">
-	   SELECT * FROM tbl_cart
-	   where user_id=#{user_id} and product_id=#{product_id} 
-	</select>
-		
-	
-	
-	
+   <select id="SELECT_PRODUCT_LIST" resultType="com.mbcTeam.product.ProductVO">
+    SELECT p.productIdx,
+           p.productCategory,
+           p.productSubCategory,
+           p.productName,
+           p.productPrice,
+           p.productRegDate,
+           p.productDesc,
+           p.productDiscountPer,
+           p.productRecomm,
+           mainImg.pImgPath AS pMainImgPath,
+           sizeImg.pImgPath AS pSizeImgPath
+    FROM Product p
+    LEFT JOIN ProductImg mainImg ON p.productIdx = mainImg.productIdx AND mainImg.pImgOrder = 1
+    LEFT JOIN ProductImg sizeImg ON p.productIdx = sizeImg.productIdx AND sizeImg.pImgOrder = 2
+    ORDER BY p.productRegDate DESC
+</select>
+
+
+
 
 </mapper>

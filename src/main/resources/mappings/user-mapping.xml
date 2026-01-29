@@ -3,24 +3,31 @@
 PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="MEMBER">
+<mapper namespace="USER">
  
-<insert id="INSERT" parameterType="MemberVO">
- insert into member ( user_id,name,tel,email,role, address,password,age,gender,etc) 
- values ( #{user_id},#{name},#{tel},#{email},#{role},#{address},#{password},#{age},#{gender},#{etc} )
+<insert id="INSERT" parameterType="UserVO">
+
+ insert into user (user_id,userPW,userName,userPhone,userRegDate,userRole,userEasyLogin,userIsDeleted) 
+ 
+ values ( #{user_id},#{userPW},#{userName},#{userPhone},#{userRegDate},
+ 		  #{userRole},#{userEasyLogin},#{userIsDeleted} )
+ 		  
 </insert>
 
-<select id="SELECT"  resultType ="MemberVO" >
-  select  *  from  	member                     
+<select id="SELECT"  resultType ="UserVO" >
+  select  *  from  	user             
 </select>	
 
-<select id="LOGIN" parameterType="MemberVO" resultType ="MemberVO" >
-  select  *  from  	member  where  user_id =#{user_id} and  password =#{password}                  
+<select id="LOGIN" parameterType="UserVO" resultType ="UserVO" >
+  select  *  from  	user  where  user_id =#{user_id} and  userPW =#{userPW}                  
 </select>
 
-<select id="EDIT" parameterType="MemberVO" resultType ="MemberVO" >
-  select  *  from  	member 
+<select id="EDIT" parameterType="UserVO" resultType ="UserVO" >
+  select  *  from  	user 
   where  user_id =#{user_id}                  
 </select>
+
+	
+	
 
 </mapper>

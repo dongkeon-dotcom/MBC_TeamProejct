@@ -14,13 +14,17 @@
 		<org.slf4j-version>1.6.6</org.slf4j-version>
 	</properties>
 	<dependencies>
+
+	<!-- mysql JDBC 드라이버 설정[1] --> <!-- DB사용 -->
 	
-		<!-- mysql JDBC 드라이버 설정[1] --> <!-- DB사용 -->
-		<dependency>
-		    <groupId>mysql</groupId>
-		    <artifactId>mysql-connector-java</artifactId>
-		    <version>5.1.6</version>
-		</dependency>
+
+	<dependency>
+		<groupId>mysql</groupId>
+		<artifactId>mysql-connector-java</artifactId>
+		<version>8.0.33</version> <!-- 최신 버전 사용 -->
+	</dependency>
+		
+		
 		
 		<!-- lombok 추가[2] --> <!-- @Data사용 -->
 		<dependency>
