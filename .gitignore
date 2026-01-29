@@ -267,6 +267,9 @@ buildNumber.properties
 .mvn/wrapper/maven-wrapper.jar
 pom.properties
 
+### MANIFEST ###
+META-INF/MANIFEST.MF
+
 # Eclipse m2e generated files
 # Eclipse Core
 .project
