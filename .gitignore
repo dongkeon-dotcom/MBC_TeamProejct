@@ -265,7 +265,10 @@ buildNumber.properties
 .mvn/timing.properties
 # https://github.com/takari/maven-wrapper#usage-without-binary-jar
 .mvn/wrapper/maven-wrapper.jar
-pom.properties
+*/pom.properties
+
+### MANIFEST ###
+*/META-INF/MANIFEST.MF
 
 # Eclipse m2e generated files
 # Eclipse Core
@@ -352,3 +355,5 @@ gradle-app.setting
 ### Gradle Patch ###
 # Java heap dump
 *.hprof
+src/main/webapp/META-INF/MANIFEST.MF
+src/main/webapp/META-INF/maven/com.mbcTeam/main/pom.properties

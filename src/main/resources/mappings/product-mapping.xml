@@ -4,11 +4,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="PRODUCT">
-
- <!-- 
-	<insert id="INSERT" parameterType="ProductVO">
+ 
+	<insert id="INSERT" parameterType="ProductVO" useGeneratedKeys="true" keyProperty="productIdx">
 	 
-	 insert into product(product_id, product_name,category, 
+	 insert into Product(product_id, product_name,category, 
 	                      product_price, product_desc, quantity, 
 	                      product_img, product_admin  )
      values(#{product_id},#{product_name},#{category}, 
@@ -16,17 +15,36 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	                      #{product_img}, #{product_admin})
 	</insert>
 	
+	<insert id="INSERT" parameterType="ProductVO">
+	 
+	 insert into Product(product_id, product_name,category, 
+	                      product_price, product_desc, quantity, 
+	                      product_img, product_admin  )
+     values(#{product_id},#{product_name},#{category}, 
+	                      #{product_price}, #{product_desc}, #{quantity}, 
+	                      #{product_img}, #{product_admin})
+	</insert>
+	
+	<insert id="INSERT" parameterType="ProductVO">
+	 
+	 insert into Product(product_id, product_name,category, 
+	                      product_price, product_desc, quantity, 
+	                      product_img, product_admin  )
+     values(#{product_id},#{product_name},#{category}, 
+	                      #{product_price}, #{product_desc}, #{quantity}, 
+	                      #{product_img}, #{product_admin})
+	</insert>
 	
 	<select  id="SELECT" resultType ="ProductVO">
 	   SELECT * FROM product  order  by idx desc 
 	</select>	
- -->
+
 
 	<insert id="INSERT_PRODUCT"
 		parameterType="com.mbcTeam.product.ProductVO" useGeneratedKeys="true"
 		keyProperty="productIdx">
 		INSERT INTO Product (productCategory, productSubCategory, productName,
-						     productPrice, productRegDate, productDesc, pMainImgPath, pSizeImgPath,
+						     productPrice, productRegDate, productDesc, pMainImgPath, pSizeImgPath
 							 productDiscountPer, productRecomm )
 							 
 		VALUES (#{productCategory}, #{productSubCategory}, #{productName}, #{productPrice},

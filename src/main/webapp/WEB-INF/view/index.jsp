@@ -2,7 +2,10 @@
     pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <c:import url="/WEB-INF/view/include/top.jsp" />
+<<<<<<< HEAD
 
+=======
+>>>>>>> 1a229ecbc0482a73e203950239b320e66b37877a
 
 <link href="${path}/resources/css/main.css" rel="stylesheet">
 <section>
@@ -101,8 +104,11 @@ document.querySelectorAll(".slide img").forEach(img => {
 });
 </script>
 
+<<<<<<< HEAD
 
 
+=======
+>>>>>>> 1a229ecbc0482a73e203950239b320e66b37877a
 <br>
 </section>
 <c:import url="/WEB-INF/view/include/bottom.jsp" />
