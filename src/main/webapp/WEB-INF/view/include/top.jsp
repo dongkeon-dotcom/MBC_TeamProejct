@@ -45,13 +45,13 @@ top.jsp에 들어가야할것들
 &emsp;<a href=${path}/test/board.do>테스트 등록하기</a>
 &emsp;<a href=${path}/test/list.do>테스트 목록보기</a>
 
-
+<a href="${path}/customerMyPage/mypage.do"> 마이페이</a>
 
 &emsp;&emsp;&emsp;
 
 <!-- null 과 공배 모두 체크 -->
 <c:if test="${empty id}">
-	<a href="${path}/member/login.do"> 로그인</a>
+	<a href="${path}/memberLogin/login.do"> 로그인</a>
 </c:if>
 <c:if test="${not empty id}">
 	<a href="${path}/member/logout.do"> ${id}로그아웃</a>
