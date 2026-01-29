@@ -355,3 +355,5 @@ gradle-app.setting
 ### Gradle Patch ###
 # Java heap dump
 *.hprof
+src/main/webapp/META-INF/MANIFEST.MF
+src/main/webapp/META-INF/maven/com.mbcTeam/main/pom.properties
