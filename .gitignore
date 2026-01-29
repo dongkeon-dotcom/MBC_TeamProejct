@@ -265,10 +265,10 @@ buildNumber.properties
 .mvn/timing.properties
 # https://github.com/takari/maven-wrapper#usage-without-binary-jar
 .mvn/wrapper/maven-wrapper.jar
-pom.properties
+*/pom.properties
 
 ### MANIFEST ###
-META-INF/MANIFEST.MF
+*/META-INF/MANIFEST.MF
 
 # Eclipse m2e generated files
 # Eclipse Core
