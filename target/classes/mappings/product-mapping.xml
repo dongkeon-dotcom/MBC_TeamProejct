@@ -7,7 +7,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
  
 	<insert id="INSERT" parameterType="ProductVO">
 	 
-	 insert  into product(product_id, product_name,category, 
+	 insert into product(product_id, product_name,category, 
 	                      product_price, product_desc, quantity, 
 	                      product_img, product_admin  )
      values(#{product_id},#{product_name},#{category}, 
@@ -15,37 +15,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	                      #{product_img}, #{product_admin})
 	</insert>
 	
-	<select  id="CARTLIST" resultType ="ProductVO">
-	  select  c.cart_id , c.product_id ,c.user_id ,c.amount 
-	          , p.product_name , p.product_price , p.product_img 
-      from tbl_cart c join product p on c.product_id = p.product_id 
-      
-      <if test="user_id !='admin'">      
-      where c.user_id =#{user_id}
-      </if>
-	</select>
-	
-	<select  id="ID" resultType ="String">
-	   SELECT 
-         IFNULL(MAX(CAST(SUBSTRING(product_id, 2) AS UNSIGNED)), 0)
-       AS max_num  FROM product
-	</select>
-	
 	<select  id="SELECT" resultType ="ProductVO">
 	   SELECT * FROM product  order  by idx desc 
-	</select>
-	
-	<select  id="EDIT"  parameterType="ProductVO" resultType ="ProductVO">
-	   SELECT * FROM product  where idx=#{idx} 
-	</select>
-	
-	<select  id="CARTCHECK"  parameterType="ProductVO" resultType ="ProductVO">
-	   SELECT * FROM tbl_cart
-	   where user_id=#{user_id} and product_id=#{product_id} 
-	</select>
-		
-	
-	
+	</select>	
 	
 
 </mapper>
