@@ -18,7 +18,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	<select  id="SELECT" resultType ="ProductVO">
 	   SELECT * FROM product  order  by idx desc 
 	</select>	
-=======
 
 
 	<insert id="INSERT_PRODUCT"
@@ -58,7 +57,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		FROM ProductOption
 		WHERE productIdx = #{productIdx}
 	</select>
->>>>>>> 81e971079fd15db00250af3a3ed514e226581a22
 	
 
 

@@ -4,7 +4,7 @@ import lombok.Data;
 
 @Data
 public class UserVO {
-<<<<<<< HEAD
+
 	private long userIdx;				//사용자번호(PK)
 	private String userID;				//사용자 ID(E-mail)
 	private String userPW;				//비밀번호(Security 작업필요)

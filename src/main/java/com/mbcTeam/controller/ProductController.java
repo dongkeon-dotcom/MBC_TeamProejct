@@ -1,15 +1,5 @@
 package com.mbcTeam.controller;
 
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-
-@RequestMapping("/shop")
-@Controller
-public class ProductController {
-	
-	
-
-=======
 import java.io.File; 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -97,5 +87,4 @@ public class ProductController {
 		model.addAttribute("product", service.edit(vo));
 		return "product/edit";
 	}
->>>>>>> 81e971079fd15db00250af3a3ed514e226581a22
 }
