@@ -1,27 +1,117 @@
-@charset "UTF-8";
-header{
- background-color:blue;
- height:70px;
- line-height:70px;
- text-align:center;
- vertical-align:middle;
- color:#ffffff;
+@charset "UTF-8"; /* CSS 파일의 문자 인코딩을 UTF-8로 지정 */
+
+/* ===== Footer ===== */
+footer {
+	background: #c7c0b8; /* 푸터 배경색: 어두운 회색 */
+	color: #fff; /* 글자색: 흰색 */
+	text-align: center; /* 텍스트 중앙 정렬 */
+	padding: 15px 0; /* 위아래 여백 15px */
+	font-size: 13px; /* 글자 크기 13px */
+	width: 100%; /* 화면 전체 폭 차지 */
 }
-nav{
- background-color:#6699ff;
- height:40px;
- line-height:45px;
- vertical-align:middle;
+
+/* 본문이 상단바에 가려지지 않도록 여백 */
+body {
+	margin: 0; /* 기본 margin 제거 */
+	padding-top: 60px; /* 상단바 높이만큼 본문을 아래로 밀기 */
 }
-section{
- background-color:#CCCCCC;
- min-height:500px;
+
+/* ===== 상단바 ===== */
+.top-header {
+	background: #c7c0b8; /* 상단바 배경색: 어두운 회색 */
+	color: #fff; /* 글자색: 흰색 */
+	display: flex; /* Flexbox 레이아웃 사용 */
+	align-items: center; /* 세로 중앙 정렬 */
+	justify-content: space-between; /* 좌/중앙/우 영역 분리 */
+	padding: 5px 0px; /* 내부 여백 */
+	position: fixed; /* 화면 상단에 고정 */
+	top: 0; /* 최상단 위치 */
+	left: 0; /* 왼쪽 끝 위치 */
+	width: 100%; /* 화면 전체 폭 */
+	z-index: 1000; /* 다른 요소보다 위에 표시 */
+}
+
+/* ===== 로고 ===== */
+.logo h1 a {
+	color: #fff; /* 로고 글자색: 흰색 */
+	text-decoration: none; /* 밑줄 제거 */
+	font-size: 20px; /* 글자 크기 크게 */
+	font-weight: bold; /* 굵게 표시 */
+}
+
+/* ===== 메뉴 ===== */
+.main-nav {
+	flex: 1 1 auto; /* 공간 차지하되 줄어들 수 있게 */
+	display: flex;
+	justify-content: center;
+	flex-shrink: 1; /* 오른쪽 영역을 침범하지 않도록 줄어들 수 있게 */
+	min-width: 0; /* flexbox에서 줄어들 수 있도록 설정 */
+	margin-right: 10px; /* 중앙 메뉴 오른쪽 여백 줄이기 */
+}
+
+.main-nav ul.menu {
+	list-style: none; /* 불릿 제거 */
+	display: flex; /* 가로 배치 */
+	gap: 10px; /* 메뉴 간격 */
+	margin: 0; /* 기본 margin 제거 */
+	padding: 0; /* 기본 padding 제거 */
+}
+
+.main-nav ul.menu>li {
+	position: relative; /* 서브메뉴 위치 기준점 */
+}
+
+.main-nav ul.menu>li>a {
+	padding: 15px 15px; /* 메뉴 버튼 여백 */
+	color: #fff; /* 글자색: 흰색 */
+	text-decoration: none; /* 밑줄 제거 */
+	font-size: 15px; /* 글자 크기 */
+}
+
+.main-nav ul.menu>li>a:hover {
+	background: #0080c0; /* 마우스 올렸을 때 배경색 변경 */
+}
+
+/* ===== 서브메뉴 ===== */
+.submenu {
+	display: none; /* 기본적으로 숨김 */
+	position: absolute; /* 부모 li 기준으로 위치 */
+	top: 100%; /* 부모 아래쪽에 표시 */
+	left: 0; /* 왼쪽 정렬 */
+	background: #0080c0; /* 서브메뉴 배경색 */
+	min-width: 150px; /* 최소 너비 */
+	list-style: none; /* 불릿 제거 */
+	margin: 0; /* 기본 margin 제거 */
+	padding: 0; /* 기본 padding 제거 */
+}
+
+.submenu li a {
+	display: block; /* 블록 요소로 전체 영역 클릭 가능 */
+	padding: 8px 12px; /* 내부 여백 */
+	color: #fff; /* 글자색: 흰색 */
+	text-decoration: none; /* 밑줄 제거 */
+	font-size: 13px; /* 글자 크기 */
+}
+
+.submenu li a:hover {
+	background: #0066a0; /* 마우스 올렸을 때 배경색 변경 */
+}
+
+.submenu.show {
+	display: block; /* .show 클래스가 붙으면 표시됨 */
+}
+
+/* ===== 오른쪽 영역 (검색창 + 유저 메뉴) ===== */
+.right-area {
+	display: flex; /* Flexbox 레이아웃 */
+	align-items: center; /* 세로 중앙 정렬 */
+	gap: 8px; /* 기존 15px → 8px으로 줄여서 검색창/로그인/장바구니 간격 좁힘 */
+	text-align: center;
 
 }
-footer{
- background-color:#0077FF;
- height:35px;
- line-height:35px;
- text-align:center;
- vertical-align:middle;
+
+.search-form {
+	display: flex;
+	align-items: center;
+	order: -1; /* 오른쪽 영역 안에서 맨 앞으로 이동 */
 }

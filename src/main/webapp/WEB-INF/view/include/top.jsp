@@ -60,3 +60,118 @@ top.jsp에 들어가야할것들
 
 
 </nav>
+=======
+<title>의류 쇼핑몰</title>
+<link href="${path}/resources/css/top.css" rel="stylesheet">
+</head>
+<body>
+
+    <!-- ===== 상단바 ===== -->
+    <header class="top-header">
+        <!-- 좌측 로고 -->
+        <div class="logo">
+            <h1><a href="${path}/index.do">로고자리</a></h1>
+        </div>
+
+        <!-- 중앙 메뉴 -->
+        <nav class="main-nav">
+            <ul class="menu">
+                <li><a href="${path}/user/list.do">세일</a></li>
+                <li><a href="${path}/user/form.do">추천</a></li>
+                
+                <li><a href="${path}/product/form.do">상품 등록 페이지</a></li>
+                <li><a href="${path}/product/list.do">상품 목폭 페이지</a></li>
+                
+                <li class="has-submenu"><a href="#">아우터</a>
+                    <ul class="submenu">
+                        <li><a href="${path}/product/list.do">자켓</a></li>
+                        <li><a href="${path}/product/list.do">코트</a></li>
+                        <li><a href="${path}/product/list.do">패딩/점퍼</a></li>
+                        <li><a href="${path}/product/list.do">가디건</a></li>
+                        <li><a href="${path}/product/list.do">베스트</a></li>
+                        <li><a href="${path}/product/list.do">레더/무스탕</a></li>
+                    </ul>
+                </li>
+                <li class="has-submenu"><a href="#">상의</a>
+                    <ul class="submenu">
+                        <li><a href="${path}/product/list.do">티셔츠</a></li>
+                        <li><a href="${path}/product/list.do">셔츠/블라우스</a></li>
+                        <li><a href="${path}/product/list.do">니트</a></li>
+                        <li><a href="${path}/product/list.do">맨투맨/후드</a></li>
+                        <li><a href="${path}/product/list.do">슬리브리스</a></li>
+                    </ul>
+                </li>
+                <li class="has-submenu"><a href="#">바지</a>
+                    <ul class="submenu">
+                        <li><a href="${path}/product/list.do">데님</a></li>
+                        <li><a href="${path}/product/list.do">슬랙스</a></li>
+                        <li><a href="${path}/product/list.do">코튼 팬츠</a></li>
+                        <li><a href="${path}/product/list.do">조거/트레이닝</a></li>
+                        <li><a href="${path}/product/list.do">쇼츠</a></li>
+                    </ul>
+                </li>
+                <li class="has-submenu"><a href="#">치마</a>
+                    <ul class="submenu">
+                        <li><a href="${path}/product/list.do">미니스커트</a></li>
+                        <li><a href="${path}/product/list.do">롱스커트</a></li>
+                        <li><a href="${path}/product/list.do">H라인 스커트</a></li>
+                        <li><a href="${path}/product/list.do">플리츠/A라인</a></li>
+                        <li><a href="${path}/product/list.do">데님 스커트</a></li>
+                    </ul>
+                </li>
+                <li class="has-submenu"><a href="#">원피스</a>
+                    <ul class="submenu">
+                        <li><a href="${path}/product/list.do">미니 원피스</a></li>
+                        <li><a href="${path}/product/list.do">롱 원피스</a></li>
+                        <li><a href="${path}/product/list.do">셔츠 원피스</a></li>
+                        <li><a href="${path}/product/list.do">니트 원피스</a></li>
+                        <li><a href="${path}/product/list.do">점프슈트</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </nav>
+
+        <!-- 우측 검색창 + 유저 메뉴 -->
+        <div class="right-area">
+            <form class="search-form" action="/search" method="post">
+                <input type="text" name="keyword" placeholder="검색어 입력">
+                <button type="submit">검색</button>
+            </form>
+            <div class="user-menu">
+                <c:if test="${empty sessionScope.username}">
+                    <a href="${path}/member/login.do">로그인</a>
+                </c:if>
+                <c:if test="${not empty sessionScope.username}">
+                    <a href="${path}/logout.do">${sessionScope.name}(ROLE:${sessionScope.role}) 로그아웃</a>
+                </c:if>
+                <a href="${path}/member/mypage.do">마이페이지</a>
+                <a href="/cart">장바구니</a>
+            </div>
+        </div>
+    </header>
+
+    
+
+ 
+
+    <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      const menuItems = document.querySelectorAll(".has-submenu > a");
+      menuItems.forEach(item => {
+        item.addEventListener("click", function(e) {
+          e.preventDefault();
+          const submenu = this.nextElementSibling;
+          document.querySelectorAll(".submenu").forEach(sm => {
+            if (sm !== submenu) sm.classList.remove("show");
+          });
+          submenu.classList.toggle("show");
+        });
+      });
+    });
+    </script>
+</body>
+</html>
+
+
+<c:import url="/WEB-INF/view/include/bottom.jsp" />
+>>>>>>> 81e971079fd15db00250af3a3ed514e226581a22
