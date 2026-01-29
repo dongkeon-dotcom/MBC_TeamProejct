@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper 
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="USER">
+ 
+<insert id="INSERT" parameterType="UserVO">
+
+ insert into user (user_id,userPW,userName,userPhone,userRegDate,userRole,userEasyLogin,userIsDeleted) 
+ 
+ values ( #{user_id},#{userPW},#{userName},#{userPhone},#{userRegDate},
+ 		  #{userRole},#{userEasyLogin},#{userIsDeleted} )
+ 		  
+</insert>
+
+<select id="SELECT"  resultType ="UserVO" >
+  select  *  from  	user             
+</select>	
+
+<select id="LOGIN" parameterType="UserVO" resultType ="UserVO" >
+  select  *  from  	user  where  user_id =#{user_id} and  userPW =#{userPW}                  
+</select>
+
+<select id="EDIT" parameterType="UserVO" resultType ="UserVO" >
+  select  *  from  	user 
+  where  user_id =#{user_id}                  
+</select>
+
+	
+	
+
+</mapper>

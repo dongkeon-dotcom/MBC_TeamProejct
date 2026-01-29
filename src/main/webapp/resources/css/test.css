@@ -1,0 +1,139 @@
+@charset "UTF-8";
+@charset "UTF-8"; /* CSS 파일 인코딩을 UTF-8로 지정 (한글 깨짐 방지) */
+
+/* ===== Footer ===== */
+footer {
+  background: #333;       /* footer 배경색: 상단바와 동일한 어두운 회색 */
+  color: #fff;            /* 글씨 색상: 흰색 */
+  text-align: center;     /* 글씨 가운데 정렬 */
+  padding: 15px 0;        /* 위아래 여백 */
+  font-size: 13px;        /* 글씨 크기 작게 */
+  width: 100%;            /* 화면 전체 폭 차지 */
+}
+
+
+.top-header {
+  background: #333;       /* 상단바 배경색 */
+  color: #fff;            /* 글씨 색상: 흰색 */
+  display: flex;          /* 내부 요소 가로 배치 */
+  align-items: center;    /* 세로 가운데 정렬 */
+  justify-content: space-between; /* 좌측 로고 / 중앙 메뉴 / 우측 영역 배치 */
+  padding: 10px 20px;     /* 내부 여백 */
+  position: fixed;        /* 스크롤 내려도 상단 고정 */
+  top: 0;                 /* 화면 맨 위에 위치 */
+  left: 0;                /* 좌측부터 시작 */
+        /* 화면 전체 폭 차지 */
+  z-index: 1000;          /* 다른 요소보다 위에 표시 */
+}
+
+/* ===== 로고 ===== */
+.logo h1 a {
+  color: #fff;            /* 로고 글씨 색상: 흰색 */
+  text-decoration: none;  /* 밑줄 제거 */
+  font-size: 10px;        /* 글씨 크기 크게 */
+ 
+}
+
+/* ===== 메뉴 ===== */
+.main-nav ul.menu {
+  list-style: none;       /* 기본 리스트 점 제거 */
+  display: flex;          /* 메뉴 항목 가로 배치 */
+  margin: 0;              /* 기본 margin 제거 */
+  padding: 0;             /* 기본 padding 제거 */
+}
+
+.main-nav ul.menu > li {
+  position: relative;     /* 서브메뉴 위치 기준점 */
+}
+
+.main-nav ul.menu > li > a {
+  padding: 10px 15px;     /* 메뉴 항목 내부 여백 */
+  color: #fff;            /* 글씨 색상: 흰색 */
+  text-decoration: none;  /* 밑줄 제거 */
+  font-size: 15px;        /* 글씨 크기 */
+}
+
+.main-nav ul.menu > li > a:hover {
+  background: #0080c0;    /* 마우스 올렸을 때 배경색 파란색 */
+}
+
+/* ===== 서브메뉴 ===== */
+.submenu {
+  display: none;          /* 기본 숨김 */
+  position: absolute;     /* 부모 메뉴 아래에 위치 */
+  top: 100%;              /* 부모 메뉴 바로 아래 */
+  left: 0;                /* 부모 메뉴 왼쪽 기준 */
+  background: #0080c0;    /* 서브메뉴 배경색 */
+  min-width: 150px;       /* 최소 너비 */
+  list-style: none;       /* 리스트 점 제거 */
+  margin: 0;              /* 기본 margin 제거 */
+  padding: 0;             /* 기본 padding 제거 */
+}
+
+.submenu li a {
+  display: block;         /* 블록 요소로 전체 클릭 가능 */
+  padding: 8px 12px;      /* 내부 여백 */
+  color: #fff;            /* 글씨 색상: 흰색 */
+  text-decoration: none;  /* 밑줄 제거 */
+  font-size: 13px;        /* 글씨 크기 작게 */
+}
+
+.submenu li a:hover {
+  background: #0066a0;    /* 서브메뉴 hover 시 배경색 */
+}
+
+.submenu.show {
+  display: block;         /* JS로 .show 클래스 추가 시 표시 */
+}
+
+/* ===== 오른쪽 영역 (검색창 + 유저 메뉴) ===== */
+.right-area {
+  display: flex;          /* 검색창과 유저 메뉴 가로 배치 */
+  align-items: center;    /* 세로 가운데 정렬 */
+  gap: 20px;              /* 검색창과 유저 메뉴 사이 간격 */
+}
+
+/* 검색창 */
+.search-form {
+  display: flex;          /* input과 button 가로 배치 */
+  align-items: center;    /* 세로 가운데 정렬 */
+}
+
+.search-form input[type="text"],
+.search-form button {
+  height: 30px;           /* 높이 동일하게 맞춤 */
+  line-height: 30px;      /* 글씨 세로 가운데 */
+}
+
+.search-form button {
+  padding: 5px 10px;      /* 버튼 내부 여백 */
+  font-size: 13px;        /* 글씨 크기 */
+  background: #ff6600;    /* 버튼 배경색: 주황색 */
+  color: #fff;            /* 글씨 색상: 흰색 */
+  border: none;           /* 테두리 제거 */
+  border-radius: 3px;     /* 모서리 둥글게 */
+  cursor: pointer;        /* 마우스 커서: 손 모양 */
+}
+
+.search-form button:hover {
+  background: #e65c00;    /* 버튼 hover 시 색상 변경 */
+}
+
+/* 유저 메뉴 */
+.user-menu {
+  display: flex;          /* 로그인/마이페이지/장바구니 가로 배치 */
+  align-items: center;    /* 세로 가운데 정렬 */
+  gap: 1px;              /* 링크 간격 */
+}
+
+.user-menu a {
+  line-height: 30px;      /* 높이 맞춤 */
+  color: #fff;            /* 글씨 색상: 흰색 */
+  font-size: 13px;        /* 글씨 크기 작게 */
+  text-decoration: none;  /* 밑줄 제거 */
+}
+
+.user-menu a:hover {
+  text-decoration: underline; /* hover 시 밑줄 표시 */
+}
+``
