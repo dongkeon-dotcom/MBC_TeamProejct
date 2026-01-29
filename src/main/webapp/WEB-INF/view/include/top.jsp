@@ -39,9 +39,10 @@ top.jsp에 들어가야할것들
 
 &emsp;<a href=${path}/test/board.do>테스트 등록하기</a>
 &emsp;<a href=${path}/test/list.do>테스트 목록보기</a>
-
+<!-- 우선영 매뉴 관리테스트중!!!  -->
 <a href="${path}/customerMyPage/mypage.do"> 마이페이</a>
-
+	<a href="${path}/memberLogin/login.do"> 로그인</a>
+<!-- /우선영 매뉴 관리테스트중!!!  -->
 &emsp;&emsp;&emsp;
 
 <!-- null 과 공배 모두 체크 -->
