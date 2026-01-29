@@ -2,8 +2,6 @@ package com.mbcTeam.shop;
 
 import java.util.List;
 
-import com.mbcTeam.product.ProductDescImgVO;
-
 
 public interface ProductService {
 
