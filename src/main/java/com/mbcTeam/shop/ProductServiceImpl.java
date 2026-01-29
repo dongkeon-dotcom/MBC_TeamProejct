@@ -15,8 +15,13 @@ public class ProductServiceImpl implements ProductService {
 	
 	@Transactional
 	@Override
-	public void adminProductInsert(ProductVO vo) {
+	public void adminProductInsert(ProductVO vo, ProductImgVO imgVO, ProductDescImgVO DImgVO) {
 		dao.adminProductInsert(vo);
+		Long pidx = vo.getProductIdx();
+		imgVO.setProductIdx(pidx);
+		dao.adminProductImgInsert(imgVO);
+		DImgVO.setProductIdx(pidx);
+		dao.adminProductDescImgInsert(DImgVO);
 		
 	}
 

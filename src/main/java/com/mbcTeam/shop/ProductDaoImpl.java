@@ -20,13 +20,13 @@ public class ProductDaoImpl implements ProductDao {
 	}
 	
 	@Override
-	public void adminProductInsert(ProductImgVO vo) {
+	public void adminProductImgInsert(ProductImgVO vo) {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	public void adminProductInsert(ProductDescImgVO vo) {
+	public void adminProductDescImgInsert(ProductDescImgVO vo) {
 		// TODO Auto-generated method stub
 		
 	}
