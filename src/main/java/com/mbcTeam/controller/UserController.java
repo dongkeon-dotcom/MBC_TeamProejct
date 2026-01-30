@@ -1,3 +1,4 @@
+
 package com.mbcTeam.controller;
 
 import javax.servlet.http.HttpServletRequest;
@@ -47,12 +48,6 @@ public class UserController {
 
 	}
 
-	@GetMapping(value = "/login.do")
-	public String login(UserVO vo, Model model) {
-
-		return "user/login";
-
-	}
 
 	@GetMapping(value = "/mypage.do")
 	public String mypage(UserVO vo, Model model) {
@@ -67,35 +62,32 @@ public class UserController {
 		return "user/addresses";
 
 	}
-	
+
 	// 로그인 페이지 이동
-    @GetMapping("/login.do")
-    public String login() {
-    	//메인등에서 로그인하기 클릭시로그인페이지로이동하기위한루트 
-        return "customerPage/memberLogin/login"; // views/member/login.jsp
-    }
+	@GetMapping("/login.do")
+	public String login() {
+		// 메인등에서 로그인하기 클릭시로그인페이지로이동하기위한루트
+		return "customerPage/memberLogin/login"; // views/member/login.jsp
+	}
 
-    
-    @GetMapping("/member.do")
-    public String member() {
-    	//로그인페이지에 회원가입으로 이동을 위한 컨트롤  
-    System.out.println("memberJoin  확인 용 ");
-        return "customerPage/memberLogin/memberJoin"; // views/member/login.jsp
-    }
-    
-    
-    @PostMapping("/memberOK.do") 
-    public String memberOK(UserVO vo) {
+	@GetMapping("/member.do")
+	public String member() {
+		// 로그인페이지에 회원가입으로 이동을 위한 컨트롤
+		System.out.println("memberJoin  확인 용 ");
+		return "customerPage/memberLogin/memberJoin"; // views/member/login.jsp
+	}
 
-    	service.insert(vo); // DB 저장
+	@PostMapping("/memberOK.do")
+	public String memberOK(UserVO vo) {
 
-        // 가입 성공 → 홈페이지 이동
-        return "redirect:/main.do";
-       
-    } 
-    
-    
-    @PostMapping("/loginOK.do")
+		service.insert(vo); // DB 저장
+
+		// 가입 성공 → 홈페이지 이동
+		return "redirect:/main.do";
+
+	}
+
+	@PostMapping("/loginOK.do")
     public String loginOK(UserVO vo, HttpServletRequest request, HttpSession session) {
 
         // 1. 이메일 존재 여부 확인
@@ -125,5 +117,4 @@ public class UserController {
         
     }
 
-    
 }

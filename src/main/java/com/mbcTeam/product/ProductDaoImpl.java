@@ -1,10 +1,10 @@
 package com.mbcTeam.product;
 
 import java.util.List;
-
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+import com.mbcTeam.user.ReviewVO;
 
 @Repository
 public class ProductDaoImpl implements ProductDao {
@@ -19,14 +19,13 @@ public class ProductDaoImpl implements ProductDao {
 
     @Override
     public void insertImg(ProductImgVO img) {
-        mybatis.insert("PRODUCT.INSERT_PRODUCT_IMG", img); // 네임스페이스 + SQL ID 일관성
+        mybatis.insert("PRODUCT.INSERT_PRODUCT_IMG", img);
     }
-    
+
     @Override
-	public void insertOption(ProductOptionVO option) {
-		mybatis.insert("PRODUCT.INSERT_PRODUCT_OPTION", option);
-		
-	}
+    public void insertOption(ProductOptionVO option) {
+        mybatis.insert("PRODUCT.INSERT_PRODUCT_OPTION", option);
+    }
 
     @Override
     public void update(ProductVO vo) {
@@ -45,8 +44,31 @@ public class ProductDaoImpl implements ProductDao {
 
     @Override
     public ProductVO edit(ProductVO vo) {
-        return mybatis.selectOne("PRODUCT.SELECT_PRODUCT_DETAIL", vo);
+        return mybatis.selectOne("PRODUCT.SELECT_PRODUCT_DETAIL_ADMIN", vo);
     }
 
+    @Override
+    public ProductVO detail(int productIdx) {
+        return mybatis.selectOne("PRODUCT.SELECT_PRODUCT_DETAIL_USER", productIdx);
+    }
 
+    @Override
+    public List<ProductOptionVO> selectOptions(int productIdx) {
+        return mybatis.selectList("PRODUCT.SELECT_PRODUCT_OPTIONS", productIdx);
+    }
+
+    @Override
+    public List<ReviewVO> selectReviews(int productIdx) {
+        return mybatis.selectList("PRODUCT.SELECT_PRODUCT_REVIEWS", productIdx);
+    }
+
+    @Override
+    public List<ProductVO> selectAll() {
+        return mybatis.selectList("PRODUCT.SELECT_ALL_PRODUCTS");
+    }
+
+    @Override
+    public List<ProductVO> selectByCategory(String category) {
+        return mybatis.selectList("PRODUCT.SELECT_BY_CATEGORY", category);
+    }
 }

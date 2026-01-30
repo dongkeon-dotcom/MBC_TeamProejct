@@ -1,5 +1,5 @@
-package com.mbcTeam.security;
 
+package com.mbcTeam.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -17,16 +17,16 @@ import org.springframework.security.web.SecurityFilterChain;
 @EnableWebSecurity
 public class SecurityConfig {
 
-    @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http
-            .authorizeHttpRequests(auth -> auth
-                .anyRequest().authenticated()
-            )
-            .formLogin();
+	
+	@Bean
+	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+	    http
+	        .authorizeHttpRequests(auth -> auth.anyRequest().authenticated())
+	        .formLogin();
+	    return http.build();
+	}
 
-        return http.build();
-    }
+	
     
     @Bean
     public UserDetailsService userDetailsService() {
