@@ -65,7 +65,7 @@
 </a>  
 <br>  <br><br>
 <button type="button"
- onclick="location.href='${pageContext.request.contextPath}/memberLogin/member.do'">
+ onclick="location.href='${pageContext.request.contextPath}/user/member.do'">
  회원가입
 </button>
 
@@ -75,7 +75,7 @@
 </section>
 
 
-
+	
 </body>
 </html>
 

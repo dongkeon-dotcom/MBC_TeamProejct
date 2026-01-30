@@ -2,6 +2,8 @@ package com.mbcTeam.user;
 
 import java.util.List;
 
+import com.mbcTeam.product.ProductVO;
+
 public interface UserDao {
   void insert(UserVO vo);
   
@@ -17,5 +19,5 @@ public interface UserDao {
 	
 
   UserVO getByEmail(String userID);
-
+  List<ProductVO> selectOrderList(ProductVO vo); 
 }

@@ -3,6 +3,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <c:import url="/WEB-INF/view/include/top.jsp" />
 
+
 <link href="${path}/resources/css/main.css" rel="stylesheet">
 <section>
 	<br>
@@ -99,7 +100,6 @@ document.querySelectorAll(".slide img").forEach(img => {
   });
 });
 </script>
-
 
 <br>
 </section>

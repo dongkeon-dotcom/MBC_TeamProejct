@@ -6,12 +6,12 @@
 
 <link href="${path}/resources/member/login.css" rel="stylesheet">
 
-<section class="signup-section">
    
 <br>
 
 <h1 class="login-title">회원 로그인</h1>
 
+  <div class="login-options" align="center">
 <form class="login-form" method="POST" action="${path}/member/login.do">
   <input type="text" name="username" placeholder="이메일" required> <br>
   
@@ -19,14 +19,40 @@
   
   <button type="submit" class="login-btn">로그인</button>
 
-  <div class="login-options">
-    <div align="center">
-      <a href="${path}/member/form.do">회원가입</a>&emsp; |&emsp; 
-      <a href="${path}/member/findId.do">아이디 찾기</a>&emsp; |&emsp; 
-      <a href="${path}/member/findPw.do">비밀번호 찾기</a>
-    </div>
+
+     
+     	<table >
+                <tr><td>아이디(이메일)</td>
+                    <td><input type="text" name="user_email" size="25" value="${prevEmail}" placeholder="이메일을 입력하세요"/>
+                        
+                      <c:if test="${not empty emailError}">
+                       <div style="color:red; font-size:12px;">${emailError}</div> </c:if> </td></tr>
+
+                <tr><td>암호</td>
+                    <td> <input type="password" name="userPW" size="25" />
+                    <c:if test="${not empty pwError}">
+                            <div style="color:red; font-size:12px;">${pwError}</div></c:if></td> </tr>
+
+                <tr><td colspan="2" align="center">
+                     <input type="submit" value="로그인"/></td></tr>
+            </table>
+        </form>
+     
+     
+       <a href="/oauth2/authorization/google"><button>Google 로그인</button></a>
+<br><br><br>
+<a href="/oauth2/authorization/kakao"><button>카카오 로그인</button></a>
+ <br>     <br><br>  
+    
+<a href="/oauth2/authorization/naver"><button> naver 로그인</button></a>  
+<br>  <br><br>
+<button type="button" onclick="location.href='${pageContext.request.contextPath}/memberLogin/member.do'">회원가입</button>
+     
+     
+     
+
   </div>
-</form>
+
 
 <br>
 

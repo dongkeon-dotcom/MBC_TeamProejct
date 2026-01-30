@@ -1,11 +1,12 @@
-/*
-package com.mbcTeam.shop;
+/**package com.mbcTeam.shop;
 
 import java.util.List;
 
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+
+import com.mbcTeam.product.ProductDescImgVO;
 
 @Repository
 public class ProductDaoImpl implements ProductDao {
@@ -38,5 +39,7 @@ public class ProductDaoImpl implements ProductDao {
         return mybatis.selectList(null);
     }
 
-}
-*/
+
+
+
+}**/

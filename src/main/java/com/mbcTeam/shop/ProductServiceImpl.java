@@ -1,11 +1,12 @@
-/*
-package com.mbcTeam.shop;
+/**package com.mbcTeam.shop;
 
 import java.util.List; 
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import com.mbcTeam.product.ProductDescImgVO;
 
 
 
@@ -43,7 +44,6 @@ public class ProductServiceImpl implements ProductService {
 
 }
 
+**/
 
 
-
-*/
