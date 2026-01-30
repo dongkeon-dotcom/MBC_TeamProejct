@@ -133,6 +133,26 @@ top.jsp에 들어가야할것들
                 </li>
             </ul>
         </nav>
+        
+        
+        
+        
+        
+        
+        
+        <!-- 우선영 매뉴 관리테스트중!!!  -->
+<a href="${path}/customerMyPage/mypage.do"> 마이페이</a>
+	<a href="${path}/memberLogin/login.do"> 로그인</a>
+<!-- /우선영 매뉴 관리테스트중!!!  -->
+&emsp;&emsp;&emsp;
+
+<!-- null 과 공배 모두 체크 -->
+<c:if test="${empty id}">
+	<a href="${path}/memberLogin/login.do"> 로그인</a>
+</c:if>
+<c:if test="${not empty id}">
+	<a href="${path}/member/logout.do"> ${id}로그아웃</a>
+</c:if>
 
         <!-- 우측 검색창 + 유저 메뉴 -->
         <div class="right-area">
@@ -176,4 +196,3 @@ top.jsp에 들어가야할것들
 </html>
 
 
-<c:import url="/WEB-INF/view/include/bottom.jsp" />
