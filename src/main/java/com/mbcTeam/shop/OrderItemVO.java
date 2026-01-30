@@ -1,4 +1,4 @@
-/*
+
 package com.mbcTeam.shop;
 
 import lombok.Data;
@@ -18,4 +18,3 @@ public class OrderItemVO {
     private int orderQuantity;                // 구매수량
     private String pMainImgPath;            // 제품대표이미지
 }
-*/

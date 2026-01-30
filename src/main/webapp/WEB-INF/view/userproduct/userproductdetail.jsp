@@ -7,14 +7,14 @@
 <html>
 <head>
     <title>${product.productName} 상세보기</title>
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/userproductdetail.css">
+    <link rel="stylesheet" href="${path}/resources/css/userproduct/userproductdetail.css">
 </head>
 <body>
     <div class="product-detail" align="center">
         <!-- 상품 이미지 -->
         <div class="product-image">
             <c:if test="${not empty product.pMainImgPath}">
-                <img src="${pageContext.request.contextPath}/resources/images/${product.pMainImgPath}" alt="${product.productName}">
+                <img src="${path}/resources/images/${product.pMainImgPath}" alt="${product.productName}">
             </c:if>
         </div>
 
@@ -25,7 +25,7 @@
             <p class="product-discount">${product.productDiscountPer}% 할인</p>
 
             <!-- 옵션 선택 + 장바구니 버튼 -->
-            <form action="${pageContext.request.contextPath}/cart/add.do" method="post">
+            <form action="${path}/cart/add.do" method="post">
                 <input type="hidden" name="productIdx" value="${product.productIdx}">
 
                 <label for="option">옵션 선택</label>

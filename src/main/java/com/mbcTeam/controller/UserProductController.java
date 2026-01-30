@@ -36,6 +36,7 @@ public class UserProductController {
     }
 
     
+    
     @GetMapping("/userproductdetail.do")
     public String userProductDetail(@RequestParam("productIdx") int productIdx, Model model) {
         // 상품 정보 조회

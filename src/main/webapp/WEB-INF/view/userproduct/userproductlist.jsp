@@ -6,9 +6,10 @@
 <html>
 <head>
 <title>상품 리스트</title>
-<link rel="stylesheet" href="${path}/resources/css/userproductlist.css">
+<link rel="stylesheet" href="${path}/resources/css/userproduct/userproductlist.css">
 </head>
 <body>
+
 	<!-- 카테고리 필터 -->
 	<div class="category-filter">
 		<form action="${path}/userproductlist.do" method="get">
@@ -28,16 +29,16 @@
 		</form>
 	</div>
 
+
+
 	<div class="product-grid">
 		<c:forEach var="p" items="${li}">
 			<div class="product-card">
 				<!-- 이미지 클릭 시 상세페이지 이동 -->
-				<a
-					href="${path}/userproductdetail.do?productIdx=${p.productIdx}">
+				<a href="${path}/userproductdetail.do?productIdx=${p.productIdx}">
 					<c:choose>
 						<c:when test="${not empty p.pMainImgPath}">
-							<img
-								src="${path}/resources/images/${p.pMainImgPath}"
+							<img src="${path}/resources/images/${p.pMainImgPath}"
 								alt="${p.productName}">
 						</c:when>
 						<c:otherwise>
@@ -62,11 +63,8 @@
 						</c:forEach>
 						<span>(${p.reviewCount} 리뷰)</span>
 					</div>
-					<!-- 상세보기 버튼은 선택적으로 유지 -->
-					<a
-						href="${path}/userproductdetail.do?productIdx=${p.productIdx}"
-						class="btn-detail">상세보기</a>
 				</div>
+				
 			</div>
 		</c:forEach>
 	</div>

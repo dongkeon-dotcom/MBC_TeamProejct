@@ -70,15 +70,15 @@ public class ProductController {
 		return "redirect:/product/list.do";
 	}
 
-	// 상품 목록
+	
 	@GetMapping("/list.do")
 	public String list(ProductVO vo, Model model) {
 		List<ProductVO> productList = service.select(vo);
 		model.addAttribute("li", productList);
-		return "product/list"; // /WEB-INF/view/product/list.jsp
+		return "product/list";
 	}
 
-	// 상품 수정 폼
+	
 	@GetMapping("/edit.do")
 	public String edit(Model model, ProductVO vo) {
 		model.addAttribute("product", service.edit(vo));
