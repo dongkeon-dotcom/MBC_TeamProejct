@@ -10,24 +10,18 @@
 </head>
 <body>
 
-	<!-- 카테고리 필터 -->
-	<div class="category-filter">
-		<form action="${path}/userproductlist.do" method="get">
-			<select name="category" onchange="this.form.submit()">
-				<option value="">전체</option>
-				<option value="아우터"
-					<c:if test="${selectedCategory eq '아우터'}">selected</c:if>>아우터</option>
-				<option value="상의"
-					<c:if test="${selectedCategory eq '상의'}">selected</c:if>>상의</option>
-				<option value="바지"
-					<c:if test="${selectedCategory eq '바지'}">selected</c:if>>바지</option>
-				<option value="치마"
-					<c:if test="${selectedCategory eq '치마'}">selected</c:if>>치마</option>
-				<option value="원피스"
-					<c:if test="${selectedCategory eq '원피스'}">selected</c:if>>원피스</option>
-			</select>
-		</form>
-	</div>
+	
+	
+<br>
+<div class="category-filter" align="center">
+    <a href="${path}/userproductlist.do">전체</a> |
+    <a href="${path}/userproductlist.do?category=아우터">아우터</a> |
+    <a href="${path}/userproductlist.do?category=상의">상의</a> |
+    <a href="${path}/userproductlist.do?category=바지">바지</a> |
+    <a href="${path}/userproductlist.do?category=치마">치마</a> |
+    <a href="${path}/userproductlist.do?category=원피스">원피스</a>
+</div>
+<br>
 
 
 
@@ -35,7 +29,7 @@
 		<c:forEach var="p" items="${li}">
 			<div class="product-card">
 				<!-- 이미지 클릭 시 상세페이지 이동 -->
-				<a href="${path}/userproductdetail.do?productIdx=${p.productIdx}">
+				<a href="${path}/userproduct/userproductdetail.do?productIdx=${p.productIdx}">
 					<c:choose>
 						<c:when test="${not empty p.pMainImgPath}">
 							<img src="${path}/resources/images/${p.pMainImgPath}"

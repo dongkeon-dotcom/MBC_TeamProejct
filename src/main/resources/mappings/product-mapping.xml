@@ -156,19 +156,23 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         ORDER BY p.productRegDate DESC
     </select>
 
-    <!-- 리뷰 조회 -->
-    <select id="SELECT_PRODUCT_REVIEWS"
-        parameterType="int"
-        resultType="com.mbcTeam.user.ReviewVO">
-        SELECT r.reviewIdx,
-               r.productIdx,
-               r.userName,
-               r.content,
-               r.rating,
-               r.regDate
-        FROM Review r
-        WHERE r.productIdx = #{productIdx}
-        ORDER BY r.regDate DESC
-    </select>
+
+	<!-- 리뷰 조회 -->
+	<select id="SELECT_PRODUCT_REVIEWS" parameterType="int"
+		resultType="com.mbcTeam.user.ReviewVO">
+		SELECT r.reviewIdx,
+		r.productIdx,
+		r.userIdx,
+		r.userName,
+		r.reviewDesc,
+		r.reviewRating,
+		r.reviewHide,
+		r.reviewRegDate
+		FROM ProductReview r
+		WHERE r.productIdx = #{productIdx}
+		ORDER BY r.reviewRegDate DESC
+	</select>
+
+
 
 </mapper>
