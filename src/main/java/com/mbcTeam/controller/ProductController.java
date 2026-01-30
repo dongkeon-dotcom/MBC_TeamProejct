@@ -38,6 +38,13 @@ public class ProductController {
 	}
 	
 	// 상품 등록 폼 이동
+	@PostMapping("/productAddForm.do")
+	public String productAddFormOK() {
+		System.out.println("/productAddForm.DO");
+		return "product/productAddForm";
+	}
+	
+	// 상품 등록 폼 이동
 	@GetMapping("/form.do")
 	public String form() {
 		System.out.println("/FORM.DO");

@@ -2,6 +2,8 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <c:import url="/WEB-INF/view/include/top.jsp" />
+<link href="${path}/product/productAdd.css" rel="stylesheet">
+
 <section>
 
 <div class="container my-5" style="max-width: 800px;">
@@ -15,6 +17,7 @@
                     <div class="upload-box">
                         <span class="text-muted">📷</span>
                         <small class="text-primary mt-2">+ 이미지 추가</small>
+                        <input type="file" name="detailImage" class="d-none">
                     </div>
                 </div>
                 <div class="mb-4">
@@ -176,12 +179,6 @@ function addRow() {
 
 
 </script>
-
-
-
-
-
-
 
 
 
