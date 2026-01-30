@@ -12,7 +12,7 @@ public class MypageController {
 	@GetMapping("/mypage.do")
     public String mypage() {
     	//메인등에서 로그인하기 클릭시로그인페이지로이동하기위
-	
+		System.out.println("/MYPAGE.DO");
         return "customerPage/customerMyPage/mypage"; // views/member/login.jsp
     }
 	//마이페이지 -주문리스트 이동 

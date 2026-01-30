@@ -8,7 +8,10 @@
 =======
 <<<<<<< HEAD
 =======
-</style>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
 <header>
@@ -81,6 +84,7 @@ top.jsp에 들어가야할것들
                 
                 <li><a href="${path}/product/form.do">상품등록(관리자)</a></li>
                 <li><a href="${path}/product/list.do">상품목폭(관리자) </a></li>
+                <li><a href="${path}/product/productAddForm.do">상품등록등록(관리자) </a></li>
                 
                 <li class="has-submenu"><a href="#">아우터</a>
                     <ul class="submenu">

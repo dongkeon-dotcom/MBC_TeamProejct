@@ -24,6 +24,7 @@ public class UserProductController {
     // 유저 상품 리스트
     @GetMapping("/userproductlist.do")
     public String userProductList(ProductVO vo, Model model) {
+    	System.out.println("/userproductlist.DO");
         List<ProductVO> productList = service.select(vo);
         model.addAttribute("li", productList);
 
@@ -34,6 +35,7 @@ public class UserProductController {
     // 유저 상품 상세
     @GetMapping("/userproductdetail.do")
     public String userproductdetail(@RequestParam("productIdx") int productIdx, Model model) {
+    	System.out.println("/userproductdetail.DO");
         // 상품 정보 조회
         ProductVO product = service.detail(productIdx);
         model.addAttribute("product", product);

@@ -25,6 +25,7 @@ public class SecurityConfig {
             )
             .formLogin();
 
+        System.out.println("SecurityConfig 1");
         return http.build();
     }
     
@@ -34,12 +35,13 @@ public class SecurityConfig {
             .password(passwordEncoder().encode("1234"))
             .roles("USER")
             .build();
-
+        System.out.println("SecurityConfig 2");
         return new InMemoryUserDetailsManager(user);
     }
 
     @Bean
     public PasswordEncoder passwordEncoder() {
+    	System.out.println("SecurityConfig 3");
         return new BCryptPasswordEncoder();
     }
     

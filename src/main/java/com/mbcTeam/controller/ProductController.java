@@ -31,14 +31,22 @@ public class ProductController {
 	private ServletContext servletContext; // 프로젝트 내부 경로 접근용
 
 	// 상품 등록 폼 이동
+	@GetMapping("/productAddForm.do")
+	public String productAddForm() {
+		System.out.println("/productAddForm.DO");
+		return "product/productAddForm";
+	}
+	
+	// 상품 등록 폼 이동
 	@GetMapping("/form.do")
 	public String form() {
+		System.out.println("/FORM.DO");
 		return "product/form"; // /WEB-INF/view/product/form.jsp
 	}
 
 	@PostMapping("/formOK.do")
 	public String formOK(ProductVO vo, @RequestParam("files") List<MultipartFile> files) throws Exception {
-
+		System.out.println("/FORMOK.DO");
 		// 1. 등록일 세팅 (insert 전에!)
 		vo.setProductRegDate(LocalDate.now().toString());
 
@@ -53,7 +61,7 @@ public class ProductController {
 				String uploadPath = uploadDir + File.separator + fileName;
 
 				file.transferTo(new File(uploadPath));
-
+				
 				String dbPath = "/resources/images/" + fileName;
 
 				ProductImgVO imgVO = new ProductImgVO();
@@ -73,6 +81,7 @@ public class ProductController {
 	// 상품 목록
 	@GetMapping("/list.do")
 	public String list(ProductVO vo, Model model) {
+		System.out.println("/LIST.DO");
 		List<ProductVO> productList = service.select(vo);
 		model.addAttribute("li", productList);
 		return "product/list"; // /WEB-INF/view/product/list.jsp
@@ -81,6 +90,7 @@ public class ProductController {
 	// 상품 수정 폼
 	@GetMapping("/edit.do")
 	public String edit(Model model, ProductVO vo) {
+		System.out.println("/EDIT.DO");
 		model.addAttribute("product", service.edit(vo));
 		return "product/edit";
 	}

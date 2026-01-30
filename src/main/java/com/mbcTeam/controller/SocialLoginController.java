@@ -9,11 +9,13 @@ public class SocialLoginController {
 
     @GetMapping("/")
     public String home() {
+    	System.out.println("/.DO");
         return "home";
     }
 
     @GetMapping("/login")
     public String login() {
+    	System.out.println("/LOGIN.DO");
         return "login";
     }
     
@@ -25,7 +27,7 @@ public class SocialLoginController {
         
        // model.addAttribute("name", name);
        // model.addAttribute("email", email);
-        
+    	System.out.println("/MYPAGE.DO");
 
         return "home";
     }

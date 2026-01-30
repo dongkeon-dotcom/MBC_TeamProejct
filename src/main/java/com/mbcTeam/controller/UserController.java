@@ -22,48 +22,42 @@ public class UserController {
 
 	@GetMapping(value = "/list.do")
 	public String list(UserVO vo, Model model) {
+		System.out.println("/LIST.DO");
 
 		return "user/list";
 	}
 
 	@GetMapping("edit.do")
 	String edit(Model model, UserVO vo) {
-
+		System.out.println("/EDIT.DO");
 		return "user/edit";
 
 	}
 
 	@GetMapping(value = "/form.do")
 	public String form(UserVO vo, Model model) {
-
+		System.out.println("/FORM.DO");
 		return "user/form";
 	}
 
 	@GetMapping(value = "/formOK.do")
 	public String formOK(UserVO vo, Model model) {
-
+		System.out.println("/FORMOK.DO");
 		service.insert(vo);
 		return "user/list";
 
 	}
 
-	@GetMapping(value = "/login.do")
-	public String login(UserVO vo, Model model) {
-
-		return "user/login";
-
-	}
-
 	@GetMapping(value = "/mypage.do")
 	public String mypage(UserVO vo, Model model) {
-
+		System.out.println("/MYPAGE.DO");
 		return "user/mypage";
 
 	}
 
 	@GetMapping(value = "/addresses.do")
 	public String addresses(UserVO vo) {
-
+		System.out.println("/ADDRESS.DO");
 		return "user/addresses";
 
 	}
@@ -72,6 +66,7 @@ public class UserController {
     @GetMapping("/login.do")
     public String login() {
     	//메인등에서 로그인하기 클릭시로그인페이지로이동하기위한루트 
+    	System.out.println("/LOGINLOGIN.DO");
         return "customerPage/memberLogin/login"; // views/member/login.jsp
     }
 
@@ -86,7 +81,7 @@ public class UserController {
     
     @PostMapping("/memberOK.do") 
     public String memberOK(UserVO vo) {
-
+    	System.out.println("/MEMBEROK.DO");
     	service.insert(vo); // DB 저장
 
         // 가입 성공 → 홈페이지 이동
@@ -97,7 +92,7 @@ public class UserController {
     
     @PostMapping("/loginOK.do")
     public String loginOK(UserVO vo, HttpServletRequest request, HttpSession session) {
-
+    	System.out.println("/LOGINOK.DO");
         // 1. 이메일 존재 여부 확인
         boolean emailExists = service.existsByEmail(vo.getUserID());
 
