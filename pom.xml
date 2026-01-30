@@ -21,10 +21,6 @@
 	</properties>
 	
 	
-	
-	
-	
-	
 	<dependencies>
 
 	<!-- mysql JDBC 드라이버 설정[1] --> <!-- DB사용 -->

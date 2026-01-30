@@ -1,6 +1,8 @@
 package com.mbcTeam.user;
 
-import java.util.List; 
+import java.util.List;
+
+import com.mbcTeam.product.*; 
 
 
 public interface UserService {
@@ -18,4 +20,6 @@ public interface UserService {
   
   UserVO getByEmail(String userID);
 
+  List<ProductVO> selectOrderList(ProductVO vo); 
+  
 }

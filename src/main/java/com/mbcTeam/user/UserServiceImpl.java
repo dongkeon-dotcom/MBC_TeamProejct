@@ -5,6 +5,8 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.mbcTeam.product.ProductVO;
+
 @Service
 public class UserServiceImpl implements UserService  {
 
@@ -44,6 +46,12 @@ public class UserServiceImpl implements UserService  {
 	public UserVO getByEmail(String userID) {
 		// TODO Auto-generated method stub
 		return dao.getByEmail(userID);
+	}
+
+	@Override
+	public List<ProductVO> selectOrderList(ProductVO vo) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

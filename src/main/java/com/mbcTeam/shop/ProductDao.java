@@ -1,4 +1,4 @@
-package com.mbcTeam.shop;
+/**package com.mbcTeam.shop;
 
 import java.util.List;
 
@@ -14,4 +14,4 @@ public interface ProductDao {
     
     
     
-}
+}**/

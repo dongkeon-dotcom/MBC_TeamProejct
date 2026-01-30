@@ -3,29 +3,79 @@
 PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
+
+
+	
 <mapper namespace="USER">
- 
-<insert id="INSERT" parameterType="UserVO">
 
- insert into user (user_id,userPW,userName,userPhone,userRegDate,userRole,userEasyLogin,userIsDeleted) 
- 
- values ( #{user_id},#{userPW},#{userName},#{userPhone},#{userRegDate},
- 		  #{userRole},#{userEasyLogin},#{userIsDeleted} )
- 		  
-</insert>
+    <!-- 회원가입  마지막의 now()는 -->
+    <insert id="insert" parameterType="UserVO">
+        INSERT INTO user (
+            user_email,user_pw,user_name,user_phone, user_role,easy_login,deleted,user_reg_date)
+            VALUES (#{userEmail}, #{userPW},#{userName},  #{userPhone}, #{userRole},#{easyLogin},#{deleted},NOW())
+    </insert>
 
-<select id="SELECT"  resultType ="UserVO" >
-  select  *  from  	user             
-</select>	
+    <!-- 로그인 -->
+    <select id="login" parameterType="UserVO" resultType="UserVO">
+        SELECT  uidx,user_email AS userEmail, user_pw AS userPW, user_name AS userName,
+         user_phone AS userPhone,user_role  AS userRole, easy_login  AS easyLogin,deleted, user_reg_date  AS userRegDate
+        FROM user WHERE user_email = #{userEmail} AND user_pw = #{userPW} AND deleted = false
+    </select>
 
-<select id="LOGIN" parameterType="UserVO" resultType ="UserVO" >
-  select  *  from  	user  where  user_id =#{user_id} and  userPW =#{userPW}                  
+    <!-- 회원 단건 조회 -->
+    <select id="getById" parameterType="int" resultType="UserVO">
+        SELECT
+            uidx,
+            user_email     AS userEmail,
+            user_pw        AS userPW,
+            user_name      AS userName,
+            user_phone     AS userPhone,
+            user_role      AS userRole,
+            easy_login     AS easyLogin,
+            deleted,
+            user_reg_date  AS userRegDate
+        FROM user
+        WHERE uidx = #{uidx}
+    </select>
+
+    <!-- 회원 정보 수정 -->
+    <update id="update" parameterType="UserVO">
+        UPDATE user
+        SET
+            user_name  = #{userName},
+            user_phone = #{userPhone}
+        WHERE uidx = #{uidx}
+    </update>
+
+    <!-- 회원 탈퇴 (논리 삭제) -->
+    <update id="delete" parameterType="int">
+        UPDATE user
+        SET deleted = true
+        WHERE uidx = #{uidx}
+    </update>
+
+    <!-- 이메일 중복 체크 -->
+    <select id="countByEmail" parameterType="string" resultType="int">
+        SELECT COUNT(*)
+        FROM user
+        WHERE user_email = #{userEmail}
+    </select>
+<!-- 구글 로그인  -->
+<select id="getByEmail" parameterType="string" resultType="UserVO">
+    SELECT
+        user_idx        AS userIdx,
+        user_email      AS user_email,
+        user_pw         AS userPW,
+        user_name       AS userName,
+        user_phone      AS userPhone,
+        user_role       AS userRole,
+        easy_login      AS userEasyLogin,
+        deleted         AS userIsDeleted,
+        user_reg_date   AS userRegDate
+    FROM user
+    WHERE user_email = #{user_email}
 </select>
 
-<select id="EDIT" parameterType="UserVO" resultType ="UserVO" >
-  select  *  from  	user 
-  where  user_id =#{user_id}                  
-</select>
 
 	
 	

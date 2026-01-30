@@ -6,6 +6,8 @@ import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import com.mbcTeam.product.ProductVO;
+
 @Repository
 public class UserDaoImpl implements UserDao {
 	
@@ -50,6 +52,12 @@ public class UserDaoImpl implements UserDao {
 		// TODO Auto-generated method stub
 
 		 return mybatis.selectOne("MEMBER.getByEmail", userID);
+	}
+
+	@Override
+	public List<ProductVO> selectOrderList(ProductVO vo ) {
+		// TODO Auto-generated method stub
+		return mybatis.selectOne("MEMBER.selectOrder" );
 	}
 
 }

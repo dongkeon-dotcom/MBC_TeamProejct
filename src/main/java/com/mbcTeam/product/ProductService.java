@@ -8,7 +8,8 @@ public interface ProductService {
     void insertOption(ProductOptionVO option);
     void update(ProductVO vo);                             // 상품 수정
     void delete(ProductVO vo);                             // 상품 삭제
-    List<ProductVO> select(ProductVO vo);                  // 상품 목록 조회
+    List<ProductVO> select(ProductVO vo);  
+    
     ProductVO edit(ProductVO vo);                          // 상품 상세 조회
     
 }
