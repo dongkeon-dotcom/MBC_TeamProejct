@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import com.mbcTeam.product.ProductOptionVO;
 import com.mbcTeam.product.ProductService;
 import com.mbcTeam.product.ProductVO;
+import com.mbcTeam.user.ReviewVO;
 
 @RequestMapping("/userproduct")
 @Controller
@@ -20,19 +21,22 @@ public class UserProductController {
     @Autowired
     private ProductService service;
     
-
     // 유저 상품 리스트
     @GetMapping("/userproductlist.do")
-    public String userProductList(ProductVO vo, Model model) {
-    	System.out.println("/userproductlist.DO");
-        List<ProductVO> productList = service.select(vo);
+    public String userProductList(@RequestParam(value="category", required=false) String category, Model model) {
+        List<ProductVO> productList;
+        if (category != null && !category.isEmpty()) {
+            productList = service.selectByCategory(category);
+        } else {
+            productList = service.selectAll();
+        }
         model.addAttribute("li", productList);
-
-        return "userproduct/userproductlist"; 
-        // 실제 위치: /WEB-INF/view/userproduct/userproductlist.jsp
+        model.addAttribute("selectedCategory", category);
+        return "userproduct/userproductlist";
     }
+
     
-    // 유저 상품 상세
+    
     @GetMapping("/userproductdetail.do")
     public String userproductdetail(@RequestParam("productIdx") int productIdx, Model model) {
     	System.out.println("/userproductdetail.DO");
@@ -44,7 +48,13 @@ public class UserProductController {
         List<ProductOptionVO> optionList = service.selectOptions(productIdx);
         model.addAttribute("optionList", optionList);
 
+        // 리뷰 조회
+        List<ReviewVO> reviewList = service.selectReviews(productIdx);
+        model.addAttribute("reviewList", reviewList);
+
         return "userproduct/userproductdetail"; 
-        // 실제 위치: /WEB-INF/view/userproduct/userproductdetail.jsp
     }
+
+    
 }
+

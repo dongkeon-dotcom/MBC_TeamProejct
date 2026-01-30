@@ -4,19 +4,16 @@
     
 <c:set var="path" scope="request" value="${pageContext.request.contextPath }"/>    
 
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
-=======
-<head>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</style>
 </head>
 <body>
+
+
 <header>
 <h1> 마주스토리 쇼핑몰관리 관리자 ver 1.0 </h1>
 </header>
+
 
 <!-- 
 top.jsp에 들어가야할것들
@@ -31,7 +28,10 @@ top.jsp에 들어가야할것들
 관리자: 상품등록, 관리자 상품리스트 관리, 매출통계
  -->
 
+
+<br>
 <nav>
+
 &emsp;&emsp;&emsp;<a href=${path}/index.do>홈으로 </a>
 &emsp;<a href=${path}/board/list.do>목록보기</a>
 &emsp;<a href=${path}/map.do>카카오지도</a>
@@ -60,9 +60,9 @@ top.jsp에 들어가야할것들
 
 
 </nav>
-=======
->>>>>>> 1a229ecbc0482a73e203950239b320e66b37877a
->>>>>>> 5d163e62497f8b095fa357a87cf0043faae199ed
+<br>
+
+
 <title>의류 쇼핑몰</title>
 <link href="${path}/resources/css/top.css" rel="stylesheet">
 </head>
@@ -78,13 +78,12 @@ top.jsp에 들어가야할것들
         <!-- 중앙 메뉴 -->
         <nav class="main-nav">
             <ul class="menu">
-                <li><a href="${path}/userproduct/userproductlist.do">상품상세보기(고객용)</a></li>
-                <li><a href="${path}/userproduct/userproductdetail.do">상품리스트(고객용)</a></li>
+                <li><a href="${path}/userproduct/userproductlist.do"> 리스트</a></li>
+                
            
                 
                 <li><a href="${path}/product/form.do">상품등록(관리자)</a></li>
                 <li><a href="${path}/product/list.do">상품목폭(관리자) </a></li>
-                <li><a href="${path}/product/productAddForm.do">상품등록등록(관리자) </a></li>
                 
                 <li class="has-submenu"><a href="#">아우터</a>
                     <ul class="submenu">

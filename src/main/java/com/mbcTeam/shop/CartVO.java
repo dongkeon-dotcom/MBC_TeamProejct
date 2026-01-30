@@ -1,3 +1,4 @@
+/*
 package com.mbcTeam.shop;
 
 import lombok.Data;
@@ -11,5 +12,5 @@ public class CartVO {
     private int cartQuantity;    // 장바구니 수량
 }
 
-
+*/
 

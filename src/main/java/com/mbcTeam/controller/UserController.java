@@ -1,3 +1,4 @@
+
 package com.mbcTeam.controller;
 
 import javax.servlet.http.HttpServletRequest;
@@ -61,7 +62,7 @@ public class UserController {
 		return "user/addresses";
 
 	}
-	
+
 	// 로그인 페이지 이동
     @GetMapping("/login.do")
     public String login() {
@@ -84,13 +85,14 @@ public class UserController {
     	System.out.println("/MEMBEROK.DO");
     	service.insert(vo); // DB 저장
 
-        // 가입 성공 → 홈페이지 이동
-        return "redirect:/main.do";
-       
-    } 
-    
-    
-    @PostMapping("/loginOK.do")
+		service.insert(vo); // DB 저장
+
+		// 가입 성공 → 홈페이지 이동
+		return "redirect:/main.do";
+
+	}
+
+	@PostMapping("/loginOK.do")
     public String loginOK(UserVO vo, HttpServletRequest request, HttpSession session) {
     	System.out.println("/LOGINOK.DO");
         // 1. 이메일 존재 여부 확인
@@ -120,5 +122,4 @@ public class UserController {
         
     }
 
-    
 }
