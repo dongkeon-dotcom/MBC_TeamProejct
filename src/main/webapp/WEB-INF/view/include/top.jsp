@@ -3,18 +3,10 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
     
 <c:set var="path" scope="request" value="${pageContext.request.contextPath }"/>    
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-
-</style>
-</head>
-<body>
-
-
-<header>
-<h1> 마주스토리 쇼핑몰관리 관리자 ver 1.0 </h1>
-</header>
-
-
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 <!-- 
 top.jsp에 들어가야할것들
 로고(메인페이지로 이동), 세일, 추천, 아우터, 상의, 바지, 치마, 원피스, 검색, 마이페이지, 장바구니 / 관리자
@@ -27,40 +19,6 @@ top.jsp에 들어가야할것들
 
 관리자: 상품등록, 관리자 상품리스트 관리, 매출통계
  -->
-
-
-<br>
-<nav>
-
-&emsp;&emsp;&emsp;<a href=${path}/index.do>홈으로 </a>
-&emsp;<a href=${path}/board/list.do>목록보기</a>
-&emsp;<a href=${path}/map.do>카카오지도</a>
-
-&emsp;<a href=${path}/json/json.do>Restful(JSON)</a>
-&emsp;<a href=${path}/xml/xml.do>Restful(XML)</a>
-
-&emsp;<a href=${path}/shop/shop.do>쇼핑몰</a>
-
-&emsp;<a href=${path}/test/board.do>테스트 등록하기</a>
-&emsp;<a href=${path}/test/list.do>테스트 목록보기</a>
-<!-- 우선영 매뉴 관리테스트중!!!  -->
-<a href="${path}/customerMyPage/mypage.do"> 마이페이</a>
-	<a href="${path}/memberLogin/login.do"> 로그인</a>
-<!-- /우선영 매뉴 관리테스트중!!!  -->
-&emsp;&emsp;&emsp;
-
-<!-- null 과 공배 모두 체크 -->
-<c:if test="${empty id}">
-	<a href="${path}/memberLogin/login.do"> 로그인</a>
-</c:if>
-<c:if test="${not empty id}">
-	<a href="${path}/member/logout.do"> ${id}로그아웃</a>
-</c:if>
-
-
-
-</nav>
-<br>
 
 
 <title>의류 쇼핑몰</title>
@@ -84,6 +42,7 @@ top.jsp에 들어가야할것들
                 
                 <li><a href="${path}/product/form.do">상품등록(관리자)</a></li>
                 <li><a href="${path}/product/list.do">상품목폭(관리자) </a></li>
+                <li><a href="${path}/product/productAddForm.do">상품등록등록(박동건) </a></li>                
                 
                 <li class="has-submenu"><a href="#">아우터</a>
                     <ul class="submenu">

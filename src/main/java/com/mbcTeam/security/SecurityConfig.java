@@ -22,12 +22,10 @@ public class SecurityConfig {
 	    http
 	        .authorizeHttpRequests(auth -> auth.anyRequest().authenticated())
 	        .formLogin();
+	    System.out.println("SecurityConfig 1");
 	    return http.build();
 	}
 
-        System.out.println("SecurityConfig 1");
-        return http.build();
-    }
     
     @Bean
     public UserDetailsService userDetailsService() {

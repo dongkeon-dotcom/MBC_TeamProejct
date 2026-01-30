@@ -14,8 +14,8 @@ public class ProductVO {
 	private int productPrice; // 가격
 	private String productRegDate; // 제품등록일
 	private String productDesc; // 제품설명
-	private String mainImgPath; // 제품대표이미지
-	private String sizeImgPath; // 제품사이즈이미지
+	private String pMainImgPath; // 제품대표이미지
+	private String pSizeImgPath; // 제품사이즈이미지
 	private String productDiscountPer; // 제품할인률
 	private String productRecomm; // 제품추천
 

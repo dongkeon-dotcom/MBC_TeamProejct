@@ -72,8 +72,8 @@ public class ProductController {
 				String dbPath = "/resources/images/" + fileName;
 
 				ProductImgVO imgVO = new ProductImgVO();
-				imgVO.setPImgPath(dbPath);
-				imgVO.setPImgOrder(String.valueOf(order++));
+				imgVO.setpImgPath(dbPath);
+				imgVO.setpImgOrder(String.valueOf(order++));
 				imgList.add(imgVO);
 
 			}
