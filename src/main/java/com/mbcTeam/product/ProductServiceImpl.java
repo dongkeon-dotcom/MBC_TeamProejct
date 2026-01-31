@@ -20,7 +20,7 @@ public class ProductServiceImpl implements ProductService {
         // 이미지 등록
         if (imgList != null) {
             for (ProductImgVO img : imgList) {
-                img.setProductIdx(vo.getProductIdx());
+                //img.setProductIdx(vo.getProductIdx());
                 dao.insertImg(img);
             }
         }
@@ -28,7 +28,7 @@ public class ProductServiceImpl implements ProductService {
         // 옵션 등록
         if (options != null) {
             for (ProductOptionVO option : options) {
-                option.setProductIdx(vo.getProductIdx());
+                //option.setProductIdx(vo.getProductIdx());
                 dao.insertOption(option);
             }
         }

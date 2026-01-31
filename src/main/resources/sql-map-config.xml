@@ -4,16 +4,19 @@
   "http://mybatis.org/dtd/mybatis-3-config.dtd">
 
 <configuration>
-  <typeAliases>  
-    
+  <settings>
+    <setting name="mapUnderscoreToCamelCase" value="true"/>
+  </settings>
+  
+  <typeAliases>      
     <typeAlias alias="UserVO"  type="com.mbcTeam.user.UserVO" />  
     <typeAlias alias="ProductVO"  type="com.mbcTeam.product.ProductVO" />
   </typeAliases>
   
-  <mappers>  
-    
+  <mappers>    
     <mapper resource="mappings/user-mapping.xml"  />
     <mapper resource="mappings/product-mapping.xml"  />
+    <mapper resource="mappings/member-mapping.xml"  />
   </mappers>
   
 </configuration>

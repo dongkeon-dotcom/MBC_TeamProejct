@@ -96,12 +96,12 @@ public class UserController {
     public String loginOK(UserVO vo, HttpServletRequest request, HttpSession session) {
     	System.out.println("/LOGINOK.DO");
         // 1. 이메일 존재 여부 확인
-        boolean emailExists = service.existsByEmail(vo.getUserID());
+        boolean emailExists = service.existsByEmail(vo.getId());
 
         if (!emailExists) {
             request.setAttribute("emailError", "가입되지 않은 이메일입니다.");
            
-            request.setAttribute("prevEmail", vo.getUserID());  // 입력했던 이메일을 다시 보내줌 (사용자 편의)
+            request.setAttribute("prevEmail", vo.getId());  // 입력했던 이메일을 다시 보내줌 (사용자 편의)
          
             return "member/login"; 
         }
@@ -111,7 +111,7 @@ public class UserController {
 
         if (loginMember == null) {
             request.setAttribute("pwError", "틀린 비밀번호입니다.");
-            request.setAttribute("prevEmail", vo.getUserID());
+            request.setAttribute("prevEmail", vo.getId());
             return "member/login";
             
         }
