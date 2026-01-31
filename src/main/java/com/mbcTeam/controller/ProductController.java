@@ -55,7 +55,7 @@ public class ProductController {
 	public String formOK(ProductVO vo, @RequestParam("files") List<MultipartFile> files) throws Exception {
 		System.out.println("/FORMOK.DO");
 		// 1. 등록일 세팅 (insert 전에!)
-		vo.setProductRegDate(LocalDate.now().toString());
+		vo.setRegDate(LocalDate.now().toString());
 
 		// 2. 이미지 처리
 		List<ProductImgVO> imgList = new ArrayList<ProductImgVO>();
@@ -72,15 +72,15 @@ public class ProductController {
 				String dbPath = "/resources/images/" + fileName;
 
 				ProductImgVO imgVO = new ProductImgVO();
-				imgVO.setpImgPath(dbPath);
-				imgVO.setpImgOrder(String.valueOf(order++));
+				imgVO.setProductImg(dbPath);
+				imgVO.setProductImgOrder(String.valueOf(order++));
 				imgList.add(imgVO);
 
 			}
 		}
 
 		// 3. 서비스 호출 (상품 + 이미지 + 옵션 등록)
-		service.insert(vo, imgList, vo.getOptions());
+		//service.insert(vo, imgList, vo.getOptions());
 
 		return "redirect:/product/list.do";
 	}
