@@ -7,22 +7,13 @@
 
    
 <br>
+<div align="center">
 <section class="mypage-section">
-    <h1>마이페이지</h1>
-    <ul class="mypage-menu">
-        <li><a href="${path}/member/edit.do">회원정보 수정</a></li>
-        <li><a href="${path}/member/addresses.do">배송지 관리</a></li>
-        <li><a href="${path}/order/list.do">주문 내역 조회</a></li>
-        <li><a href="${path}/cart/list.do">장바구니 바로가기</a></li>
-        <li><a href="${path}/review/myReview.do">내 리뷰 관리</a></li>
-    </ul>
-
-
-
-  <table>
-      
+    <h1>마이페이지1</h1>
+   
+  <table>   
     <tr> <td> <strong>${sessionScope.loginMember.userName}</strong>님 환영합니다!</td></tr>
-      <tr> <td>  <a href="${path}/member/edit.do">회원정보 수정 </a></td></tr>
+      <tr> <td>  <a href="${path}/user/memberEdit.do">회원정보 수정 </a></td></tr>
        <tr> <td>  <a href="${path}/user/orderList.do">주문내역</a></td></tr>
         <tr> <td><a href="${path}/user/addressList.do">주소지관리</a></td></tr>
         <tr> <td><a href="${path}/cart/list.do">장바구니관</a></td></tr>
@@ -31,7 +22,7 @@
 
 
 
-
+</div>
 <br>
 <script >
 

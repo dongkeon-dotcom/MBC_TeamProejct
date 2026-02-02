@@ -18,6 +18,15 @@
     <br>
     <div align="center">
        <h3>고객 주문내 리스트  </h3>
+      <form method="get" action="${path}/user/orderList.do">
+    시작일:
+    <input type="date" name="startDate" value="${startDate}" />
+
+    종료일:
+    <input type="date" name="endDate" value="${endDate}" />
+
+    <button type="submit">조회</button>
+</form>
       
    <form method= "post" action="${path}/user/cart.do">
         <table> 
@@ -42,7 +51,53 @@
 </section>
 
 
-<!-- 페이징 처리 최소 10 -->
+<!-- 페이징 처리 최소 5 -->
+
+
+
+<!-- 페이징 영역 -->
+<div style="margin-top:15px; text-align:center;">
+
+  <c:if test="${totalPage > 0}">
+
+    <!-- 이전 블록 -->
+    <c:choose>
+      <c:when test="${startPage <= 1}">
+        <span style="color:gray;">[이전]</span>
+      </c:when>
+      <c:otherwise>
+        <a href="${path}/user/orderList.do?page=${startPage - 1}">[이전]</a>
+      </c:otherwise>
+    </c:choose>
+
+    <!-- 페이지 번호 (최대 10개) -->
+    <c:forEach var="p" begin="${startPage}" end="${endPage}">
+      <c:choose>
+        <c:when test="${p == page}">
+          <strong>[${p}]</strong>
+        </c:when>
+        <c:otherwise>
+          <a href="${path}/user/orderList.do?page=${p}">[${p}]</a>
+        </c:otherwise>
+      </c:choose>
+    </c:forEach>
+
+    <!-- 다음 블록 -->
+    <c:choose>
+      <c:when test="${endPage >= totalPage}">
+        <span style="color:gray;">[다음]</span>
+      </c:when>
+      <c:otherwise>
+        <a href="${path}/user/orderList.do?page=${endPage + 1}">[다음]</a>
+      </c:otherwise>
+    </c:choose>
+
+  </c:if>
+
+</div>
+
+
+
 </body>
 </html>
 

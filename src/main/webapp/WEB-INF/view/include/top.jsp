@@ -100,8 +100,8 @@ top.jsp에 들어가야할것들
         
         
         <!-- 우선영 매뉴 관리테스트중!!!  -->
-<a href="${path}/customerMyPage/mypage.do"> 마이페이</a>
-	<a href="${path}/memberLogin/login.do"> 로그인</a>
+<a href="${path}/user/mypage.do"> ww마이페이</a>&emsp;&emsp;&emsp;
+	<a href="${path}/user/login.do"> ww로그인</a>
 <!-- /우선영 매뉴 관리테스트중!!!  -->
 &emsp;&emsp;&emsp;
 

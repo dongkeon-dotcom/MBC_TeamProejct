@@ -26,8 +26,8 @@
         
         <c:forEach var="m" items="${orderli}">
           <tr> <td>${orderli.} </td> <!-- 링크 달아서 상세 주문리스트로 이동해야함  -->
-          <td>${orderli.} </td>
-          <td>${orderli.} </td></tr>
+          <td>${orderli.} </td> <!-- 총금액 리스트 아이템 수량 * 금액 = totalp로 받아 -->
+          <td>${orderli.} </td></tr> <!--  주문한 날자 / 결제된 날짜에 따라 받아아오기  -->
         </c:forEach>
         
         </table>

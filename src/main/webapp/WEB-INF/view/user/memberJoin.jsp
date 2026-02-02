@@ -5,7 +5,7 @@
     <c:import url="/WEB-INF/view/include/top.jsp" />
 <!DOCTYPE html>
 <html>
-<head> <!-- 회원가입페이 -->
+<head> <!-- 회원가입페이지 입니다  -->
 <meta charset="UTF-8">
 <title>Insert title here</title>
 </head>
@@ -16,36 +16,50 @@
 <section>
     <br>
     <div align="center">
-        <h1>회원 가입 </h1>
+        <h1>회원 가입2 </h1>
+<form name="joinForm" method="post"
+      action="${path}/member/memberOK.do">
 
-        <form name="loginForm" method="post"
-              action="${pageContext.request.contextPath}/member/memberOK.do">
-            <table >
-         <c:if test="${!isSocial}">
-    <tr><td>회원아이디</td><td><button type="button" onclick="checkEmail()">아이디 중복체크</button></td></tr>
-    <tr><td colspan="2"><input type="text" name="userEmail" id="userEmail" size="25" placeholder="이메일을입력하세요 " />
-        <span id="emailMsg"></span></td></tr>
-		</c:if>
+  <c:if test="${!isSocial}">
+    <tr>
+      <td>회원아이디</td>
+      <td><button type="button" onclick="checkEmail()">아이디 중복체크</button></td>
+    </tr>
+    <tr>
+      <td colspan="2">
+        <input type="text" name="userID" id="userID" size="25" placeholder="이메일을 입력하세요" />
+        <span id="emailMsg"></span>
+      </td>
+    </tr>
+  </c:if>
 
-          <c:if test="${!isSocial}">
+  <c:if test="${!isSocial}">
     <tr><td colspan="2">암호</td></tr>
-    <tr><td colspan="2"> <input type="password" name="password" size="25" placeholder="비밀번호 입력 (최소8자이상 )  "/>
-    </td></tr> <tr><td colspan="2"><input type="password" name="passwordck" size="25"placeholder="비밀번호 재입력 " /> </td></tr>
-		</c:if>
+    <tr>
+      <td colspan="2">
+        <input type="password" name="userPW" size="25" placeholder="비밀번호 입력 (최소8자이상)" />
+      </td>
+    </tr>
+    <tr>
+      <td colspan="2">
+        <input type="password" name="userPWck" size="25" placeholder="비밀번호 재입력" />
+      </td>
+    </tr>
+  </c:if>
 
- 				<tr><td colspan=2>이름 </td>     </tr>
-                 <tr><td colspan=2> <input type="text" name="userName" size="25" /></td></tr>
-                  <tr><td colspan=2>전화번호 </td>     </tr>
-                 <tr><td colspan=2> <input type="text" name="userPhone" size="25" placeholder="	ex) 010-3608-9336" /></td></tr>
-                <tr>
-                    <td colspan="2" align="center">
-                       <input type="button" value="회원가입" onclick="joinCheck()" />
+  <tr><td colspan="2">이름</td></tr>
+  <tr><td colspan="2"><input type="text" name="userName" size="25" /></td></tr>
 
-                    </td>
-                </tr>
-            </table>
-        </form>
-        
+  <tr><td colspan="2">전화번호</td></tr>
+  <tr><td colspan="2"><input type="text" name="userPhone" size="25" placeholder="ex) 010-3608-9336" /></td></tr>
+
+  <tr>
+    <td colspan="2" align="center">
+      <input type="button" value="회원가입" onclick="joinCheck()" />
+    </td>
+  </tr>
+</form>
+
      
     </div>
     <br>
@@ -55,79 +69,80 @@ let emailChecked = false;
 const isSocial = ${isSocial == true ? 'true' : 'false'};
 
 function joinCheck() {
-    const form = document.loginForm;
+  const form = document.joinForm;
 
-    if (!isSocial) {
-        if (form.userEmail.value.trim() === "") {
-            alert("아이디를 입력하세요");
-            form.userEmail.focus();
-            return;
-        }
-
-        if (!emailChecked) {
-            alert("아이디 중복체크를 해주세요");
-            return;
-        }
-
-        if (form.password.value === "") {
-            alert("비밀번호를 입력하세요");
-            form.password.focus();
-            return;
-        }
-
-        if (form.password.value !== form.passwordck.value) {
-            alert("비밀번호가 일치하지 않습니다");
-            form.passwordck.focus();
-            return;
-        }
+  if (!isSocial) {
+    if (form.userID.value.trim() === "") {
+      alert("아이디를 입력하세요");
+      form.userID.focus();
+      return;
     }
 
-    if (form.userName.value.trim() === "") {
-        alert("이름을 입력하세요");
-        form.userName.focus();
-        return;
+    if (!emailChecked) {
+      alert("아이디 중복체크를 해주세요");
+      return;
     }
 
-    if (form.userPhone.value.trim() === "") {
-        alert("전화번호를 입력하세요");
-        form.userPhone.focus();
-        return;
+    if (form.userPW.value === "") {
+      alert("비밀번호를 입력하세요");
+      form.userPW.focus();
+      return;
     }
 
-    form.submit();
+    if (form.userPW.value !== form.userPWck.value) {
+      alert("비밀번호가 일치하지 않습니다");
+      form.userPWck.focus();
+      return;
+    }
+  }
+
+  if (form.userName.value.trim() === "") {
+    alert("이름을 입력하세요");
+    form.userName.focus();
+    return;
+  }
+
+  if (form.userPhone.value.trim() === "") {
+    alert("전화번호를 입력하세요");
+    form.userPhone.focus();
+    return;
+  }
+
+  form.submit();
 }
 
 function checkEmail() {
-    const email = document.getElementById("userEmail").value.trim();
-    const msg = document.getElementById("emailMsg");
+  const email = document.getElementById("userID").value.trim();
+  const msg = document.getElementById("emailMsg");
 
-    if (email === "") {
-        msg.innerHTML = "이메일을 입력하세요";
+  if (email === "") {
+    msg.innerHTML = "이메일을 입력하세요";
+    msg.style.color = "red";
+    emailChecked = false;
+    return;
+  }
+
+  fetch("${path}/user/checkEmail.do?userID=" + encodeURIComponent(email))
+    .then(res => res.json())
+    .then(data => {
+      if (data.exists) {
+        msg.innerHTML = "이미 사용 중인 이메일입니다 ❌";
         msg.style.color = "red";
         emailChecked = false;
-        return;
-    }
-
-    fetch("${pageContext.request.contextPath}/member/checkEmail.do?userEmail=" + encodeURIComponent(email))
-        .then(res => res.json())
-        .then(data => {
-            if (data.exists) {
-                msg.innerHTML = "이미 사용 중인 이메일입니다 ❌";
-                msg.style.color = "red";
-                emailChecked = false;
-            } else {
-                msg.innerHTML = "사용 가능한 이메일입니다 ✅";
-                msg.style.color = "green";
-                emailChecked = true;
-            }
-        })
-        .catch(() => {
-            msg.innerHTML = "서버 오류";
-            msg.style.color = "red";
-            emailChecked = false;
-        });
+      } else {
+        msg.innerHTML = "사용 가능한 이메일입니다 ✅";
+        msg.style.color = "green";
+        emailChecked = true;
+      }
+    })
+    .catch(() => {
+      msg.innerHTML = "서버 오류";
+      msg.style.color = "red";
+      emailChecked = false;
+    });
 }
 </script>
+
 
 </body>
 </html>

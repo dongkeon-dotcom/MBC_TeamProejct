@@ -9,21 +9,13 @@
    
 <br>
 
-<h1 class="login-title">회원 로그인</h1>
-
-  <div class="login-options" align="center">
-<form class="login-form" method="POST" action="${path}/member/login.do">
-  <input type="text" name="username" placeholder="이메일" required> <br>
-  
-  <input type="password" name="password" placeholder="비밀번호" required> <br>
-  
-  <button type="submit" class="login-btn">로그인</button>
 
 
-     
-     	<table >
+  <div align="center">
+  <h1 class="login-title">회원 로그인1</h1>
+     	<table  >
                 <tr><td>아이디(이메일)</td>
-                    <td><input type="text" name="user_email" size="25" value="${prevEmail}" placeholder="이메일을 입력하세요"/>
+                    <td><input type="text" name="userID" size="25" value="${prevEmail}" placeholder="이메일을 입력하세요"/>
                         
                       <c:if test="${not empty emailError}">
                        <div style="color:red; font-size:12px;">${emailError}</div> </c:if> </td></tr>
@@ -39,14 +31,13 @@
         </form>
      
      
-       <a href="/oauth2/authorization/google"><button>Google 로그인</button></a>
+ <a href="/oauth2/authorization/google"><button>Google 로그인</button></a>
 <br><br><br>
 <a href="/oauth2/authorization/kakao"><button>카카오 로그인</button></a>
  <br>     <br><br>  
     
 <a href="/oauth2/authorization/naver"><button> naver 로그인</button></a>  
-<br>  <br><br>
-<button type="button" onclick="location.href='${pageContext.request.contextPath}/memberLogin/member.do'">회원가입</button>
+<button type="button" onclick="location.href='${pageContext.request.contextPath}/user/member.do'">회원가입</button>
      
      
      
