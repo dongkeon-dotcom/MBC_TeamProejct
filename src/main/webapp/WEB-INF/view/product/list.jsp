@@ -27,18 +27,20 @@
 			<c:forEach var="m" items="${li}">
 				<tr>
 					<td>${m.productIdx}</td>
-					<td>${m.productCategory}</td>
-					<td>${m.productSubCategory}</td>
+					<td>${m.category}</td>
+					<td>${m.subCategory}</td>
 					<td>${m.productName}</td>
-					<td>${m.productPrice}</td>
-					<td>${m.productRegDate}</td>
+					<td>${m.price}</td>
+					<td>${m.regDate}</td>
 					<td>${m.productDesc}</td>
 					<th>${getpMainImgPath}</th>
 					<th></th>
-					<td>${m.productDiscountPer}</td>
-					<td>${m.productRecomm}</td>
+					<td>${m.discountRate}</td>
+					<td>
+						${m.recommended ? "추천함" : "일반"}
+					</td>
 					<td><c:forEach var="opt" items="${m.options}">
-                            컬러: ${opt.optionColor}, 사이즈: ${opt.optionSize}, 재고: ${opt.productStock}<br />
+                            컬러: ${opt.color}, 사이즈: ${opt.size}, 재고: ${opt.stock}<br />
 						</c:forEach></td>
 				</tr>
 			</c:forEach>

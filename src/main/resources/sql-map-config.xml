@@ -16,7 +16,7 @@
   <mappers>    
     <mapper resource="mappings/user-mapping.xml"  />
     <mapper resource="mappings/product-mapping.xml"  />
-    <mapper resource="mappings/member-mapping.xml"  />
+    <!-- <mapper resource="mappings/member-mapping.xml"  /> -->
   </mappers>
   
 </configuration>

@@ -40,9 +40,8 @@ top.jsp에 들어가야할것들
                 
            
                 
-                <li><a href="${path}/product/form.do">상품등록(관리자)</a></li>
-                <li><a href="${path}/product/list.do">상품목폭(관리자) </a></li>
-                <li><a href="${path}/product/productAddForm.do">상품등록등록(박동건) </a></li>                
+                <li><a href="${path}/product/productAddForm.do">상품등록(관리자_동건)</a></li>
+                <li><a href="${path}/product/list.do">상품목록(관리자) </a></li>                
                 
                 <li class="has-submenu"><a href="#">아우터</a>
                     <ul class="submenu">
