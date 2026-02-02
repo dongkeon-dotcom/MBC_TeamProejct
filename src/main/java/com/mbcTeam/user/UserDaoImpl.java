@@ -16,33 +16,33 @@ public class UserDaoImpl implements UserDao {
 	
 	@Override
 	public void insert(UserVO vo) {
-		mybatis.update("MEMBER.INSERT", vo);
+		mybatis.insert("USER.INSERT", vo);
 		
 	}
 
 	@Override
 	public List<UserVO> Select(UserVO vo) {
 
-		return mybatis.selectList("MEMBER.SELECT");
+		return mybatis.selectList("USER.SELECT",vo);
 	}
 
 	@Override
 	public UserVO Login(UserVO vo) {
 		// TODO Auto-generated method stub
-		return mybatis.selectOne("MEMBER.LOGIN", vo);
+		return mybatis.selectOne("USER.LOGIN", vo);
 	}
 
 	@Override
 	public UserVO Edit(UserVO vo) {
 		// TODO Auto-generated method stub
-		return mybatis.selectOne("MEMBER.EDIT", vo);
+		return mybatis.selectOne("USER.EDIT", vo);
 	}
 
 	@Override
 	public boolean existsByEmail(String userID) {
 		// TODO Auto-generated method stub
 		
-		Integer count = mybatis.selectOne("MEMBER.countByEmail", userID);
+		Integer count = mybatis.selectOne("USER.countByEmail", userID);
 		return count != null && count > 0;
 
 	}
@@ -51,13 +51,13 @@ public class UserDaoImpl implements UserDao {
 	public UserVO getByEmail(String userID) {
 		// TODO Auto-generated method stub
 
-		 return mybatis.selectOne("MEMBER.getByEmail", userID);
+		 return mybatis.selectOne("USER.getByEmail", userID);
 	}
 
 	@Override
 	public List<ProductVO> selectOrderList(ProductVO vo ) {
 		// TODO Auto-generated method stub
-		return mybatis.selectOne("MEMBER.selectOrder" );
+		return mybatis.selectList("USER.selectOrder",vo );
 	}
 
 }

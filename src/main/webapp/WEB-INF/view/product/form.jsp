@@ -16,7 +16,7 @@
 	<div align="center">
 		        <h2>상품 등록</h2>
         <form action="${path}/product/formOK.do" method="post" enctype="multipart/form-data">
-
+<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}">
             <!-- 상품 기본 정보 -->
             <table border="1">
                 <tr>

@@ -9,23 +9,23 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 <mapper namespace="USER">
 
     <!-- 회원가입  마지막의 now()는 -->
-    <insert id="insert" parameterType="UserVO">
+    <insert id="insert" parameterType="com.mbcTeam.user.UserVO">
         INSERT INTO user (
             user_email,user_pw,user_name,user_phone, user_role,easy_login,deleted,user_reg_date)
-            VALUES (#{userEmail}, #{userPW},#{userName},  #{userPhone}, #{userRole},#{easyLogin},#{deleted},NOW())
+            VALUES (#{userID}, #{userPW},#{userName},  #{userPhone}, #{userRole},#{easyLogin},#{deleted},NOW())
     </insert>
 
     <!-- 로그인 -->
-    <select id="login" parameterType="UserVO" resultType="UserVO">
-        SELECT  uidx,user_email AS userEmail, user_pw AS userPW, user_name AS userName,
+    <select id="login" parameterType="com.mbcTeam.user.UserVO" resultType="com.mbcTeam.user.UserVO">
+        SELECT  userIdx,user_email AS userEmail, user_pw AS userPW, user_name AS userName,
          user_phone AS userPhone,user_role  AS userRole, easy_login  AS easyLogin,deleted, user_reg_date  AS userRegDate
-        FROM user WHERE user_email = #{userEmail} AND user_pw = #{userPW} AND deleted = false
+        FROM user WHERE user_email = #{userID} AND user_pw = #{userPW} AND deleted = false
     </select>
 
     <!-- 회원 단건 조회 -->
-    <select id="getById" parameterType="int" resultType="UserVO">
+    <select id="getById" parameterType="com.mbcTeam.user.UserVO" resultType="com.mbcTeam.user.UserVO">
         SELECT
-            uidx,
+            userIdx,
             user_email     AS userEmail,
             user_pw        AS userPW,
             user_name      AS userName,
@@ -35,36 +35,36 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             deleted,
             user_reg_date  AS userRegDate
         FROM user
-        WHERE uidx = #{uidx}
+        WHERE userIdx = #{userIdx}
     </select>
 
     <!-- 회원 정보 수정 -->
-    <update id="update" parameterType="UserVO">
+    <update id="update" parameterType="com.mbcTeam.user.UserVO">
         UPDATE user
         SET
             user_name  = #{userName},
             user_phone = #{userPhone}
-        WHERE uidx = #{uidx}
+        WHERE userIdx = #{userIdx}
     </update>
 
     <!-- 회원 탈퇴 (논리 삭제) -->
-    <update id="delete" parameterType="int">
+    <update id="delete" parameterType="com.mbcTeam.user.UserVO">
         UPDATE user
         SET deleted = true
-        WHERE uidx = #{uidx}
+        WHERE userIdx = #{userIdx}
     </update>
 
     <!-- 이메일 중복 체크 -->
-    <select id="countByEmail" parameterType="string" resultType="int">
+    <select id="countByEmail" parameterType="com.mbcTeam.user.UserVO" resultType="int">
         SELECT COUNT(*)
         FROM user
-        WHERE user_email = #{userEmail}
+        WHERE userID = #{userID}
     </select>
 <!-- 구글 로그인  -->
-<select id="getByEmail" parameterType="string" resultType="UserVO">
+<select id="getByEmail" parameterType="com.mbcTeam.user.UserVO" resultType="com.mbcTeam.user.UserVO">
     SELECT
-        user_idx        AS userIdx,
-        user_email      AS user_email,
+        userIdx        AS userIdx,
+        user_email      AS userID,
         user_pw         AS userPW,
         user_name       AS userName,
         user_phone      AS userPhone,
@@ -73,7 +73,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         deleted         AS userIsDeleted,
         user_reg_date   AS userRegDate
     FROM user
-    WHERE user_email = #{user_email}
+    WHERE user_email = #{userID}
 </select>
 
 

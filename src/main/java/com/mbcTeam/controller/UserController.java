@@ -1,6 +1,9 @@
 
 package com.mbcTeam.controller;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
@@ -10,6 +13,9 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.mbcTeam.user.UserService;
 import com.mbcTeam.user.UserVO;
@@ -68,7 +74,7 @@ public class UserController {
     public String login() {
     	//메인등에서 로그인하기 클릭시로그인페이지로이동하기위한루트 
     	System.out.println("/LOGINLOGIN.DO");
-        return "customerPage/memberLogin/login"; // views/member/login.jsp
+        return "user/login"; // views/member/login.jsp
     }
 
     
@@ -76,50 +82,94 @@ public class UserController {
     public String member() {
     	//로그인페이지에 회원가입으로 이동을 위한 컨트롤  
     System.out.println("memberJoin  확인 용 ");
-        return "customerPage/memberLogin/memberJoin"; // views/member/login.jsp
+        return "user/memberJoin"; // views/member/login.jsp
     }
     
-    
-    @PostMapping("/memberOK.do") 
-    public String memberOK(UserVO vo) {
-    	System.out.println("/MEMBEROK.DO");
-    	service.insert(vo); // DB 저장
-
-		service.insert(vo); // DB 저장
-
-		// 가입 성공 → 홈페이지 이동
-		return "redirect:/main.do";
-
-	}
-
-	@PostMapping("/loginOK.do")
+    //로그인
+    @PostMapping("/loginOK.do")
     public String loginOK(UserVO vo, HttpServletRequest request, HttpSession session) {
-    	System.out.println("/LOGINOK.DO");
-        // 1. 이메일 존재 여부 확인
-        boolean emailExists = service.existsByEmail(vo.getUserID());
 
-        if (!emailExists) {
-            request.setAttribute("emailError", "가입되지 않은 이메일입니다.");
-           
-            request.setAttribute("prevEmail", vo.getUserID());  // 입력했던 이메일을 다시 보내줌 (사용자 편의)
-         
-            return "member/login"; 
+        // 0) 입력 검증
+        if (vo.getUserID() == null || vo.getUserID().trim().isEmpty()) {
+            request.setAttribute("emailError", "이메일을 입력하세요.");
+            return "member/login";
+        }
+        if (vo.getUserPW() == null || vo.getUserPW().trim().isEmpty()) {
+            request.setAttribute("pwError", "비밀번호를 입력하세요.");
+            request.setAttribute("prevEmail", vo.getUserID());
+            return "member/login";
         }
 
-        // 2. 로그인 시도 (비밀번호 체크)
-        UserVO loginMember = service.Login(vo);
+        // 1) 이메일 존재 여부 확인 (탈퇴 제외하도록 mapper도 수정 권장)
+        if (!service.existsByEmail(vo.getUserID())) {
+            request.setAttribute("emailError", "가입되지 않은 이메일입니다.");
+            request.setAttribute("prevEmail", vo.getUserID());
+            return "member/login";
+        }
 
+        // 2) 로그인 시도
+        UserVO loginMember = service.Login(vo);
         if (loginMember == null) {
             request.setAttribute("pwError", "틀린 비밀번호입니다.");
             request.setAttribute("prevEmail", vo.getUserID());
             return "member/login";
-            
         }
 
-        // 3. 성공
+        // 3) 성공
         session.setAttribute("loginMember", loginMember);
-        return "redirect:/main";  // 메인페이지로이동 
-        
+        return "redirect:/main";
     }
 
+
+	
+	// 회원가입 처리
+    @RequestMapping(value = "/memberOK.do", method = RequestMethod.POST)
+    public String memberOK(HttpServletRequest request) {
+    	String userID = request.getParameter("userID");
+        String password  = request.getParameter("password");
+        String userName  = request.getParameter("userName");
+        String userPhone = request.getParameter("userPhone");
+
+        // 서버단 필수 검증
+        if (userID == null || userID.trim().isEmpty()) {
+            request.setAttribute("msg", "이메일이 없습니다.");
+            return "member/join";
+        }
+
+        // 이메일 중복 체크 (서버에서도 반드시)
+        if (service.existsByEmail(userID)) {   // ✅ 수정
+            request.setAttribute("msg", "이미 사용 중인 이메일입니다.");
+            return "member/join";
+        }
+
+        // VO 세팅
+        UserVO vo = new UserVO();
+        vo.setUserID(userID);
+        vo.setUserPW(password);
+        vo.setUserName(userName);
+        vo.setUserPhone(userPhone);
+        vo.setUserRole("USER");
+        vo.setUserEasyLogin(false);
+        vo.setUserIsDeleted(false);
+
+        service.insert(vo);  // ✅ 수정 (void)
+
+        return "redirect:/member/login.do";
+    }
+
+    
+    @ResponseBody
+    @RequestMapping(value="/checkEmail.do", method=RequestMethod.GET)
+    public Map<String, Object> checkEmail(@RequestParam("userID") String userID) {
+    	System.out.println("중복확인 ");
+        boolean exists = service.existsByEmail(userID);
+    	System.out.println("중복확인 "+ exists);
+        Map<String, Object> res = new HashMap<>();
+        res.put("exists", exists);
+        return res;
+    }
+    
 }
+	
+	
+	
