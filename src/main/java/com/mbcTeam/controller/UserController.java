@@ -2,6 +2,7 @@
 package com.mbcTeam.controller;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -34,10 +35,10 @@ public class UserController {
 		return "user/list";
 	}
 
-	@GetMapping("edit.do")
+	@GetMapping("memberEdit.do")
 	String edit(Model model, UserVO vo) {
-		System.out.println("/EDIT.DO");
-		return "user/edit";
+		System.out.println("개인정보수정페이지 /EDIT.DO");
+		return "user/memberEdit";
 
 	}
 
@@ -133,13 +134,13 @@ public class UserController {
         // 서버단 필수 검증
         if (userID == null || userID.trim().isEmpty()) {
             request.setAttribute("msg", "이메일이 없습니다.");
-            return "member/join";
+            return "user/memberJoin";
         }
 
         // 이메일 중복 체크 (서버에서도 반드시)
         if (service.existsByEmail(userID)) {   // ✅ 수정
             request.setAttribute("msg", "이미 사용 중인 이메일입니다.");
-            return "member/join";
+            return "user/memberJoin";
         }
 
         // VO 세팅
@@ -154,7 +155,7 @@ public class UserController {
 
         service.insert(vo);  // ✅ 수정 (void)
 
-        return "redirect:/member/login.do";
+        return "redirect:/user/login.do";
     }
 
     
@@ -169,6 +170,52 @@ public class UserController {
         return res;
     }
     
+    
+    //// 이따가 디비 받아서 서비스 주입하고 받아오기
+    @GetMapping("/orderList.do")
+    public String orderList(
+            @RequestParam(value="page", defaultValue="1") int page,
+            @RequestParam(value="startDate", required=false) String startDate,
+            @RequestParam(value="endDate", required=false) String endDate,
+            HttpSession session,
+            Model model) {
+
+        UserVO login = (UserVO) session.getAttribute("loginMember");
+        if (login == null) return "redirect:/user/login.do";
+
+        int pageSize = 10;
+        int offset = (page - 1) * pageSize;
+
+        int userIdx = login.getUserIdx();
+
+        // 🔹 목록 + 개수 조회
+        List<OrderVO> orderli =
+            orderService.selectOrderList(userIdx, startDate, endDate, offset, pageSize);
+
+        int totalCount =
+            orderService.countOrderList(userIdx, startDate, endDate);
+
+        int totalPage = (totalCount + pageSize - 1) / pageSize;
+
+        // 🔹 10페이지 블록 계산
+        int blockSize = 5;
+        int startPage = ((page - 1) / blockSize) * blockSize + 1;
+        int endPage = Math.min(startPage + blockSize - 1, totalPage);
+
+        // JSP 전달
+        model.addAttribute("orderli", orderli);
+        model.addAttribute("page", page);
+        model.addAttribute("totalPage", totalPage);
+        model.addAttribute("startPage", startPage);
+        model.addAttribute("endPage", endPage);
+
+        // ⭐ 날짜 유지용
+        model.addAttribute("startDate", startDate);
+        model.addAttribute("endDate", endDate);
+
+        return "user/customerMyPage/orderList";
+    }
+
 }
 	
 	

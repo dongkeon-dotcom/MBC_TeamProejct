@@ -6,7 +6,7 @@
 <section>
 	<br>
 	<div align="center">
-		<h1>회원 정보 수정</h1>
+		<h1>개인 회원 정보 수정</h1>
 
 		<!-- action은 컨트롤러 매핑에 맞게 수정 -->
 		<form action="${path}/member/update.do" method="POST">
