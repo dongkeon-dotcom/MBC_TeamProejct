@@ -31,8 +31,8 @@
 				<!-- 이미지 클릭 시 상세페이지 이동 -->
 				<a href="${path}/userproduct/userproductdetail.do?productIdx=${p.productIdx}">
 					<c:choose>
-						<c:when test="${not empty p.pMainImgPath}">
-							<img src="${path}/resources/images/${p.pMainImgPath}"
+						<c:when test="${not empty p.productMainImg}">
+							<img src="${path}/resources/images/${p.productMainImg}"
 								alt="${p.productName}">
 						</c:when>
 						<c:otherwise>
@@ -44,9 +44,9 @@
 				<!-- 상품 정보 -->
 				<div class="product-info">
 					<p class="product-name">${p.productName}</p>
-					<p class="product-price">${p.productPrice}원</p>
-					<c:if test="${not empty p.productDiscountPer}">
-						<p class="product-discount">${p.productDiscountPer}%할인</p>
+					<p class="product-price">${p.price}원</p>
+					<c:if test="${not empty p.discountRate}">
+						<p class="product-discount">${p.discountRate}%할인</p>
 					</c:if>
 					<div class="product-rating">
 						<c:forEach begin="1" end="5" var="i">

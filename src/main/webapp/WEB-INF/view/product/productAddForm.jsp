@@ -1,132 +1,141 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <c:import url="/WEB-INF/view/include/top.jsp" />
-<link href="${path}/resources/css/product/productAdd.css" rel="stylesheet">
+<link href="${path}/resources/css/product/productAdd.css"
+	rel="stylesheet">
 
 <section>
 
-<div class="container my-5" style="max-width: 800px;">
-    <h2 class="text-center mb-5 fw-bold">상품 등록 페이지</h2>
+	<div class="container my-5" style="max-width: 800px;">
+		<h2 class="text-center mb-5 fw-bold">상품 등록 페이지</h2>
 
-    <form action="/product/productAddFormOK.do" method="post" enctype="multipart/form-data">
-            <div class="card p-4 mb-4 shadow-sm mx-auto" style="max-width: 80%;">
-            	<div class="row px-md-5">
-	                <div class="col-12 mb-4">
-                    	<label class="main-label">카테고리</label>
-                    	<select class="form-select" name="productCategory" id="productCategory" onchange="updateSubCategories()">
-                        	<option selected> -- 카테고리 선택 -- </option>
-                        	<option value="아우터"> 아우터 </option>
-                        	<option value="상의"> 상의 </option>
-                        	<option value="바지"> 바지 </option>
-                        	<option value="치마"> 치마 </option>
-                        	<option value="원피스"> 원피스 </option>
-                    	</select>
-                	</div>
-                	<div class="col-12 mb-4">
-	                    <label class="main-label">하위카테고리</label>
-                    	<select class="form-select" name="productSubCategory" id="productSubCategory">
-	                        <option selected> -- 하위 카테고리 선택 -- </option>
-                    	</select>
-                	</div>
-                	<div class="col-12 mb-4">
-	                    <label class="main-label">상품명</label>
-                    	<input type="text" class="form-control" name="pName" placeholder="상품 이름">
-                	</div>
-                	<div class="col-12 mb-4">
-	                    <label class="main-label">상품가격</label>
-	                    <div class="input-group">
-	                    	
-                    		<input type="number" class="form-control" name="pPrice" id="pPrice" placeholder="0" min="0">
-                    		<span class="input-group-text">원</span>
-                    	</div>
-                	</div>
-                	<div class="col-12 mb-4">
-	                    <label class="main-label">등록날짜 (자동등록)</label>
-                    	<input type="text" class="form-control bg-light" name="regDate" 
-                           	value="<fmt:formatDate value='<%= new java.util.Date() %>' pattern='yyyy-MM-dd' />" readonly>
-                	</div>
-            	</div>
-                    	
-            	<div class="row mb-4">
-	                <div class="col-md-12 mb-4">
-	                	<div class="upload-header">
-                    		<label class="upload-label">대표이미지</label>
-                    		<button type="button" class="btn btn-outline-primary btn-sm" onclick="triggerFileSelect('mainFileList')">
-                    			+ 이미지 추가
-                    		</button>
-                    	</div>                    	
-                    	<div id="mainFileList" class="file-list-container">
-                    	</div>
-                    </div>                 
-                </div>
-            	<div class="row mb-4">
-	                <div class="col-md-12 mb-4">
-	                	<div class="upload-header">
-                    		<label class="upload-label">상세이미지</label>
-                    		<button type="button" class="btn btn-outline-primary btn-sm" onclick="triggerFileSelect('detailFileList')">
-                    			+ 이미지 추가
-                    		</button>
-                    	</div>                    	
-                    	<div id="detailFileList" class="file-list-container">
-                    	</div>
-                    </div>                 
-                </div>
-            	<div class="row mb-4">
-	                <div class="col-md-12 mb-4">
-	                	<div class="upload-header">
-                    		<label class="upload-label">설명이미지</label>
-                    		<button type="button" class="btn btn-outline-primary btn-sm" onclick="triggerFileSelect('descFileList')">
-                    			+ 이미지 추가
-                    		</button>
-                    	</div>                    	
-                    	<div id="descFileList" class="file-list-container">
-                    	</div>
-                    </div>                 
-                </div>
-            	<div class="row mb-4">
-	                <div class="col-md-12 mb-4">
-	                	<div class="upload-header">
-                    		<label class="upload-label">상품사이즈</label>
-                    		<button type="button" class="btn btn-outline-primary btn-sm" onclick="triggerFileSelect('sizeFileList')">
-                    			+ 이미지 추가
-                    		</button>
-                    	</div>                    	
-                    	<div id="sizeFileList" class="file-list-container">
-                    	</div>
-                    </div>                 
-                </div>
-            	    <div class="mb-4 position-relative">
-            			<label class="form-label fw-bold">상품설명</label>
-            			<button type="button" class="btn btn-outline-secondary btn-sm ai-gen-btn">ai 생성</button>
-            			<textarea class="form-control" rows="5" placeholder="상품 설명"></textarea>
-        			</div>
-        	</div>
-	
-        <div class="table-container shadow-sm border mb-4">
-            <table class="table align-middle text-center">
-                <thead>
-                    <tr>
-                        <th width="35%">컬러</th>
-                        <th width="35%">사이즈</th>
-                        <th width="20%">수량</th>
-                        <th width="10%"></th>
-                    </tr>
-                </thead>
-                <tbody id="optionBody" name="optionBody">
+		<form action="${path}/product/productAddFormOK.do" method="post"
+			enctype="multipart/form-data">
+			<div class="card p-4 mb-4 shadow-sm mx-auto" style="max-width: 80%;">
+				<div class="row px-md-5">
+					<div class="col-12 mb-4">
+						<label class="main-label">카테고리</label>
+						<select class="form-select"
+							name="category" id="category"
+							onchange="updateSubCategories()">
+							<option selected>-- 카테고리 선택 --</option>
+							<option value="아우터">아우터</option>
+							<option value="상의">상의</option>
+							<option value="바지">바지</option>
+							<option value="치마">치마</option>
+							<option value="원피스">원피스</option>
+						</select>
+					</div>
+					<div class="col-12 mb-4">
+						<label class="main-label">하위카테고리</label>
+						<select
+							class="form-select"
+							name="subCategory" id="subCategory">
+							<option selected>-- 하위 카테고리 선택 --</option>
+						</select>
+					</div>
+					<div class="col-12 mb-4">
+						<label class="main-label">상품명</label>
+						<input type="text" class="form-control"
+						name="productName" id="productName" placeholder="상품 이름">
+					</div>
+					<div class="col-12 mb-4">
+						<label class="main-label">상품가격</label>
+						<div class="input-group">
+							<input type="number" class="form-control"
+							name="price" id="price"
+							placeholder="0" min="0">
+							<span class="input-group-text">원</span>
+						</div>
+					</div>
+					<div class="col-12 mb-4">
+						<label class="main-label">등록날짜 (자동등록)</label>
+						<input type="text"
+							class="form-control bg-light"
+							name="regDate" id="regDate"
+							value="<fmt:formatDate value='<%=new java.util.Date()%>' pattern='yyyy-MM-dd' />"
+							readonly>
+					</div>
+				</div>
 
-                </tbody>
-            </table>
-            <button type="button" class="btn btn-outline-primary btn-sm ms-3 d-inline-flex align-items-center" onclick="addRow()">+ 옵션 추가</button>
-        </div>
+				<div class="row mb-4">
+					<div class="col-md-12 mb-4">
+						<div class="upload-header">
+							<label class="upload-label">대표이미지</label>
+							<button type="button" class="btn btn-outline-primary btn-sm"
+								onclick="triggerFileSelect('mainFileList')">+ 이미지 추가</button>
+						</div>
+						<div id="mainFileList" class="file-list-container"></div>
+					</div>
+				</div>
+				<div class="row mb-4">
+					<div class="col-md-12 mb-4">
+						<div class="upload-header">
+							<label class="upload-label">상세이미지</label>
+							<button type="button" class="btn btn-outline-primary btn-sm"
+								onclick="triggerFileSelect('detailFileList')">+ 이미지 추가
+							</button>
+						</div>
+						<div id="detailFileList" class="file-list-container"></div>
+					</div>
+				</div>
+				<div class="row mb-4">
+					<div class="col-md-12 mb-4">
+						<div class="upload-header">
+							<label class="upload-label">설명이미지</label>
+							<button type="button" class="btn btn-outline-primary btn-sm"
+								onclick="triggerFileSelect('descFileList')">+ 이미지 추가</button>
+						</div>
+						<div id="descFileList" class="file-list-container"></div>
+					</div>
+				</div>
+				<div class="row mb-4">
+					<div class="col-md-12 mb-4">
+						<div class="upload-header">
+							<label class="upload-label">상품사이즈</label>
+							<button type="button" class="btn btn-outline-primary btn-sm"
+								onclick="triggerFileSelect('sizeFileList')">+ 이미지 추가</button>
+						</div>
+						<div id="sizeFileList" class="file-list-container"></div>
+					</div>
+				</div>
+				<div class="mb-4 position-relative">
+					<label class="form-label fw-bold">상품설명</label>
+					<button type="button"
+						class="btn btn-outline-secondary btn-sm ai-gen-btn">ai 생성</button>
+					<textarea class="form-control" name="productDesc" id="productDesc" rows="5" placeholder="상품 설명"></textarea>
+				</div>
+			</div>
 
-		<div class="submit-btn-wrapper">
-            <button type="submit" class="btn btn-primary btn-lg py-3 fw-bold w-50">상품 등록하기</button>
-        </div>
-    </form>
-</div>
+			<div class="table-container shadow-sm border mb-4">
+				<table class="table align-middle text-center">
+					<thead>
+						<tr>
+							<th width="35%">컬러</th>
+							<th width="35%">사이즈</th>
+							<th width="20%">수량</th>
+							<th width="10%"></th>
+						</tr>
+					</thead>
+					<tbody id="optionBody" name="optionBody">
 
-<script>
+					</tbody>
+				</table>
+				<button type="button"
+					class="btn btn-outline-primary btn-sm ms-3 d-inline-flex align-items-center"
+					onclick="addRow()">+ 옵션 추가</button>
+			</div>
+
+			<div class="submit-btn-wrapper">
+				<button type="submit"
+					class="btn btn-primary btn-lg py-3 fw-bold w-50">상품 등록하기</button>
+			</div>
+		</form>
+	</div>
+
+	<script>
 //카테고리쪽
 const subCategories = {
 	    "아우터": ["자켓", "코트", "패딩/점퍼", "가디건", "베스트", "레더/무스탕"],
@@ -136,8 +145,8 @@ const subCategories = {
 	    "원피스": ["미니 원피스", "롱 원피스", "셔츠 원피스", "니트 원피스", "점프슈트"]
 	};
 function updateSubCategories() {
-    const categorySelect = document.getElementById("productCategory");
-    const subCategorySelect = document.getElementById("productSubCategory");
+    const categorySelect = document.getElementById("category");
+    const subCategorySelect = document.getElementById("subCategory");
 
     const selectedCategory = categorySelect.value;
 
@@ -158,15 +167,18 @@ function updateSubCategories() {
 
 //옵션쪽
 function addRow() {
-        const tbody = document.getElementById("optionBody");
-        
+        const tbody = document.getElementById("optionBody");        
+     	// 현재 몇 번째 행인지 인덱스 파악
+        const index = tbody.querySelectorAll('.option-row').length;
         // 새 행 생성
+        
         const newRow = document.createElement("tr");
         newRow.className = "option-row";
         
+     // name 속성에 [${index}]를 반드시 포함해야 ProductVO의 List<ProductOptionVO>에 매핑됩니다.
         newRow.innerHTML = `
             <td>
-                <select name="color" class="form-select">
+                <select name="productOptionList[\${index}].color" class="form-select">
                     <option value="White">White</option>
                     <option value="Black">Black</option>
                     <option value="Gray">Gray</option>
@@ -177,14 +189,14 @@ function addRow() {
                 </select>
             </td>
             <td>
-                <select name="size" class="form-select">
+                <select name="productOptionList[\${index}].size" class="form-select">
                     <option value="S">S</option>
                     <option value="M">M</option>
                     <option value="L">L</option>
                 </select>
             </td>
             <td>
-                <input type="number" name="quantity" class="form-control" value="0" min="0">
+                <input type="number" name="productOptionList[\${index}].stock" class="form-control" value="0" min="0">
             </td>
             <td><button type="button" class="btn btn-outline-danger btn-sm" onclick="removeRow(this)">삭제</button></td>
         `;
@@ -197,14 +209,123 @@ function addRow() {
         row.remove();
     }
 
-// 박스 클릭시 동작
-function triggerUpload(box){
-	box.querySelector('input[type="file"]').click();
+ // 3. 이미지 업로드 핵심 함수 (새로 추가됨 - 버튼 동작의 핵심)
+function triggerFileSelect(containerId) {
+	 
+const container = document.getElementById(containerId);
+    
+    // 1. 개수 제한 체크
+    const currentCount = container.querySelectorAll('.input-group').length;
+    let limit = 10; // 기본값 10장
+    
+    if (containerId === 'mainFileList' || containerId === 'sizeFileList') {
+        limit = 1; // 대표이미지와 상품사이즈는 1장으로 제한
+    }
+
+    if (currentCount >= limit) {
+        alert("해당 항목은 최대 " + limit +"장까지만 등록 가능합니다.");
+        return;
+    }
+	 
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.name = getParamName(containerId);
+    input.style.display = 'none';
+    input.accept = "image/*"; // 이미지 파일만 선택 가능하게 제한
+    
+    input.onchange = e => {
+        const file = e.target.files[0];
+        if (file) {
+            const container = document.getElementById(containerId);
+            const fileWrapper = document.createElement('div');
+            fileWrapper.className = 'input-group mb-2 shadow-sm align-items-center flex-nowrap'; 
+
+            // 1. 기본 구조 생성 (이미지가 들어갈 공간 확보)
+            fileWrapper.innerHTML = `
+                <span class="input-group-text bg-light p-1">
+                    <img class="img-preview" src="" style="width: 40px; height: 40px; object-fit: cover; display: none; border-radius: 4px;">
+                    <span class="no-img-icon" style="width: 40px; text-align: center;">🖼️</span>
+                </span>
+                <input type="text" class="form-control bg-white name-display" style="pointer-events: none; font-size: 0.9rem;" readonly>
+                <button type="button" class="btn btn-danger btn-sm px-3" style="height: 48px;" onclick="removeFileItem(this)">삭제</button>
+            `;
+
+            // 2. 파일명 주입
+            fileWrapper.querySelector('.name-display').value = file.name;
+
+            // 3. FileReader를 이용한 썸네일 생성 로직
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                const imgTag = fileWrapper.querySelector('.img-preview');
+                const iconTag = fileWrapper.querySelector('.no-img-icon');
+                imgTag.src = event.target.result; // 읽어온 이미지 데이터 주입
+                imgTag.style.display = 'block';   // 이미지 보이기
+                iconTag.style.display = 'none';    // 아이콘 숨기기
+            };
+            reader.readAsDataURL(file); // 파일을 읽기 시작
+
+            fileWrapper.appendChild(input); 
+            container.appendChild(fileWrapper);
+        }
+    };
+    input.click();
 }
+
+// 삭제 버튼 클릭 시 해당 아이템 전체 삭제 함수
+function removeFileItem(button) {
+    const item = button.closest('.input-group');
+    item.remove();
+}
+
+//containerId에 따라 서버에서 받을 파라미터 이름을 정해주는 함수 (필수!)
+function getParamName(id) {
+    const mapping = {
+        'mainFileList': 'productMainImgfile',    // 대표이미지
+        'detailFileList': 'productImgList',		 // 상세이미지
+        'descFileList': 'productDescImgList',     // 설명이미지
+        'sizeFileList': 'productSizeImgfile'      // 상품사이즈
+    };
+    return mapping[id] || 'files';
+}
+
+// 옵션 컬러,사이즈 중복검사
+function validateOptions() {
+    const rows = document.querySelectorAll('.option-row');
+    const checkedOptions = new Set(); // 중복 체크를 위한 Set 객체
+
+    for (let i = 0; i < rows.length; i++) {
+        // 각 행의 컬러와 사이즈 값 가져오기
+        const color = rows[i].querySelector('select[name*="color"]').value;
+        const size = rows[i].querySelector('select[name*="size"]').value;
+        const combination = color + "_" + size; // "White_S" 같은 형태로 조합
+
+        if (checkedOptions.has(combination)) {
+            alert(`중복된 옵션이 있습니다: [${color} / ${size}]\n옵션을 확인해 주세요.`);
+            rows[i].style.backgroundColor = '#ffecec'; // 중복된 행 강조
+            return false; // 전송 중단
+        }
+        checkedOptions.add(combination);
+    }
+    return true; // 검증 통과
+}
+
+// 폼 전송 이벤트 연결
+document.querySelector('form').onsubmit = function() {
+    // 1. 옵션 중복 체크
+    if (!validateOptions()) return false;
+    
+    // 2. (선택사항) 상품명이나 가격 등 필수값 체크도 여기서 가능합니다.
+    if (document.getElementById('productName').value.trim() === "") {
+        alert("상품명을 입력해주세요.");
+        return false;
+    }
+
+    return true; // 모든 검사 통과 시 전송
+};
 
 </script>
 
 
 
 </section>
-<c:import url="/WEB-INF/view/include/bottom.jsp"/>
+<c:import url="/WEB-INF/view/include/bottom.jsp" />

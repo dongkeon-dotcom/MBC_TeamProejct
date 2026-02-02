@@ -2,23 +2,26 @@ package com.mbcTeam.controller;
 
 import java.io.File;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 
+import javax.annotation.PostConstruct;
 import javax.servlet.ServletContext;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.mbcTeam.product.ProductService;
 import com.mbcTeam.product.ProductVO;
+import com.mbcTeam.product.ProductDescImgVO;
 import com.mbcTeam.product.ProductImgVO;
+import com.mbcTeam.product.ProductOptionVO;
+import com.mbcTeam.product.ProductRequestDTO;
 
 @RequestMapping("/product")
 @Controller
@@ -29,6 +32,14 @@ public class ProductController {
 
 	@Autowired
 	private ServletContext servletContext; // 프로젝트 내부 경로 접근용
+	
+	String imgPath = "";
+	
+	@PostConstruct
+	public void init() {
+		imgPath = servletContext.getRealPath("/resources/images/");
+	}
+	
 
 	// 상품 등록 폼 이동
 	@GetMapping("/productAddForm.do")
@@ -36,56 +47,93 @@ public class ProductController {
 		System.out.println("/productAddForm.DO");
 		return "product/productAddForm";
 	}
-	
-	// 상품 등록 폼 이동
-	@PostMapping("/productAddForm.do")
-	public String productAddFormOK() {
-		System.out.println("/productAddForm.DO");
-		return "product/productAddForm";
-	}
-	
-	// 상품 등록 폼 이동
-	@GetMapping("/form.do")
-	public String form() {
-		System.out.println("/FORM.DO");
-		return "product/form"; // /WEB-INF/view/product/form.jsp
-	}
 
-	@PostMapping("/formOK.do")
-	public String formOK(ProductVO vo, @RequestParam("files") List<MultipartFile> files) throws Exception {
-		System.out.println("/FORMOK.DO");
-		// 1. 등록일 세팅 (insert 전에!)
+	@Transactional
+	@PostMapping("/productAddFormOK.do")
+	public String formOK(ProductVO vo, ProductRequestDTO dto) throws Exception {
+		System.out.println("/productAddFormOK.DO");		
+		
+		// 1. 전달받은 값 이외의 값 세팅
 		vo.setRegDate(LocalDate.now().toString());
+		vo.setDiscountRate(0);
+		vo.setRecommended(false);
+		
 
-		// 2. 이미지 처리
-		List<ProductImgVO> imgList = new ArrayList<ProductImgVO>();
-		int order = 1;
-		String uploadDir = servletContext.getRealPath("/resources/images");
+		// 2. 제품 대표 이미지 처리
+		MultipartFile mainFile = vo.getProductMainImgfile();
+		String mainFileName = mainFile.getOriginalFilename();
 
-		for (MultipartFile file : files) {
-			if (!file.isEmpty()) {
-				String fileName = System.currentTimeMillis() + "_" + file.getOriginalFilename();
-				String uploadPath = uploadDir + File.separator + fileName;
+		String uploadMainDir = imgPath + "ProductMainImg";
 
-				file.transferTo(new File(uploadPath));
-				
-				String dbPath = "/resources/images/" + fileName;
+		if (!mainFile.isEmpty()) {
+			String fileName = System.currentTimeMillis() + "_" + mainFile.getOriginalFilename();
+			String uploadPath = uploadMainDir + File.separator + fileName;
 
-				ProductImgVO imgVO = new ProductImgVO();
-				imgVO.setProductImg(dbPath);
-				imgVO.setProductImgOrder(String.valueOf(order++));
-				imgList.add(imgVO);
-
-			}
+			System.out.println("메인이미지 최종저장경로 및 파일이름: " + uploadPath);
+			// mainFile.transferTo(new File(uploadPath));
+		}
+		// 3. 제품 사이즈 이미지 처리
+		MultipartFile sizeFile = vo.getProductSizeImgfile();
+		String sizeFileName = sizeFile.getOriginalFilename();
+		
+		String uploadSizeDir = imgPath + "ProductSizeImg";
+		
+		if(!sizeFile.isEmpty()) {
+			String fileName = System.currentTimeMillis() + "_" + sizeFile.getOriginalFilename();
+			String uploadPath = uploadSizeDir + File.separator + fileName;
+			
+			System.out.println("제품사이즈이미지 최종저장경로 및 파일이름: " + uploadPath);
 		}
 
 		// 3. 서비스 호출 (상품 + 이미지 + 옵션 등록)
-		//service.insert(vo, imgList, vo.getOptions());
+		// service.insert(vo, imgList, vo.getOptions());
+
+		//List<ProductOptionVO> ovo = dto.getProductOptionList();
+
+//		System.out.println("PRODUCT OPTION VO 값: \n");
+//		for (int i = 0; i < ovo.size(); i++) {
+//			ProductOptionVO option = ovo.get(i);
+//			System.out.println("Option IDX: " + option.getOptionIdx() + "\nColor: " + option.getColor() + "\nSize: "
+//					+ option.getSize() + "\nStock: " + option.getStock());
+//		}
+//
+//		System.out.println("PRODUCT Img VO 값: \n");
+//		for (int i = 0; i < dto.getProductImgList().size(); i++) {
+//
+//			MultipartFile imgFile = dto.getProductImgList().get(i);
+//			String imgFileName = imgFile.getOriginalFilename();
+//
+//			System.out.println("ImgFileName: " + imgFileName);
+//		}
+//
+//		System.out.println("PRODUCT Desc Img VO 값: \n");
+//		for (int i = 0; i < dto.getProductDescImgList().size(); i++) {
+//
+//			MultipartFile dimgFile = dto.getProductDescImgList().get(i);
+//			String dimgFileName = dimgFile.getOriginalFilename();
+//
+//			System.out.println("DescImgFileName: " + dimgFileName);
+//		}
+//
+		System.out.println(
+				"PRODUCT VO 값: \n" + 
+		"Product IDX: " + vo.getProductIdx() + 
+		"\nCategory: " + vo.getCategory() + 
+		"\nSubCategory: " + vo.getSubCategory() +
+		"\nProductName: " + vo.getProductName() +
+		"\nPrice: " + vo.getPrice() +
+		"\nRegDate: " + vo.getRegDate() +
+		"\nProductDesc: " + vo.getProductDesc() + 
+		"\nmainFileName: " + mainFileName +
+		"\nsizeFileName: " + sizeFileName + 
+		"\ndiscountRate: " + vo.getDiscountRate() + //입력받은 값이 없으므로 NULL
+		"\nisRecommended: " + vo.isRecommended() //입력받은 값이 없으므로 NULL
+				);
+
 
 		return "redirect:/product/list.do";
 	}
 
-	
 	@GetMapping("/list.do")
 	public String list(ProductVO vo, Model model) {
 		System.out.println("/LIST.DO");
@@ -94,15 +142,11 @@ public class ProductController {
 		return "product/list";
 	}
 
-	
 	@GetMapping("/edit.do")
 	public String edit(Model model, ProductVO vo) {
 		System.out.println("/EDIT.DO");
 		model.addAttribute("product", service.edit(vo));
 		return "product/edit";
 	}
-	
-	
-	
 
 }

@@ -1,6 +1,5 @@
 package com.mbcTeam.security;
 
-
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -17,18 +16,17 @@ import org.springframework.security.web.SecurityFilterChain;
 @EnableWebSecurity
 public class SecurityConfig {
 
-    @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http
-        .csrf(csrf -> csrf.disable())
-        .authorizeHttpRequests(auth -> auth
-            .antMatchers("/login", "/error").permitAll()
-            .anyRequest().authenticated()
-        )
-        .formLogin();
+	
+	@Bean
+	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+	    http
+	    	.csrf(csrf -> csrf.disable())
+	        .authorizeHttpRequests(auth -> auth.anyRequest().authenticated())
+	        .formLogin();
+	    System.out.println("SecurityConfig 1");
+	    return http.build();
+	}
 
-        return http.build();
-    }
     
     @Bean
     public UserDetailsService userDetailsService() {
@@ -36,14 +34,14 @@ public class SecurityConfig {
             .password(passwordEncoder().encode("1234"))
             .roles("USER")
             .build();
-
+        System.out.println("SecurityConfig 2");
         return new InMemoryUserDetailsManager(user);
     }
 
     @Bean
     public PasswordEncoder passwordEncoder() {
+    	System.out.println("SecurityConfig 3");
         return new BCryptPasswordEncoder();
     }
     
 }
-
