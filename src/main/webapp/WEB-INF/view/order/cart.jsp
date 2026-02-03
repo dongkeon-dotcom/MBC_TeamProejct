@@ -4,7 +4,6 @@
 <c:import url="/WEB-INF/view/include/top.jsp" />
 
 
-<section>
  
 <html>
 <head>
@@ -19,6 +18,7 @@
         .btn:hover { background: #0055aa; }
     </style>
 </head>
+
 <body>
     <h1>장바구니</h1>
 
@@ -61,11 +61,14 @@
             <button type="submit" class="btn">구매하기</button>
         </form>
     </div>
+    
+    
 </body>
 </html>
+
 
 <script>
     
 </script>
-</section>
+
 <c:import url="/WEB-INF/view/include/bottom.jsp" />

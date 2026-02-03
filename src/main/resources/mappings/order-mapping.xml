@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper 
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="ORDERS">
+
+
+ <!-- 주문 등록 -->
+  <insert id="insertOrder" parameterType="com.mbcTeam.order.OrderVO">
+    INSERT INTO Orders (
+        user_Idx, total_Price, receiver, delivery_Phone, address, extra_Address, zipcode, order_Date
+    )
+    VALUES (
+        #{userIdx}, #{totalPrice}, #{recevier}, #{deliveryPhone}, #{address}, #{extraAddress}, #{zipcode}, NOW()
+    )
+  </insert>
+
+
+
+  <!-- 주문 상세 등록 -->
+  <insert id="insertOrderItem" parameterType="com.mbcTeam.order.OrderItemVO">
+    INSERT INTO OrderItems ( order_Idx, product_Idx, category, subCategory, product_Name,
+       						 price, discount_rate, color, size, quantity, product_main_img
+    )
+    VALUES (#{orderIdx}, #{productIdx}, #{category}, #{subCategory}, #{productName}, #{price}, #{discountRate},
+       	    #{color}, #{size}, #{quantity}, #{productMainImg} )
+  </insert>
+
+  <!-- 주문 상세 조회 -->
+  <select id="selectOrderItems" parameterType="long" resultType="com.mbcTeam.order.OrderItemVO">
+    SELECT 
+        item_Idx AS itemIdx,
+        order_Idx AS orderIdx,
+        product_Idx AS productIdx,
+        category,
+        subCategory,
+        product_Name AS productName,
+        price,
+        discount_rate AS discountRate,
+        color,
+        size,
+        quantity,
+        product_main_img AS productMainImg
+    FROM OrderItems
+    WHERE order_Idx = #{orderIdx}
+  </select>
+
+
+
+
+  <!-- 주문 수정 -->
+  <update id="updateOrder" parameterType="com.mbcTeam.order.OrderVO">
+    UPDATE Orders
+    SET total_Price = #{totalPrice},
+        receiver = #{recevier},
+        delivery_Phone = #{deliveryPhone},
+        address = #{address},
+        extra_Address = #{extraAddress},
+        zipcode = #{zipcode}
+    WHERE order_Idx = #{orderIdx}
+  </update>
+
+  <!-- 주문 삭제 -->
+  <delete id="deleteOrder" parameterType="com.mbcTeam.order.OrderVO">
+    DELETE FROM Orders WHERE order_Idx = #{orderIdx}
+  </delete>
+
+  <!-- 주문 조회 -->
+  <select id="selectOrder" parameterType="com.mbcTeam.order.OrderVO" resultType="com.mbcTeam.order.OrderVO">
+    SELECT order_Idx AS orderIdx,
+           user_Idx AS userIdx,
+           total_Price AS totalPrice,
+           receiver AS recevier,
+           delivery_Phone AS deliveryPhone,
+           address,
+           extra_Address AS extraAddress,
+           zipcode,
+           order_Date AS orderDate
+    FROM Orders
+    WHERE user_Idx = #{userIdx}
+  </select>
+   
+</mapper>

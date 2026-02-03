@@ -24,12 +24,15 @@
 <br>
 
 
-
+	
+	
+	
 	<div class="product-grid">
 		<c:forEach var="p" items="${li}">
 			<div class="product-card">
 				<!-- 이미지 클릭 시 상세페이지 이동 -->
 				<a href="${path}/userproduct/userproductdetail.do?productIdx=${p.productIdx}">
+				
 					<c:choose>
 						<c:when test="${not empty p.productMainImg}">
 							<img src="${path}/resources/images/${p.productMainImg}"
@@ -66,4 +69,5 @@
 </body>
 </html>
 
+<br><br><br>
 <c:import url="/WEB-INF/view/include/bottom.jsp" />
