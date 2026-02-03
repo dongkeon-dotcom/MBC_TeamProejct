@@ -23,6 +23,16 @@ public class ProductVO {
 	private int discountRate; // 제품할인률
 	private boolean isRecommended; // 제품추천
 
+	//검색용 데이터
+	private String search;		//검색 항목
+	private String keyword; 	//검색 값
+	private String startDate;	//검색 시작일
+	private String endDate;		//검색 마지막일
+	
+	//페이지 사이즈 조절용 데이터
+	private int startIdx;		//검색 시작번호
+	private int pageSize;		//표시할 갯수
+
 	// 옵션 리스트 포함
 	private List<ProductOptionVO> options;
 

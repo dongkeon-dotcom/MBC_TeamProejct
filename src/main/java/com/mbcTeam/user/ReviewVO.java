@@ -10,6 +10,6 @@ public class ReviewVO {
 	private String userName;			// 사용자이름
 	private String review;			// 후기내용
 	private int rating;			// 별점
-	private Boolean isHide;			// 후기숨김
+	private Boolean isHide= false;			// 후기숨김
 	private String regDate;		// 후기등록일
 }

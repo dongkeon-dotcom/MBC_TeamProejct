@@ -1,0 +1,45 @@
+@charset "UTF-8";
+/* 기본 배경 및 레이아웃 */
+body {
+    background-color: #f8f9fa;
+    padding: 20px;
+}
+
+.table-container {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+}
+
+/* 검색바 및 컨트롤러 스타일 */
+.search-select {
+    width: 120px !important;
+}
+
+.date-filter-container {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* 테이블 커스텀 */
+.table thead {
+    background-color: #f2f2f2;
+}
+
+.table img {
+    width: 40px;
+    height: 40px;
+    object-fit: cover;
+}
+
+/* 하단 일괄 적용 카드 */
+.bulk-action-card {
+    width: 420px;
+    border: 1px solid #dee2e6;
+}
+
+.bulk-action-card .input-group-text {
+    background-color: #fff;
+    font-size: 0.9rem;
+}

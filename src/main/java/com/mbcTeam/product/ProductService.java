@@ -10,6 +10,9 @@ public interface ProductService {
     void insertDescImg(ProductDescImgVO divo);
     void insertOption(ProductOptionVO ovo);
     
+    List<ProductVO> adminSelect(ProductVO vo); //제품 조회
+    int  totalCount(ProductVO vo); //제품 전체 갯수
+    
     void update(ProductVO vo); // 상품 수정
     void delete(ProductVO vo); // 상품 삭제
 
