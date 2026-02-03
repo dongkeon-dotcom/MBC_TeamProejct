@@ -3,7 +3,10 @@ package com.mbcTeam.shop;
 import java.util.List;
 import java.util.Map;
 
-public interface OrderDao {
+import com.mbcTeam.order.OrderItemVO;
+import com.mbcTeam.order.OrderVO;
+
+public interface OrderedDao {
 	// 파라미터 5개를 Map<String, Object> 하나로 합쳐서 받겠다고 수정
     List<OrderVO> selectOrderList(Map<String, Object> params);
 

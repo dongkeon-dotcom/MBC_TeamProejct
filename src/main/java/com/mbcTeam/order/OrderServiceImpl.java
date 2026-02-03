@@ -1,9 +1,11 @@
 package com.mbcTeam.order;
 
-import java.util.List;
+import java.util.List; 
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+
 
 
 @Service
@@ -36,4 +38,10 @@ public class OrderServiceImpl implements OrderService {
     public void delete(OrderVO vo) {
         dao.delete(vo);
     }
+
+	@Override
+	public OrderVO selectOrderByOrderIdx(long orderIdx) {
+		// TODO Auto-generated method stub
+		return dao.selectOrderByOrderIdx(orderIdx);
+	}
 }

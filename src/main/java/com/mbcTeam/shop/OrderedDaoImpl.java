@@ -1,14 +1,17 @@
 package com.mbcTeam.shop;
 
-import java.util.HashMap;
+import java.util.HashMap; 
 import java.util.List;
 import java.util.Map;
 
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+
+import com.mbcTeam.order.OrderItemVO;
+import com.mbcTeam.order.OrderVO;
 @Repository
-public class OrderDaoImpl implements OrderDao{
+public class OrderedDaoImpl implements OrderedDao{
 
 	@Autowired
     private SqlSessionTemplate mybatis;

@@ -7,10 +7,14 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.mbcTeam.order.OrderItemVO;
+import com.mbcTeam.order.OrderVO;
+
 @Service
-public class OrderServiceImpl implements OrderService{
+public class OrderedServiceImpl implements OrderedService{
+	
 	@Autowired
-    private OrderDao odao;
+    private OrderedDao odao;
 
     @Override
     public List<OrderVO> selectOrderList(long userIdx, String startDate, String endDate, int offset, int pageSize) {

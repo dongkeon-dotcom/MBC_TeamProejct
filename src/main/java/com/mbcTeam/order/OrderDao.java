@@ -8,4 +8,5 @@ public interface OrderDao {
     void update(OrderVO vo);
     void delete(OrderVO vo);
     List<OrderVO> select(OrderVO vo);
+    OrderVO selectOrderByOrderIdx(long orderIdx);
 }

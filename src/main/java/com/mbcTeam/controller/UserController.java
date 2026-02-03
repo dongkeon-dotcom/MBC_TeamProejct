@@ -1,7 +1,7 @@
 
 package com.mbcTeam.controller;
 
-import java.io.File;
+import java.io.File; 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -21,9 +21,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.mbcTeam.shop.OrderItemVO;
-import com.mbcTeam.shop.OrderService;
-import com.mbcTeam.shop.OrderVO;
+import com.mbcTeam.order.OrderItemVO;
+import com.mbcTeam.shop.OrderedService;
+import com.mbcTeam.order.OrderVO;
 import com.mbcTeam.user.ReviewImageVO;
 import com.mbcTeam.user.ReviewService;
 import com.mbcTeam.user.ReviewVO;
@@ -39,7 +39,7 @@ public class UserController {
 	private UserService service;
 	
 	@Autowired
-	private OrderService oservice;
+	private OrderedService oservice;
 	
 	@Autowired
 	private ReviewService rservice;

@@ -41,4 +41,10 @@ public class OrderDaoImpl implements OrderDao {
     public List<OrderVO> select(OrderVO vo) {
         return mybatis.selectList("ORDERS.selectOrder", vo);
     }
+
+	@Override
+	public OrderVO selectOrderByOrderIdx(long orderIdx) {
+		// orderdetailList에서 표시하기 위한매소드 
+		return mybatis.selectOne("ORDER.DETAILLIST",orderIdx);
+	}
 }

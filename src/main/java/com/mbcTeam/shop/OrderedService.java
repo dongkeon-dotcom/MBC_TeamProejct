@@ -4,8 +4,11 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import com.mbcTeam.order.OrderItemVO;
+import com.mbcTeam.order.OrderVO;
 
-public interface OrderService {
+
+public interface OrderedService {
 	// 주문 내역 리스트 조회
     List<OrderVO> selectOrderList(long userIdx, String startDate, String endDate, int offset, int pageSize);
     
