@@ -81,4 +81,9 @@ public class ProductDaoImpl implements ProductDao {
 	public int totalCount(ProductVO vo) {
 		return mybatis.selectOne("PRODUCT.TOTAL_COUNT", vo);
 	}
+
+	@Override
+	public List<ProductVO> adminSelect(ProductVO vo) {
+		return mybatis.selectList("SELECT_ADMIN_PRODUCT_LIST", vo);
+	}
 }

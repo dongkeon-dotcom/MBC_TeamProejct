@@ -111,7 +111,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
 
     <!-- 상품 목록 조회 -->
-    <select id="SELECT_PRODUCT_LIST"
+    <select id="SELECT_ADMIN_PRODUCT_LIST"
         resultType="com.mbcTeam.product.ProductVO">
         SELECT * FROM Products 
         <include refid="searchInclude"/>
@@ -199,21 +199,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		WHERE p.product_Idx = #{productIdx}
 	</select>
 
-	<!-- 전체 상품 조회 -->
-	<select id="SELECT_ALL_PRODUCTS"
-		resultType="com.mbcTeam.product.ProductVO">
-		SELECT p.product_Idx,
-		p.category,
-		p.subCategory,
-		p.product_Name,
-		p.price,
-		p.reg_Date,
-		p.product_Desc,
-		p.discount_rate,
-		p.is_Recommended
-		FROM Products p
-		ORDER BY p.reg_Date DESC
-	</select>
 
 	<!-- 카테고리별 상품 조회 -->
 	<select id="SELECT_BY_CATEGORY" parameterType="string"
