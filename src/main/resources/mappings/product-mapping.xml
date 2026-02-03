@@ -5,6 +5,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
 <mapper namespace="PRODUCT">
 
+<<<<<<< HEAD
 	<!-- 상품 등록 -->
 	<insert id="INSERT_PRODUCT"
 		parameterType="com.mbcTeam.product.ProductVO" useGeneratedKeys="true"
@@ -49,6 +50,69 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		#{productImgOrder}
 		)
 	</insert>
+=======
+    <!-- 상품 등록 -->
+    <insert id="INSERT_PRODUCT"
+        parameterType="com.mbcTeam.product.ProductVO"
+        useGeneratedKeys="true"
+        keyProperty="productIdx">
+        INSERT INTO Products (
+            category,
+            subCategory,
+            product_Name,
+            price,
+            reg_Date,
+            product_Desc,
+            product_main_img,
+            product_size_img,
+            discount_rate,
+            is_recommended
+        )
+        VALUES (
+            #{category},
+            #{subCategory},
+            #{productName},
+            #{price},
+            #{regDate},
+            #{productDesc},
+            #{productMainImg},
+            #{productSizeImg},
+            #{discountRate},
+            #{isRecommended}
+        )
+    </insert>
+
+    <!-- 상품 이미지 등록 -->
+    <insert id="INSERT_PRODUCT_IMG"
+        parameterType="com.mbcTeam.product.ProductImgVO">
+        INSERT INTO ProductImg (
+            product_Idx,
+            product_Img,
+            product_Img_Order
+        )
+        VALUES (
+            #{productIdx},
+            #{productImg},
+            #{productImgOrder}
+        )
+    </insert>
+    
+    
+    <!-- 상품 이미지 등록 -->
+    <insert id="INSERT_PRODUCT_DESC_IMG"
+        parameterType="com.mbcTeam.product.ProductDescImgVO">
+        INSERT INTO ProductDescImg (
+            product_Idx,
+            product_Desc_Img,
+            product_Desc_Img_Order
+        )
+        VALUES (
+            #{productIdx},
+            #{productDescImg},
+            #{productDescImgOrder}
+        )
+    </insert>
+>>>>>>> 1c0d4591a99f4c7024e4d11a62e747eb609865e0
 
 	<!-- 상품 옵션 등록 -->
 	<insert id="INSERT_PRODUCT_OPTION"

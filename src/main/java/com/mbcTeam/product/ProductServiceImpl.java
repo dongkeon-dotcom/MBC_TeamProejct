@@ -14,24 +14,18 @@ public class ProductServiceImpl implements ProductService {
 
     @Transactional
     @Override
-    public void insert(ProductVO vo, List<ProductImgVO> imgList, List<ProductOptionVO> options) {
+    public void insert(ProductVO vo) {
         dao.insert(vo);
-
-        // 이미지 등록
-        if (imgList != null) {
-            for (ProductImgVO img : imgList) {
-                //img.setProductIdx(vo.getProductIdx());
-                dao.insertImg(img);
-            }
-        }
-
-        // 옵션 등록
-        if (options != null) {
-            for (ProductOptionVO option : options) {
-                //option.setProductIdx(vo.getProductIdx());
-                dao.insertOption(option);
-            }
-        }
+    }
+    
+    @Override
+    public void insertImg(ProductImgVO ivo) {
+        dao.insertImg(ivo);
+    }
+    
+    @Override
+    public void insertDescImg(ProductDescImgVO divo) {
+    	dao.insertDescImg(divo);
     }
 
     @Override

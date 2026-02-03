@@ -7,8 +7,9 @@ import com.mbcTeam.user.ReviewVO;
 public interface ProductDao {
 
     void insert(ProductVO vo); // 상품 등록
-    void insertImg(ProductImgVO img); // 이미지 등록
-    void insertOption(ProductOptionVO option); // 옵션 등록
+    void insertImg(ProductImgVO ivo); // 이미지 등록
+    void insertDescImg(ProductDescImgVO divo);
+    void insertOption(ProductOptionVO ovo); // 옵션 등록
 
     void update(ProductVO vo); // 상품 수정
     void delete(ProductVO vo); // 상품 삭제

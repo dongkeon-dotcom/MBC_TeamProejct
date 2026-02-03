@@ -11,6 +11,6 @@ public class ProductImgVO {
 	private int productIdx; // 제품번호
 	private String productImg; // 제품 이미지
 	private MultipartFile productImgfile;
-	private String productImgOrder; // 경로	이미지 순서
+	private int productImgOrder; // 경로	이미지 순서
 	
 }
