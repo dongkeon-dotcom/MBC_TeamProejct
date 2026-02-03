@@ -1,7 +1,7 @@
-
-package com.mbcTeam.shop;
+package com.mbcTeam.order;
 
 import lombok.Data;
+
 
 @Data
 public class OrderVO {
@@ -14,4 +14,6 @@ public class OrderVO {
     private String extraAddress;        // 상세주소
     private String zipcode;                // 우편번호
     private String orderDate;                // 주문일자
+    
+    
 }

@@ -28,6 +28,7 @@
 							<option value="원피스">원피스</option>
 						</select>
 					</div>
+					
 					<div class="col-12 mb-4">
 						<label class="main-label">하위카테고리</label>
 						<select
@@ -36,6 +37,7 @@
 							<option selected>-- 하위 카테고리 선택 --</option>
 						</select>
 					</div>
+					
 					<div class="col-12 mb-4">
 						<label class="main-label">상품명</label>
 						<input type="text" class="form-control"
