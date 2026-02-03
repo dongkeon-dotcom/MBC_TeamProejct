@@ -18,13 +18,18 @@ public class ProductDaoImpl implements ProductDao {
     }
 
     @Override
-    public void insertImg(ProductImgVO img) {
-        mybatis.insert("PRODUCT.INSERT_PRODUCT_IMG", img);
+    public void insertImg(ProductImgVO ivo) {
+        mybatis.insert("PRODUCT.INSERT_PRODUCT_IMG", ivo);
+    }
+    
+    @Override
+    public void insertDescImg(ProductDescImgVO divo) {
+        mybatis.insert("INSERT_PRODUCT_DESC_IMG", divo);
     }
 
     @Override
-    public void insertOption(ProductOptionVO option) {
-        mybatis.insert("PRODUCT.INSERT_PRODUCT_OPTION", option);
+    public void insertOption(ProductOptionVO ovo) {
+        mybatis.insert("PRODUCT.INSERT_PRODUCT_OPTION", ovo);
     }
 
     @Override

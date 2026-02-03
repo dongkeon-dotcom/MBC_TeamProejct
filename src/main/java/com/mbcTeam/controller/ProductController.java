@@ -18,6 +18,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.mbcTeam.product.ProductService;
 import com.mbcTeam.product.ProductVO;
+import com.google.protobuf.Option;
 import com.mbcTeam.product.ProductDescImgVO;
 import com.mbcTeam.product.ProductImgVO;
 import com.mbcTeam.product.ProductOptionVO;
@@ -58,7 +59,6 @@ public class ProductController {
 		vo.setDiscountRate(0);
 		vo.setRecommended(false);
 		
-
 		// 2. 제품 대표 이미지 처리
 		MultipartFile mainFile = vo.getProductMainImgfile();
 		String mainFileName = mainFile.getOriginalFilename();
@@ -66,11 +66,11 @@ public class ProductController {
 		String uploadMainDir = imgPath + "ProductMainImg";
 
 		if (!mainFile.isEmpty()) {
-			String fileName = System.currentTimeMillis() + "_" + mainFile.getOriginalFilename();
-			String uploadPath = uploadMainDir + File.separator + fileName;
+			mainFileName = System.currentTimeMillis() + "_MAIN_" + mainFile.getOriginalFilename();
+			String uploadPath = uploadMainDir + File.separator + mainFileName;
 
-			System.out.println("메인이미지 최종저장경로 및 파일이름: " + uploadPath);
-			// mainFile.transferTo(new File(uploadPath));
+			//System.out.println("메인이미지 최종저장경로 및 파일이름: " + uploadPath);
+			mainFile.transferTo(new File(uploadPath));
 		}
 		// 3. 제품 사이즈 이미지 처리
 		MultipartFile sizeFile = vo.getProductSizeImgfile();
@@ -79,56 +79,66 @@ public class ProductController {
 		String uploadSizeDir = imgPath + "ProductSizeImg";
 		
 		if(!sizeFile.isEmpty()) {
-			String fileName = System.currentTimeMillis() + "_" + sizeFile.getOriginalFilename();
-			String uploadPath = uploadSizeDir + File.separator + fileName;
+			sizeFileName = System.currentTimeMillis() + "_SIZE_" + sizeFile.getOriginalFilename();
+			String uploadPath = uploadSizeDir + File.separator + sizeFileName;
 			
 			System.out.println("제품사이즈이미지 최종저장경로 및 파일이름: " + uploadPath);
+			sizeFile.transferTo(new File(uploadPath));
+		}
+		
+		
+		// 3. 서비스 INSERT 작업
+		vo.setProductMainImg(mainFileName);
+		vo.setProductSizeImg(sizeFileName);
+		service.insert(vo);
+
+		// 4. 제품 이미지 처리
+		for (int i = 0; i < dto.getProductImgList().size(); i++) {
+			ProductImgVO ivo = new ProductImgVO();
+			MultipartFile imgFile = dto.getProductImgList().get(i);
+			String imgFileName = imgFile.getOriginalFilename();
+			String uploadImgDir = imgPath + "ProductImg";
+			
+			if(!imgFile.isEmpty()) {
+				imgFileName = System.currentTimeMillis() + "_IMG_" + imgFile.getOriginalFilename();
+				String uploadPath = uploadImgDir + File.separator + imgFileName;
+				
+				imgFile.transferTo(new File(uploadPath));
+			}
+			ivo.setProductIdx(vo.getProductIdx());
+			ivo.setProductImg(imgFileName);
+			ivo.setProductImgOrder(i+1);
+			service.insertImg(ivo);			
+		}
+		
+		// 5. 제품 설명 이미지 처리
+		for (int i = 0; i < dto.getProductDescImgList().size(); i++) {
+			ProductDescImgVO divo = new ProductDescImgVO();
+			MultipartFile dimgFile = dto.getProductDescImgList().get(i);
+			String dimgFileName = dimgFile.getOriginalFilename();
+			String uploadDescImgDir = imgPath + "ProductDescImg";
+			
+			if(!dimgFile.isEmpty()) {
+				dimgFileName = System.currentTimeMillis() + "_DESCIMG_" + dimgFile.getOriginalFilename();
+				String uploadPath = uploadDescImgDir + File.separator + dimgFileName;
+				
+				dimgFile.transferTo(new File(uploadPath));
+			}
+			divo.setProductIdx(vo.getProductIdx());
+			divo.setProductDescImg(dimgFileName);
+			divo.setProductDescImgOrder(i+1);
+			service.insertDescImg(divo);	
+		
 		}
 
-		// 3. 서비스 호출 (상품 + 이미지 + 옵션 등록)
-		// service.insert(vo, imgList, vo.getOptions());
+		// 6. 제품 옵션 처리
+		List<ProductOptionVO> ovo = dto.getProductOptionList();
+		for (int i = 0; i < ovo.size(); i++) {
+			ProductOptionVO option = ovo.get(i);
+			option.setProductIdx(vo.getProductIdx());
+			service.insertOption(option);			
+		}
 
-		//List<ProductOptionVO> ovo = dto.getProductOptionList();
-
-//		System.out.println("PRODUCT OPTION VO 값: \n");
-//		for (int i = 0; i < ovo.size(); i++) {
-//			ProductOptionVO option = ovo.get(i);
-//			System.out.println("Option IDX: " + option.getOptionIdx() + "\nColor: " + option.getColor() + "\nSize: "
-//					+ option.getSize() + "\nStock: " + option.getStock());
-//		}
-//
-//		System.out.println("PRODUCT Img VO 값: \n");
-//		for (int i = 0; i < dto.getProductImgList().size(); i++) {
-//
-//			MultipartFile imgFile = dto.getProductImgList().get(i);
-//			String imgFileName = imgFile.getOriginalFilename();
-//
-//			System.out.println("ImgFileName: " + imgFileName);
-//		}
-//
-//		System.out.println("PRODUCT Desc Img VO 값: \n");
-//		for (int i = 0; i < dto.getProductDescImgList().size(); i++) {
-//
-//			MultipartFile dimgFile = dto.getProductDescImgList().get(i);
-//			String dimgFileName = dimgFile.getOriginalFilename();
-//
-//			System.out.println("DescImgFileName: " + dimgFileName);
-//		}
-//
-		System.out.println(
-				"PRODUCT VO 값: \n" + 
-		"Product IDX: " + vo.getProductIdx() + 
-		"\nCategory: " + vo.getCategory() + 
-		"\nSubCategory: " + vo.getSubCategory() +
-		"\nProductName: " + vo.getProductName() +
-		"\nPrice: " + vo.getPrice() +
-		"\nRegDate: " + vo.getRegDate() +
-		"\nProductDesc: " + vo.getProductDesc() + 
-		"\nmainFileName: " + mainFileName +
-		"\nsizeFileName: " + sizeFileName + 
-		"\ndiscountRate: " + vo.getDiscountRate() + //입력받은 값이 없으므로 NULL
-		"\nisRecommended: " + vo.isRecommended() //입력받은 값이 없으므로 NULL
-				);
 
 
 		return "redirect:/product/list.do";

@@ -5,8 +5,11 @@ import com.mbcTeam.user.ReviewVO;
 
 public interface ProductService {
 
-    void insert(ProductVO vo, List<ProductImgVO> imgList, List<ProductOptionVO> options); // 상품 + 이미지 + 옵션 등록
-    void insertOption(ProductOptionVO option);
+    void insert(ProductVO vo);
+    void insertImg(ProductImgVO ivo); // 이미지 등록
+    void insertDescImg(ProductDescImgVO divo);
+    void insertOption(ProductOptionVO ovo);
+    
     void update(ProductVO vo); // 상품 수정
     void delete(ProductVO vo); // 상품 삭제
 

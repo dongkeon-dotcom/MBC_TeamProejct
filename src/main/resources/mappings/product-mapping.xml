@@ -27,7 +27,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             #{subCategory},
             #{productName},
             #{price},
-            NOW(),
+            #{regDate},
             #{productDesc},
             #{productMainImg},
             #{productSizeImg},
@@ -48,6 +48,22 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             #{productIdx},
             #{productImg},
             #{productImgOrder}
+        )
+    </insert>
+    
+    
+    <!-- 상품 이미지 등록 -->
+    <insert id="INSERT_PRODUCT_DESC_IMG"
+        parameterType="com.mbcTeam.product.ProductDescImgVO">
+        INSERT INTO ProductDescImg (
+            product_Idx,
+            product_Desc_Img,
+            product_Desc_Img_Order
+        )
+        VALUES (
+            #{productIdx},
+            #{productDescImg},
+            #{productDescImgOrder}
         )
     </insert>
 

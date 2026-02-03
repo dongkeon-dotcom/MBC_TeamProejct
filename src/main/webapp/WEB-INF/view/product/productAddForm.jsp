@@ -12,7 +12,7 @@
 		<h2 class="text-center mb-5 fw-bold">상품 등록 페이지</h2>
 
 		<form action="${path}/product/productAddFormOK.do" method="post"
-			enctype="multipart/form-data">
+			enctype="multipart/form-data" onsubmit="return handleFormSubmit(event)">
 			<div class="card p-4 mb-4 shadow-sm mx-auto" style="max-width: 80%;">
 				<div class="row px-md-5">
 					<div class="col-12 mb-4">
@@ -205,10 +205,34 @@ function addRow() {
     }
 
     function removeRow(button) {
-        const row = button.closest('tr');
-        row.remove();
+    	const row = button.closest('tr');
+        const tbody = row.parentElement;
+        row.remove(); // 행 삭제
+        
+        reorderIndices(tbody); // 삭제 후 인덱스 재정렬 실행
     }
 
+    
+ // 2. 인덱스 재정렬 함수
+    function reorderIndices(tbody) {
+        const rows = tbody.querySelectorAll('.option-row');
+        
+        rows.forEach((row, index) => {
+            // 해당 행 안의 모든 input, select 요소를 찾음
+            const elements = row.querySelectorAll('input, select');
+            
+            elements.forEach(el => {
+                const oldName = el.getAttribute('name');
+                if (oldName) {
+                    // 정규표현식을 사용하여 options[숫자] 부분을 options[현재순서]로 교체
+                    // 예: options[3].color -> options[0].color
+					const newName = oldName.replace(/\[\d+\]/, '[' + index + ']');
+                	el.setAttribute('name', newName);
+                    //console.log("적용후 이름: " + newName);
+                }
+            });
+        });
+    }
  // 3. 이미지 업로드 핵심 함수 (새로 추가됨 - 버튼 동작의 핵심)
 function triggerFileSelect(containerId) {
 	 
@@ -291,37 +315,60 @@ function getParamName(id) {
 // 옵션 컬러,사이즈 중복검사
 function validateOptions() {
     const rows = document.querySelectorAll('.option-row');
-    const checkedOptions = new Set(); // 중복 체크를 위한 Set 객체
+    if (rows.length === 0) return true; // 옵션이 없으면 통과
+
+    const checkedOptions = new Set();
 
     for (let i = 0; i < rows.length; i++) {
-        // 각 행의 컬러와 사이즈 값 가져오기
-        const color = rows[i].querySelector('select[name*="color"]').value;
-        const size = rows[i].querySelector('select[name*="size"]').value;
-        const combination = color + "_" + size; // "White_S" 같은 형태로 조합
+        // name 속성이 .color / .size 로 끝나는 엘리먼트를 정확히 타겟팅
+        const colorEl = rows[i].querySelector('select[name$=".color"]');
+        const sizeEl = rows[i].querySelector('select[name$=".size"]');
+
+        if (!colorEl || !sizeEl) continue;
+
+        const color = colorEl.value;
+        const size = sizeEl.value;
+        const combination = color + "_" + size;
 
         if (checkedOptions.has(combination)) {
-            alert(`중복된 옵션이 있습니다: [${color} / ${size}]\n옵션을 확인해 주세요.`);
-            rows[i].style.backgroundColor = '#ffecec'; // 중복된 행 강조
-            return false; // 전송 중단
+            alert("중복된 옵션이 있습니다: [" + color + " / " + size + "]\n옵션을 확인해 주세요.");
+            rows[i].scrollIntoView({ behavior: 'smooth', block: 'center' }); // 해당 위치로 이동
+            rows[i].style.backgroundColor = '#ffecec'; // 강조
+            return false; 
         }
+        
         checkedOptions.add(combination);
+        rows[i].style.backgroundColor = ''; // 중복 아니면 배경색 초기화
     }
-    return true; // 검증 통과
+    return true; 
 }
 
 // 폼 전송 이벤트 연결
-document.querySelector('form').onsubmit = function() {
-    // 1. 옵션 중복 체크
-    if (!validateOptions()) return false;
-    
-    // 2. (선택사항) 상품명이나 가격 등 필수값 체크도 여기서 가능합니다.
-    if (document.getElementById('productName').value.trim() === "") {
+function handleFormSubmit(e) {
+    // 1. 상품명 체크
+    const productName = document.getElementById('productName').value.trim();
+    if (productName === "") {
         alert("상품명을 입력해주세요.");
-        return false;
+        document.getElementById('productName').focus();
+        return false; // 전송 중단
     }
 
-    return true; // 모든 검사 통과 시 전송
-};
+    // 2. 가격 체크 (추가)
+    if (document.getElementById('price').value === "" || document.getElementById('price').value < 0) {
+        alert("올바른 가격을 입력해주세요.");
+        document.getElementById('price').focus();
+        return false;
+    }
+        
+
+    // 3. 옵션 중복 체크
+    if (!validateOptions()) {
+        return false; // 중복이면 전송 중단
+    }
+
+    // 모든 검사 통과 시 true 반환하여 폼 제출 허용
+    return true;
+}
 
 </script>
 
