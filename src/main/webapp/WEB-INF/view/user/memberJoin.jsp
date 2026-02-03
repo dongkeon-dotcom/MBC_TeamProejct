@@ -18,7 +18,7 @@
     <div align="center">
         <h1>회원 가입2 </h1>
 <form name="joinForm" method="post"
-      action="${path}/member/memberOK.do">
+      action="${path}/user/memberOK.do">
 
   <c:if test="${!isSocial}">
     <tr>
@@ -27,7 +27,7 @@
     </tr>
     <tr>
       <td colspan="2">
-        <input type="text" name="userID" id="userID" size="25" placeholder="이메일을 입력하세요" />
+        <input type="text" name="id" id="id" size="25" placeholder="이메일을 입력하세요" />
         <span id="emailMsg"></span>
       </td>
     </tr>
@@ -37,7 +37,7 @@
     <tr><td colspan="2">암호</td></tr>
     <tr>
       <td colspan="2">
-        <input type="password" name="userPW" size="25" placeholder="비밀번호 입력 (최소8자이상)" />
+        <input type="password" name="password" size="25" placeholder="비밀번호 입력 (최소8자이상)" />
       </td>
     </tr>
     <tr>
@@ -72,9 +72,9 @@ function joinCheck() {
   const form = document.joinForm;
 
   if (!isSocial) {
-    if (form.userID.value.trim() === "") {
+    if (form.id.value.trim() === "") {
       alert("아이디를 입력하세요");
-      form.userID.focus();
+      form.id.focus();
       return;
     }
 
@@ -83,13 +83,13 @@ function joinCheck() {
       return;
     }
 
-    if (form.userPW.value === "") {
+    if (form.password.value === "") {
       alert("비밀번호를 입력하세요");
-      form.userPW.focus();
+      form.password.focus();
       return;
     }
 
-    if (form.userPW.value !== form.userPWck.value) {
+    if (form.password.value !== form.userPWck.value) {
       alert("비밀번호가 일치하지 않습니다");
       form.userPWck.focus();
       return;
@@ -112,7 +112,7 @@ function joinCheck() {
 }
 
 function checkEmail() {
-  const email = document.getElementById("userID").value.trim();
+  const email = document.getElementById("id").value.trim();
   const msg = document.getElementById("emailMsg");
 
   if (email === "") {
@@ -122,7 +122,7 @@ function checkEmail() {
     return;
   }
 
-  fetch("${path}/user/checkEmail.do?userID=" + encodeURIComponent(email))
+  fetch("${path}/user/checkEmail.do?id=" + encodeURIComponent(email))
     .then(res => res.json())
     .then(data => {
       if (data.exists) {

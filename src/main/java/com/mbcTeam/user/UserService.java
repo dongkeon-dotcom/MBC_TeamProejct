@@ -22,4 +22,13 @@ public interface UserService {
 
   List<ProductVO> selectOrderList(ProductVO vo); 
   
+  
+//후기 저장을 위한 컨트롤러에 사용 
+int insertReview(ReviewVO vo);
+void insertReviewImg(ReviewImageVO imgVO);
+//수정을 위한매소
+void updateUser(UserVO vo);
+
+//추가: ID로 사용자 정보 조회
+UserVO getUserById(String id);
 }

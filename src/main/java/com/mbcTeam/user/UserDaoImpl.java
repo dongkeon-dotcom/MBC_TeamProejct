@@ -60,4 +60,28 @@ public class UserDaoImpl implements UserDao {
 		return mybatis.selectList("USER.selectOrder",vo );
 	}
 
+	@Override
+	public int insertReview(ReviewVO vo) {
+		// TODO Auto-generated method stub
+		return mybatis.insert("USER.insertReview", vo);
+	}
+
+	@Override
+	public void insertReviewImg(ReviewImageVO imgVO) {
+		mybatis.insert("USER.insertReviewImg", imgVO);
+		
+	}
+
+	@Override
+	public void updateUser(UserVO vo) {
+		mybatis.update("USER.UPDATE_USER", vo);
+	}
+
+	@Override
+	public UserVO getUserById(String id) {
+		// TODO Auto-generated method stub
+		return mybatis.selectOne("USER.GET_USER_BY_ID", id);
+	}
+
+	
 }

@@ -9,16 +9,16 @@
 		<h1>개인 회원 정보 수정</h1>
 
 		<!-- action은 컨트롤러 매핑에 맞게 수정 -->
-		<form action="${path}/member/update.do" method="POST">
+		<form action="${path}/user/memberEdit.do" method="POST">
 
 			<!-- hidden 값 -->
-			<input type="hidden" name="idx" value="${m.idx}">
+			<input type="hidden" name="idx" value="${m.userIdx}">
 
 
 			<table border="1">
 				<tr>
 					<td>이메일</td>
-					<td><input type="text" name="username" value="${m.username}"
+					<td><input type="text" name="id" value="${m.id}"
 						readonly></td>
 				</tr>
 
@@ -31,21 +31,21 @@
 
 				<tr>
 					<td>회원 이름</td>
-					<td><input type="text" name="name" value="${m.name}"></td>
+					<td><input type="text" name="name" value="${m.userName}"></td>
 				</tr>
 
 
 
 				<tr>
 					<td>전화번호</td>
-					<td><input type="text" name="tel" value="${m.tel}"></td>
+					<td><input type="text" name="tel" value="${m.userPhone}"></td>
 				</tr>
 
 
 				<tr>
 					<td>주소</td>
-					<td><input type="text" name="postcode" value="${m.postcode}"
-						placeholder="우편번호"></td>
+					<td> <!-- <input type="text" name="postcode" value="${m.address}"
+						placeholder="우편번호"> --></td>
 				</tr>
 
 			</table>

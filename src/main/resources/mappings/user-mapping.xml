@@ -4,80 +4,100 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 
-
-	
 <mapper namespace="USER">
 
-    <!-- 회원가입  마지막의 now()는 -->
-    <insert id="insert" parameterType="com.mbcTeam.user.UserVO">
-        INSERT INTO user (
-            user_email,user_pw,user_name,user_phone, user_role,easy_login,deleted,user_reg_date)
-            VALUES (#{userID}, #{userPW},#{userName},  #{userPhone}, #{userRole},#{easyLogin},#{deleted},NOW())
+    <insert id="INSERT" parameterType="com.mbcTeam.user.UserVO">
+        INSERT INTO users (
+            id, password, user_Name, user_Phone, user_Role, is_easy_login, is_deleted, reg_Date
+        ) VALUES (
+            #{id}, #{password}, #{userName}, #{userPhone}, #{userRole}, #{easyLogin}, #{deleted}, NOW()
+        )
     </insert>
+<select id="LOGIN" parameterType="com.mbcTeam.user.UserVO" resultType="com.mbcTeam.user.UserVO">
+    SELECT  
+       user_idx       AS userIdx,
+        id, 
+        password, 
+        user_Name      AS userName,    user_Phone     AS userPhone,   user_Role      AS userRole,    is_easy_login  AS easyLogin,   is_deleted     AS deleted,     reg_Date       AS regDate      FROM users 
+    WHERE id = #{id} 
+      AND password = #{password} 
+      AND is_deleted = 0               </select>
 
-    <!-- 로그인 -->
-    <select id="login" parameterType="com.mbcTeam.user.UserVO" resultType="com.mbcTeam.user.UserVO">
-        SELECT  userIdx,user_email AS userEmail, user_pw AS userPW, user_name AS userName,
-         user_phone AS userPhone,user_role  AS userRole, easy_login  AS easyLogin,deleted, user_reg_date  AS userRegDate
-        FROM user WHERE user_email = #{userID} AND user_pw = #{userPW} AND deleted = false
-    </select>
-
-    <!-- 회원 단건 조회 -->
     <select id="getById" parameterType="com.mbcTeam.user.UserVO" resultType="com.mbcTeam.user.UserVO">
         SELECT
-            userIdx,
-            user_email     AS userEmail,
-            user_pw        AS userPW,
+       user_idx       AS userIdx,
+            user_email     AS id,
+            user_pw        AS password,
             user_name      AS userName,
             user_phone     AS userPhone,
             user_role      AS userRole,
             easy_login     AS easyLogin,
-            deleted,
-            user_reg_date  AS userRegDate
-        FROM user
+            deleted        AS deleted,
+            user_reg_date  AS regDate
+        FROM users
         WHERE userIdx = #{userIdx}
     </select>
 
-    <!-- 회원 정보 수정 -->
     <update id="update" parameterType="com.mbcTeam.user.UserVO">
-        UPDATE user
+        UPDATE users
         SET
             user_name  = #{userName},
             user_phone = #{userPhone}
         WHERE userIdx = #{userIdx}
     </update>
 
-    <!-- 회원 탈퇴 (논리 삭제) -->
     <update id="delete" parameterType="com.mbcTeam.user.UserVO">
-        UPDATE user
+        UPDATE users
         SET deleted = true
         WHERE userIdx = #{userIdx}
     </update>
 
-    <!-- 이메일 중복 체크 -->
     <select id="countByEmail" parameterType="com.mbcTeam.user.UserVO" resultType="int">
         SELECT COUNT(*)
-        FROM user
-        WHERE userID = #{userID}
+        FROM users
+        WHERE id = #{id}
     </select>
-<!-- 구글 로그인  -->
-<select id="getByEmail" parameterType="com.mbcTeam.user.UserVO" resultType="com.mbcTeam.user.UserVO">
-    SELECT
-        userIdx        AS userIdx,
-        user_email      AS userID,
-        user_pw         AS userPW,
-        user_name       AS userName,
-        user_phone      AS userPhone,
-        user_role       AS userRole,
-        easy_login      AS userEasyLogin,
-        deleted         AS userIsDeleted,
-        user_reg_date   AS userRegDate
-    FROM user
-    WHERE user_email = #{userID}
+
+    <select id="getByEmail" parameterType="com.mbcTeam.user.UserVO" resultType="com.mbcTeam.user.UserVO">
+        SELECT
+            userIdx        AS userIdx,
+            id     AS id,
+            password        AS password,
+            userName      AS userName,
+            userPhone     AS userPhone,
+            userRole      AS userRole,
+            isEasyLogin     AS easyLogin,
+            isDeleted        AS deleted,
+            regDate  AS regDate
+        FROM users
+        WHERE id = #{id}
+    </select>
+
+
+
+
+ <update id="UPDATE_USER" parameterType="com.mbcTeam.user.UserVO">
+        UPDATE users
+        SET
+            id  = #{id},
+            user_phone = #{userPhone}
+        WHERE userIdx = #{userIdx}
+    </update>
+
+
+<select id="GET_USER_BY_ID" parameterType="String" resultType="com.mbcTeam.user.UserVO">
+    SELECT  
+        userIdx,
+        id, 
+        password, 
+        user_Name      AS userName,
+        user_Phone     AS userPhone,
+        user_Role      AS userRole, 
+        is_easy_login  AS easyLogin,
+        is_deleted     AS deleted,
+        reg_Date       AS regDate
+    FROM users 
+    WHERE id = #{id}  AND is_deleted = 0
 </select>
-
-
-	
-	
 
 </mapper>

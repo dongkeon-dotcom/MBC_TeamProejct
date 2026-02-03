@@ -1,7 +1,8 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-    
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>  
 <c:set var="path" scope="request" value="${pageContext.request.contextPath }"/>    
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -92,44 +93,42 @@ top.jsp에 들어가야할것들
                 </li>
             </ul>
         </nav>
-        
-        
-        
-        
-        
-        
-        
-        <!-- 우선영 매뉴 관리테스트중!!!  -->
-<a href="${path}/user/mypage.do"> ww마이페이</a>&emsp;&emsp;&emsp;
-	<a href="${path}/user/login.do"> ww로그인</a>
-<!-- /우선영 매뉴 관리테스트중!!!  -->
-&emsp;&emsp;&emsp;
-
-<!-- null 과 공배 모두 체크 -->
-<c:if test="${empty id}">
-	<a href="${path}/memberLogin/login.do"> 로그인</a>
-</c:if>
-<c:if test="${not empty id}">
-	<a href="${path}/member/logout.do"> ${id}로그아웃</a>
-</c:if>
 
         <!-- 우측 검색창 + 유저 메뉴 -->
-        <div class="right-area">
-            <form class="search-form" action="/search" method="post">
-                <input type="text" name="keyword" placeholder="검색어 입력">
-                <button type="submit">검색</button>
-            </form>
-            <div class="user-menu">
-                <c:if test="${empty sessionScope.username}">
-                    <a href="${path}/member/login.do">로그인</a>
-                </c:if>
-                <c:if test="${not empty sessionScope.username}">
-                    <a href="${path}/logout.do">${sessionScope.name}(ROLE:${sessionScope.role}) 로그아웃</a>
-                </c:if>
-                <a href="${path}/member/mypage.do">마이페이지</a>
-                <a href="/cart">장바구니</a>
-            </div>
-        </div>
+<div class="right-area">
+    <form class="search-form" action="/search" method="post">
+        <input type="text" name="keyword" placeholder="검색어 입력">
+        <button type="submit">검색</button>
+    </form>
+    
+    <div class="user-menu">
+        <c:choose>
+            <%-- 1. 로그아웃 상태일 때 --%>
+            <c:when test="${empty sessionScope.loginMember}">
+                <a href="${path}/user/login.do">로그인</a>
+                <a href="${path}/user/member.do">회원가입</a>
+                   <a href="${path}/user/mypage.do">마이페이지</a>
+        <a href="/cart">장바구니</a>
+            </c:when>
+            
+            <%-- 2. 로그인 상태일 때 --%>
+            <c:otherwise>
+                <span>
+                    <strong>${sessionScope.loginMember.userName}</strong>님 
+                    (권한: ${sessionScope.loginMember.userRole})
+                    <%--116line 추후 삭제필요  테스트확인을 위한 role확인--%>
+                </span>
+              
+              <a href="${path}/user/mypage.do">마이페이지</a>
+        <a href="/cart">장바구니</a>
+          <a href="${path}/user/logout.do" style="margin-left:10px;">로그아웃</a>
+            </c:otherwise>
+        </c:choose>
+
+        <%-- 공통 메뉴 (상황에 따라 위치 조정 가능) --%>
+     
+    </div>
+</div>
     </header>
 
     
