@@ -54,4 +54,29 @@ public class UserServiceImpl implements UserService  {
 		return dao.selectOrderList(vo);
 	}
 
+	@Override
+	public int insertReview(ReviewVO vo) {
+		// TODO Auto-generated method stub
+		return dao.insertReview(vo);
+	}
+
+	@Override
+	public void insertReviewImg(ReviewImageVO imgVO) {
+		// TODO Auto-generated method stub
+		dao.insertReviewImg(imgVO);	
+	}
+
+	@Override
+	public void updateUser(UserVO vo) {
+		// TODO Auto-generated method stub
+		dao.updateUser(vo);
+	}
+
+
+	@Override
+	public UserVO getUserById(String id) {
+		// TODO Auto-generated method stub
+		return dao.getUserById(id);
+	}
+
 }

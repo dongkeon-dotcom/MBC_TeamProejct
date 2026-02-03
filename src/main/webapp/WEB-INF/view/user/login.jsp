@@ -13,15 +13,16 @@
 
   <div align="center">
   <h1 class="login-title">회원 로그인1</h1>
+  <form action="${path}/user/loginOK.do" method="post">
      	<table  >
                 <tr><td>아이디(이메일)</td>
-                    <td><input type="text" name="userID" size="25" value="${prevEmail}" placeholder="이메일을 입력하세요"/>
+                    <td><input type="text" name="id" size="25" value="${prevEmail}" placeholder="이메일을 입력하세요"/>
                         
                       <c:if test="${not empty emailError}">
                        <div style="color:red; font-size:12px;">${emailError}</div> </c:if> </td></tr>
 
                 <tr><td>암호</td>
-                    <td> <input type="password" name="userPW" size="25" />
+                    <td> <input type="password" name="password" size="25" />
                     <c:if test="${not empty pwError}">
                             <div style="color:red; font-size:12px;">${pwError}</div></c:if></td> </tr>
 
@@ -37,7 +38,7 @@
  <br>     <br><br>  
     
 <a href="/oauth2/authorization/naver"><button> naver 로그인</button></a>  
-<button type="button" onclick="location.href='${pageContext.request.contextPath}/user/member.do'">회원가입</button>
+<button type="button" onclick="location.href='${path}/user/member.do'">회원가입</button>
      
      
      

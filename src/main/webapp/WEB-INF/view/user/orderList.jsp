@@ -13,90 +13,69 @@
 </head>
 <body>
 
-
-<section>
-    <br>
+<section style="max-width: 1000px; margin: 0 auto; padding: 20px;">
     <div align="center">
-       <h3>고객 주문내 리스트  </h3>
-      <form method="get" action="${path}/user/orderList.do">
-    시작일:
-    <input type="date" name="startDate" value="${startDate}" />
+        <h2>마이페이지 - 주문 내역2222</h2>
+        
+        <div style="background: #f4f4f4; padding: 15px; border-radius: 8px;">
+            <form method="get" action="${path}/user/orderList.do">
+                <strong>조회 기간:</strong>
+                <input type="date" name="startDate" value="${startDate}" /> ~ 
+                <input type="date" name="endDate" value="${endDate}" />
+                <button type="submit" style="padding: 5px 15px;">조회하기</button>
+            </form>
+        </div>
 
-    종료일:
-    <input type="date" name="endDate" value="${endDate}" />
-
-    <button type="submit">조회</button>
-</form>
-      
-   <form method= "post" action="${path}/user/cart.do">
-        <table> 
-        <tr> <td>주문번호(orderIdx) </td>
-        <td>주문금액(totalPrice) </td>
-        <td>주문 날짜 (orderRegDate)</td></tr>
-        <c:choose>
+        <table class="order-table">
+            <thead>
+                <tr>
+                    <th>주문번호</th>
+                    <th>주문금액</th>
+                    <th>주문일자</th>
+                    <th>상태/상세</th>
+                </tr>
+            </thead>
+            <tbody>
+                <c:choose>
                     <c:when test="${not empty orderli}">
-        <c:forEach var="m" items="${orderli}" varStatus="status">
-          <tr> <td><a href="${path}/user/orderDetailList.do?orderIdx=${m.orderIdx}">${m.orderIdx}</a> </td> <!-- 링크 달아서 상세 주문리스트로 이동해야함  -->
-          <td>${m.totalPrice} </td>
-          <td>${m.orderRegDate} </td></tr>
-        </c:forEach>
-        </c:when>
-        <c:otherwise>
-                     <tr> <td colspan="3">주문 내역이 없습니다.</td></tr>
-        </c:otherwise>
-        </c:choose>
+                        <c:forEach var="m" items="${orderli}">
+                            <tr>
+                                <td><strong>${m.orderIdx}</strong></td>
+                                <td><fmt:formatNumber value="${m.totalPrice}" pattern="#,###" />원</td>
+                                <td>${m.orderDate}</td>
+                                <td>
+                                    <a href="${path}/user/orderDetailList.do?orderIdx=${m.orderIdx}" class="page-link" style="font-size: 12px;">상세보기</a>
+                                </td>
+                            </tr>
+                        </c:forEach>
+                    </c:when>
+                    <c:otherwise>
+                        <tr>
+                            <td colspan="4" style="padding: 50px 0;">주문 내역이 없습니다.</td>
+                        </tr>
+                    </c:otherwise>
+                </c:choose>
+            </tbody>
         </table>
-        </form>
+
+        <div class="pagination-container">
+            <c:if test="${startPage > 1}">
+                <a href="${path}/user/orderList.do?page=${startPage - 1}&startDate=${startDate}&endDate=${endDate}" class="page-link">&laquo; 이전</a>
+            </c:if>
+            
+            <c:forEach var="i" begin="${startPage}" end="${endPage}">
+                <a href="${path}/user/orderList.do?page=${i}&startDate=${startDate}&endDate=${endDate}" 
+                   class="page-link ${i == page ? 'active' : ''}">
+                    ${i}
+                </a>
+            </c:forEach>
+
+            <c:if test="${endPage < totalPage}">
+                <a href="${path}/user/orderList.do?page=${endPage + 1}&startDate=${startDate}&endDate=${endDate}" class="page-link">다음 &raquo;</a>
+            </c:if>
+        </div>
     </div>
 </section>
-
-
-<!-- 페이징 처리 최소 5 -->
-
-
-
-<!-- 페이징 영역 -->
-<div style="margin-top:15px; text-align:center;">
-
-  <c:if test="${totalPage > 0}">
-
-    <!-- 이전 블록 -->
-    <c:choose>
-      <c:when test="${startPage <= 1}">
-        <span style="color:gray;">[이전]</span>
-      </c:when>
-      <c:otherwise>
-        <a href="${path}/user/orderList.do?page=${startPage - 1}">[이전]</a>
-      </c:otherwise>
-    </c:choose>
-
-    <!-- 페이지 번호 (최대 10개) -->
-    <c:forEach var="p" begin="${startPage}" end="${endPage}">
-      <c:choose>
-        <c:when test="${p == page}">
-          <strong>[${p}]</strong>
-        </c:when>
-        <c:otherwise>
-          <a href="${path}/user/orderList.do?page=${p}">[${p}]</a>
-        </c:otherwise>
-      </c:choose>
-    </c:forEach>
-
-    <!-- 다음 블록 -->
-    <c:choose>
-      <c:when test="${endPage >= totalPage}">
-        <span style="color:gray;">[다음]</span>
-      </c:when>
-      <c:otherwise>
-        <a href="${path}/user/orderList.do?page=${endPage + 1}">[다음]</a>
-      </c:otherwise>
-    </c:choose>
-
-  </c:if>
-
-</div>
-
-
 
 </body>
 </html>
