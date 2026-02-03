@@ -1,6 +1,7 @@
 package com.mbcTeam.product;
 
 import java.util.List;
+
 import com.mbcTeam.user.ReviewVO;
 
 public interface ProductDao {
@@ -10,6 +11,8 @@ public interface ProductDao {
     void insertDescImg(ProductDescImgVO divo);
     void insertOption(ProductOptionVO ovo); // 옵션 등록
 
+    int  totalCount(ProductVO vo); //제품 전체 갯수
+    
     void update(ProductVO vo); // 상품 수정
     void delete(ProductVO vo); // 상품 삭제
 

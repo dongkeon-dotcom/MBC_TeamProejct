@@ -77,4 +77,9 @@ public class ProductServiceImpl implements ProductService {
     public List<ProductVO> selectByCategory(String category) {
         return dao.selectByCategory(category);
     }
+
+	@Override
+	public int totalCount(ProductVO vo) {
+		return dao.totalCount(vo);
+	}
 }

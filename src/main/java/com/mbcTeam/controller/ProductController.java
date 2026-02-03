@@ -2,6 +2,7 @@ package com.mbcTeam.controller;
 
 import java.io.File;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
@@ -14,6 +15,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.mbcTeam.product.ProductService;
@@ -55,7 +57,7 @@ public class ProductController {
 		System.out.println("/productAddFormOK.DO");		
 		
 		// 1. 전달받은 값 이외의 값 세팅
-		vo.setRegDate(LocalDate.now().toString());
+		vo.setRegDate(LocalDateTime.now().toString());
 		vo.setDiscountRate(0);
 		vo.setRecommended(false);
 		
@@ -139,19 +141,42 @@ public class ProductController {
 			service.insertOption(option);			
 		}
 
-
-
 		return "redirect:/product/list.do";
 	}
 
 	@GetMapping("/list.do")
 	public String list(ProductVO vo, Model model) {
 		System.out.println("/LIST.DO");
-		List<ProductVO> productList = service.select(vo);
-		model.addAttribute("li", productList);
+		
+		model.addAttribute("li", service.select(vo));
 		return "product/list";
 	}
-
+	
+	@GetMapping("/adminProductList.do")
+	public String ProductList(@RequestParam(value ="search", defaultValue="code", required=false) String search,
+			@RequestParam(value="keyword",defaultValue="",required=false) String keyword,
+			ProductVO vo, Model model) {
+		System.out.println("/adminProductList.DO");
+		
+		vo.setSearch(search);
+		vo.setKeyword(keyword);
+		
+		int pageSize = 10;
+		int pageListSize = 10;
+		
+		if(vo.getStartIdx() == 0) {
+			vo.setStartIdx(0);
+		} else {
+			vo.setStartIdx(vo.getStartIdx());
+		}
+		
+		int totalCount = service.totalCount(vo);
+		
+		model.addAttribute("li", service.select(vo));
+		return "product/adminProductList";
+	}
+	
+	
 	@GetMapping("/edit.do")
 	public String edit(Model model, ProductVO vo) {
 		System.out.println("/EDIT.DO");
