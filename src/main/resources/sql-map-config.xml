@@ -12,12 +12,14 @@
     <typeAlias alias="UserVO"  type="com.mbcTeam.user.UserVO" />  
     <typeAlias alias="ProductVO"  type="com.mbcTeam.product.ProductVO" />
     <typeAlias alias="OrderVO"  type="com.mbcTeam.order.OrderVO" />
+    <typeAlias alias="CartVO"  type="com.mbcTeam.cart.CartVO" />
   </typeAliases>
   
   <mappers>    
     <mapper resource="mappings/user-mapping.xml"  />
     <mapper resource="mappings/product-mapping.xml"  />
     <mapper resource="mappings/order-mapping.xml"  />
+    <mapper resource="mappings/cart-mapping.xml"  />
     <!-- <mapper resource="mappings/member-mapping.xml"  /> -->
   </mappers>
   

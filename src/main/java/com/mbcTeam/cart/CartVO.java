@@ -1,6 +1,7 @@
-package com.mbcTeam.shop;
+package com.mbcTeam.cart;
 
 import lombok.Data;
+
 
 @Data
 public class CartVO {
@@ -9,5 +10,7 @@ public class CartVO {
     private long productIdx;    // 제품번호
     private long optionIdx;        // 제품옵션번호
     private int quantity;    // 장바구니 수량
+    
+    
 }
 

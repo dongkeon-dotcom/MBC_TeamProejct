@@ -3,7 +3,6 @@ package com.mbcTeam.order;
 import java.util.List;
 
 
-
 public interface OrderService {
 		
 	    void insert(OrderVO vo); 

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper 
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="CARTS">
+
+    <!-- 장바구니 추가 -->
+    <insert id="insertCarts" parameterType="com.mbcTeam.shop.CartVO">
+        INSERT INTO Carts (user_idx, product_idx, option_idx, quantity)
+        VALUES (#{userIdx}, #{productIdx}, #{optionIdx}, #{quantity})
+    </insert>
+
+    <!-- 장바구니 수정 (수량 변경) -->
+    <update id="updateCarts" parameterType="com.mbcTeam.shop.CartVO">
+        UPDATE Carts
+        SET quantity = #{quantity}
+        WHERE cart_idx = #{cartIdx}
+    </update>
+
+    <!-- 장바구니 삭제 -->
+    <delete id="deleteCarts" parameterType="long">
+        DELETE FROM Carts WHERE cart_idx = #{cartIdx}
+    </delete>
+
+    <!-- 장바구니 조회 -->
+    <select id="selectCarts" parameterType="long" resultType="com.mbcTeam.shop.CartVO">
+        SELECT cart_idx AS cartIdx,
+               user_idx AS userIdx,
+               product_idx AS productIdx,
+               option_idx AS optionIdx,
+               quantity
+        FROM Carts
+        WHERE user_idx = #{userIdx}
+    </select>
+
+</mapper>
