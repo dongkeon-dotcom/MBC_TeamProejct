@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import com.mbcTeam.product.ProductVO;
+import com.mbcTeam.shop.DeliveryVO;
 
 @Repository
 public class UserDaoImpl implements UserDao {
@@ -82,6 +83,13 @@ public class UserDaoImpl implements UserDao {
 		// TODO Auto-generated method stub
 		return mybatis.selectOne("USER.GET_USER_BY_ID", id);
 	}
+
+	@Override
+	public DeliveryVO getDelivery(long userIdx) {
+		// TODO Auto-generated me'thod stub
+		return mybatis.selectOne("USER.getDelivery",userIdx);
+	}
+
 
 	
 }
