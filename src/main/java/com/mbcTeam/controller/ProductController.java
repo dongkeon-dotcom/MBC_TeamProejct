@@ -155,7 +155,8 @@ public class ProductController {
 			@RequestParam(value = "keyword", defaultValue = "", required = false) String keyword, ProductVO vo,
 			Model model) {
 		System.out.println("/adminProductList.DO");
-
+		System.out.println("테스트: " + search);
+		System.out.println("테스트: " + keyword);
 		vo.setSearch(search);
 		vo.setKeyword(keyword);
 
@@ -195,6 +196,12 @@ public class ProductController {
 		
 		model.addAttribute("search", vo.getSearch());
 		model.addAttribute("keyword", vo.getKeyword());
+		
+		System.out.println("************************************************");
+		System.out.println("startIdx: " + vo.getStartIdx());
+		System.out.println("pageSize: " + vo.getPageSize());
+		System.out.println("search: " +  vo.getSearch());
+		System.out.println("keyword: " + vo.getKeyword());
 		
 		return "product/adminProductList";
 	}

@@ -26,8 +26,6 @@ public class ProductVO {
 	//검색용 데이터
 	private String search;		//검색 항목
 	private String keyword; 	//검색 값
-	private String startDate;	//검색 시작일
-	private String endDate;		//검색 마지막일
 	
 	//페이지 사이즈 조절용 데이터
 	private int startIdx;		//검색 시작번호
