@@ -3,6 +3,7 @@ package com.mbcTeam.user;
 import java.util.List;
 
 import com.mbcTeam.product.ProductVO;
+import com.mbcTeam.shop.DeliveryVO;
 
 public interface UserDao {
   void insert(UserVO vo);
@@ -12,6 +13,7 @@ public interface UserDao {
   UserVO Login(UserVO vo);
   
   UserVO Edit(UserVO vo);
+
   
 
   // 이메일 중복 체크
@@ -28,4 +30,7 @@ void insertReviewImg(ReviewImageVO imgVO);
 void updateUser(UserVO vo);
 //추가: ID로 사용자 정보 조회
 UserVO getUserById(String id);
+
+// 마이페이지 회원정보 수정에서 주소확인ㅇ르 위한 메소드 
+DeliveryVO getDelivery(long userIdx);
 }

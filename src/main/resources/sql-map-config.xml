@@ -14,7 +14,9 @@
     <typeAlias alias="OrderVO"  type="com.mbcTeam.order.OrderVO" />
     <typeAlias alias="CartVO"  type="com.mbcTeam.cart.CartVO" />
     
-         <typeAlias alias="OrderedVO"  type="com.mbcTeam.shop.OrderedVO" />
+  
+       <typeAlias alias="OrderedVO"  type="com.mbcTeam.shop.OrderedVO" />
+              <typeAlias alias="DeliveryVO"  type="com.mbcTeam.shop.DeliveryVO" />
         <typeAlias alias="ReviewVO"  type="com.mbcTeam.user.ReviewVO" />
          <typeAlias alias="ReviewImageVO"  type="com.mbcTeam.user.ReviewImageVO" />
     
@@ -26,6 +28,7 @@
     <mapper resource="mappings/order-mapping.xml"  />
     <mapper resource="mappings/cart-mapping.xml"  />
        <mapper resource="mappings/ordered-mapping.xml"  />
+         <mapper resource="mappings/ordered-mapping.xml"  />
           <mapper resource="mappings/review-mapping.xml"  />
     <!-- <mapper resource="mappings/member-mapping.xml"  /> -->
   </mappers>

@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
-
+import com.mbcTeam.shop.DeliveryVO;
 import com.mbcTeam.shop.OrderItemedVO;
 import com.mbcTeam.shop.OrderedService;
 import com.mbcTeam.shop.OrderedVO;
@@ -98,7 +98,13 @@ public class UserController {
 	    if (loginMember == null) {
 	        return "redirect:/user/login.do"; 
 	    }
-
+	    //유저의 딜리버리 정보를 담아서 delivery에 담았음 
+	    DeliveryVO delivery = service.getDelivery(loginMember.getUserIdx());
+	 
+	  if (delivery == null) {
+	        delivery = new DeliveryVO();
+	    }
+	  model.addAttribute("d", delivery);
 	    // 3. JSP에서 'm'이라는 이름으로 쓰기로 했으므로 이름을 맞춰서 보냄
 	    model.addAttribute("m", loginMember);
 
@@ -107,9 +113,9 @@ public class UserController {
 	
 	
 	
-	@PostMapping("/update.do")
-	public String update(UserVO vo, HttpSession session) {
-	   
+	@PostMapping("/memberUpdate.do")
+	public String memberUpdate(UserVO vo, HttpSession session) {
+		System.out.println("수정 요청 VO: " + vo.toString());
 	    service.updateUser(vo);
 	    
 	    // 중요: DB가 수정되었으므로 세션 정보도 최신화해야 함
@@ -117,7 +123,7 @@ public class UserController {
 	    UserVO updatedMember = service.getUserById(vo.getId()); 
 	    session.setAttribute("loginMember", updatedMember);
 	    
-	    return "redirect:/user/mypage"; // 수정 완료 후 메인으로
+	    return "redirect:/user/mypage.do"; // 수정 완료 후 메인으로
 	}
 
 	@GetMapping(value = "/addressList.do")

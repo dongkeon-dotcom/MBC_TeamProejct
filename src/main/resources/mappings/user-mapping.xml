@@ -15,10 +15,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </insert>
 <select id="LOGIN" parameterType="com.mbcTeam.user.UserVO" resultType="com.mbcTeam.user.UserVO">
     SELECT  
-       user_idx       AS userIdx,
-        id, 
-        password, 
-        user_Name      AS userName,    user_Phone     AS userPhone,   user_Role      AS userRole,    is_easy_login  AS easyLogin,   is_deleted     AS deleted,     reg_Date       AS regDate      FROM users 
+       user_idx  AS userIdx, id,  password, user_Name AS userName, user_Phone  AS userPhone,   user_Role AS userRole, is_easy_login  AS easyLogin,   is_deleted     AS deleted,     reg_Date       AS regDate      FROM users 
     WHERE id = #{id} 
       AND password = #{password} 
       AND is_deleted = 0               </select>
@@ -38,18 +35,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         WHERE userIdx = #{userIdx}
     </select>
 
-    <update id="update" parameterType="com.mbcTeam.user.UserVO">
-        UPDATE users
-        SET
-            user_name  = #{userName},
-            user_phone = #{userPhone}
-        WHERE userIdx = #{userIdx}
-    </update>
-
     <update id="delete" parameterType="com.mbcTeam.user.UserVO">
         UPDATE users
         SET deleted = true
-        WHERE userIdx = #{userIdx}
+        WHERE user_Idx = #{userIdx}
     </update>
 
     <select id="countByEmail" parameterType="com.mbcTeam.user.UserVO" resultType="int">
@@ -60,7 +49,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
     <select id="getByEmail" parameterType="com.mbcTeam.user.UserVO" resultType="com.mbcTeam.user.UserVO">
         SELECT
-            userIdx        AS userIdx,
+            user_Idx        AS userIdx,
             id     AS id,
             password        AS password,
             userName      AS userName,
@@ -79,15 +68,15 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
  <update id="UPDATE_USER" parameterType="com.mbcTeam.user.UserVO">
         UPDATE users
         SET
-            id  = #{id},
+            user_Name  = #{userName},
             user_phone = #{userPhone}
-        WHERE userIdx = #{userIdx}
+        WHERE user_Idx = #{userIdx}
     </update>
 
 
 <select id="GET_USER_BY_ID" parameterType="String" resultType="com.mbcTeam.user.UserVO">
     SELECT  
-        userIdx,
+        user_Idx as userIdx,
         id, 
         password, 
         user_Name      AS userName,
@@ -98,6 +87,23 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         reg_Date       AS regDate
     FROM users 
     WHERE id = #{id}  AND is_deleted = 0
+</select>
+
+<!-- 마이페이지 회원정보 수정에서 주소를 가져오기 위한 매퍼  -->
+<select id="getDelivery" parameterType="long" resultType="com.mbcTeam.shop.DeliveryVO">
+    SELECT 
+        delivery_Idx AS deliveryIdx,
+        user_Idx AS userIdx,
+        delivery_Name AS deliveryName,
+        Receiver AS Receiver,
+        delivery_Phone AS deliveryPhone,
+        address AS address,
+        Extra_Address AS extraAddress,
+        Zipcode AS zipcode,
+        is_Default_Address AS isDefaultAddress
+    FROM Delivery 
+    WHERE user_Idx = #{userIdx} 
+      AND is_Default_Address = 1
 </select>
 
 </mapper>

@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.mbcTeam.product.ProductVO;
+import com.mbcTeam.shop.DeliveryVO;
 
 @Service
 public class UserServiceImpl implements UserService  {
@@ -78,5 +79,13 @@ public class UserServiceImpl implements UserService  {
 		// TODO Auto-generated method stub
 		return dao.getUserById(id);
 	}
+
+	@Override
+	public DeliveryVO getDelivery(long userIdx) {
+		// TODO Auto-generated method stub
+		return dao.getDelivery(userIdx);
+	}
+
+	
 
 }
