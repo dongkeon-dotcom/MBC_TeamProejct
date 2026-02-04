@@ -120,8 +120,12 @@ public class UserController {
 	    
 	    // 중요: DB가 수정되었으므로 세션 정보도 최신화해야 함
 	    // (보통 다시 조회해서 넣거나, vo 객체를 다시 세션에 저장)
-	    UserVO updatedMember = service.getUserById(vo.getId()); 
-	    session.setAttribute("loginMember", updatedMember);
+	    UserVO updatedMember = service.getUserById(vo.getId());
+	    System.out.println("************************************************");
+	    System.out.println("기존값: " + session.getAttribute("loginMember"));
+	    System.out.println("신규값: " + updatedMember);
+	    
+	    //session.setAttribute("loginMember", updatedMember);
 	    
 	    return "redirect:/user/mypage.do"; // 수정 완료 후 메인으로
 	}
