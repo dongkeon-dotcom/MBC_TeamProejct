@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.mbcTeam.product.ProductService;
@@ -203,7 +204,27 @@ public class ProductController {
 		System.out.println("search: " +  vo.getSearch());
 		System.out.println("keyword: " + vo.getKeyword());
 		
-		return "product/adminProductList";
+		return "product/productList";
+	}
+	
+	@ResponseBody
+	@PostMapping("/adminUpdateStatus.do")
+	public String adminUpdateProductStatus(ProductVO vo) throws Exception {
+		System.out.println("/adminUpdateStatus.do");
+		service.adminUpdateProductStatus(vo);
+		return "T"; 
+		
+	}
+	
+	@GetMapping(value="/adminProductEdit.do")
+	public String adminProductEdit(Model model, ProductVO vo) {
+		System.out.println("/adminProductEdit");
+		int idx= vo.getProductIdx();
+		model.addAttribute("m",service.adminProductEdit(vo));
+		model.addAttribute("imgList",service.adminProductEditImg(idx));
+		model.addAttribute("descImgList",service.adminProductEditDescImg(idx));
+		model.addAttribute("optionList",service.adminProductEditOption(idx));
+		return "product/productEdit";
 	}
 
 	@GetMapping("/edit.do")

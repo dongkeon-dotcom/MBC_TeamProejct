@@ -13,6 +13,14 @@ public interface ProductDao {
     void insertOption(ProductOptionVO ovo); // 옵션 등록
 
     List<ProductVO> adminSelect(ProductVO vo); //제품 조회
+    void adminUpdateProductStatus(ProductVO vo); //제품 상태(추천,세일) 변경
+
+    //제품 수정에 필요한 값들, Products, ProductImg, ProductDescImg, ProductOption
+    ProductVO adminProductEdit(ProductVO vo);	//제품 DB 수정
+    List<ProductImgVO> adminProductEditImg(int productIdx); //이미지 DB
+    List<ProductDescImgVO> adminProductEditDescImg(int productIdx); //설명 이미지 DB
+    List<ProductOptionVO> adminProductEditOption(int productIdx);	//옵션 DB
+    
     int  totalCount(ProductVO vo); //제품 전체 갯수
     
     void update(ProductVO vo); // 상품 수정

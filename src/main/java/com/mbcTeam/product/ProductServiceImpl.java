@@ -88,4 +88,30 @@ public class ProductServiceImpl implements ProductService {
 	public List<ProductVO> adminSelect(ProductVO vo) {
 		return dao.adminSelect(vo);
 	}
+
+	@Override
+	public void adminUpdateProductStatus(ProductVO vo) {
+		dao.adminUpdateProductStatus(vo);
+		
+	}
+
+	@Override
+	public ProductVO adminProductEdit(ProductVO vo) {
+		return dao.adminProductEdit(vo);
+	}
+
+	@Override
+	public List<ProductImgVO> adminProductEditImg(int productIdx) {
+		return dao.adminProductEditImg(productIdx);
+	}
+
+	@Override
+	public List<ProductDescImgVO> adminProductEditDescImg(int productIdx) {
+		return dao.adminProductEditDescImg(productIdx);
+	}
+
+	@Override
+	public List<ProductOptionVO> adminProductEditOption(int productIdx) {
+		return dao.adminProductEditOption(productIdx);
+	}
 }

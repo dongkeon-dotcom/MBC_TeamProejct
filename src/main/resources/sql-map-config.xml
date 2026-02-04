@@ -11,6 +11,9 @@
   <typeAliases>      
     <typeAlias alias="UserVO"  type="com.mbcTeam.user.UserVO" />  
     <typeAlias alias="ProductVO"  type="com.mbcTeam.product.ProductVO" />
+    <typeAlias alias="ProductImgVO"  type="com.mbcTeam.product.ProductImgVO" />
+    <typeAlias alias="ProductDescImgVO"  type="com.mbcTeam.product.ProductDescImgVO" />
+    <typeAlias alias="ProductOptionVO"  type="com.mbcTeam.product.ProductOptionVO" />
     <typeAlias alias="OrderVO"  type="com.mbcTeam.order.OrderVO" />
     <typeAlias alias="CartVO"  type="com.mbcTeam.cart.CartVO" />
     

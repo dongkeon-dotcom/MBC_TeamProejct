@@ -5,12 +5,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
 <mapper namespace="PRODUCT">
 
-
-
-
     <!-- 상품 등록 -->
     <insert id="INSERT_PRODUCT"
-        parameterType="com.mbcTeam.product.ProductVO"
+        parameterType="ProductVO"
         useGeneratedKeys="true"
         keyProperty="productIdx">
         INSERT INTO Products (
@@ -41,7 +38,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
     <!-- 상품 이미지 등록 -->
     <insert id="INSERT_PRODUCT_IMG"
-        parameterType="com.mbcTeam.product.ProductImgVO">
+        parameterType="ProductImgVO">
         INSERT INTO ProductImg (
             product_Idx,
             product_Img,
@@ -57,7 +54,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     
     <!-- 상품 이미지 등록 -->
     <insert id="INSERT_PRODUCT_DESC_IMG"
-        parameterType="com.mbcTeam.product.ProductDescImgVO">
+        parameterType="ProductDescImgVO">
         INSERT INTO ProductDescImg (
             product_Idx,
             product_Desc_Img,
@@ -72,7 +69,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
 	<!-- 상품 옵션 등록 -->
 	<insert id="INSERT_PRODUCT_OPTION"
-		parameterType="com.mbcTeam.product.ProductOptionVO">
+		parameterType="ProductOptionVO">
 		INSERT INTO ProductOption (
 		product_Idx,
 		color,
@@ -114,7 +111,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
     <!-- 상품 목록 조회 -->
     <select id="SELECT_ADMIN_PRODUCT_LIST"
-        resultType="com.mbcTeam.product.ProductVO">
+        resultType="ProductVO">
         SELECT * FROM Products 
         <include refid="searchInclude"/>
         <![CDATA[
@@ -124,7 +121,41 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     
     <update id="UPDATE_PRODUCTS_STATUS" parameterType="ProductVO">
     	UPDATE Products 
+    	<set>
+    		<choose>
+    			<when test="productStatus == 'is_recommended'">
+    				is_Recommended = #{productStatusValue}
+    			</when>
+    			<when test="productStatus == 'sale'">
+    				discount_rate = #{productStatusValue}
+    			</when>
+    		</choose>    	
+    	</set>
+    	WHERE product_idx in
+    	<foreach item="Idx" collection="productIdxs" open="(" separator="," close=")">
+    		#{Idx}
+    	</foreach>
     </update>
+    
+    <select id="EDIT_PRODUCT" resultType="ProductVO">
+    	SELECT * FROM Products 
+    	WHERE product_idx = ${productIdx}
+    </select>
+    
+    <select id="EDIT_PRODUCT_IMG" parameterType="int" resultType="ProductImgVO">
+    	SELECT * FROM ProductImg 
+    	WHERE product_idx = ${productIdx}
+    </select>
+
+    <select id="EDIT_PRODUCT_DESC_IMG" parameterType="int" resultType="ProductDescImgVO">
+    	SELECT * FROM ProductDescImg 
+    	WHERE product_idx = ${productIdx}
+    </select>
+
+    <select id="EDIT_PRODUCT_OPTION" parameterType="int" resultType="ProductOptionVO">
+    	SELECT * FROM ProductOption
+    	WHERE product_idx = ${productIdx}
+    </select>
 
 
     <!-- 전체 상품 조회 -->
