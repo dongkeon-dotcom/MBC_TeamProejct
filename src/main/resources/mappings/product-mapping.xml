@@ -101,8 +101,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	</select>
 
 	<sql id = "searchInclude">
-		<where>
-            AND reg_date BETWEEN #{startDate} AND #{endDate}        
+		<where>       
         <if test="search == 'code'">
             AND INSTR(product_Idx, #{keyword}) > 0
         </if>
@@ -122,6 +121,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         	order by product_Idx desc limit #{startIdx}, #{pageSize}
         ]]>
     </select>
+    
+    <update id="UPDATE_PRODUCTS_STATUS" parameterType="ProductVO">
+    	UPDATE Products 
+    </update>
 
 
     <!-- 전체 상품 조회 -->

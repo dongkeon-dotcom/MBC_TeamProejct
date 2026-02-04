@@ -38,7 +38,7 @@
             <tbody>
             	<c:forEach var="m" items="${li}">
                 <tr>
-                    <td><input type="checkbox" class="form-check-input item-check" value="10001"></td>
+                    <td><input type="checkbox" class="form-check-input item-check" value="${m.productIdx}"></td>
                     <td>${m.productIdx}</td>
                     <td>${m.productName}</td>
                     <td>${m.recommended ? "추천" : "보통"}</td>
@@ -67,95 +67,82 @@
                 </div>
             </div>
 
-            <nav>
-            
-            <!-- paging 처음 생성 -->
-            <c:url var = "fisrtPageUrl" value="${path}/product/adminProductList.do">
-            	<c:param name="startIdx" value="0"/>
-            	<c:param name="search" value="${search}"/>
-            	<c:param name="keyword" value="${keyword }"/>            	            
-            </c:url>
-            <a href="${fisrtPageUrl}">처음</a>&emsp;
-            
-            <!-- paging 이전 목록 생성 -->
-            <c:if test="${listStartPage <= pageListSize }">
-            	이전 &emsp;
-            </c:if>
-            <c:if test="${listStartPage > pageListSize }">
-            <c:url var = "beforePageUrl" value ="${path}/product/adminProductList.do">
-            	<c:param name="startIdx" value="${(listStartPage-pageListSize-1) * pageSize }" />
-            	<c:param name="search" value="${search }"/>
-            	<c:param name="keyword" value="${keyword }"/>
-            </c:url>
-            	<a href="${beforePageUrl }">이전</a> &emsp;
-            </c:if>
-            
-            <!-- paging 번호 for문 생성 -->
-            <c:forEach var="i" begin="${listStartPage }" end="${listEndPage }">
-            <c:if test="${i <totalPage }">
-            	<c:url var ="forPageUrl" value="${path}/product/adminProductList.do">
-            		<c:param name="startIdx" value="${(i-1)*pageSize}"/>
-            		<c:param name="search" value="${search }"/>
-            		<c:param name="keyword" value="${keyword }"/>
-            	</c:url>
-            	<a href="${forPageUrl }">[${i}]</a>
-            </c:if>            
-            </c:forEach>
-            
-            <!-- paging 다음 목록 생성 -->
-            <c:if test="${listEndPage < totalPage }">
-            <c:url var = "afterPageUrl" value ="${path}/product/adminProductList.do">
-            	<c:param name="startIdx" value="${listEndPage * pageSize }" />
-            	<c:param name="search" value="${search }"/>
-            	<c:param name="keyword" value="${keyword }"/>
-            </c:url>
-            	<a href="${afterPageUrl }">다음</a> &emsp;
-            </c:if>
-            <c:if test="${listEndPage >= totalPage }">
-            	다음 &emsp;
-            </c:if>
-            
-            <!-- paging 마지막 생성 -->
-            <c:url var = "endPageUrl" value="${path}/product/adminProductList.do">
-            	<c:param name="startIdx" value="${(totalPage-1)*pageSize }"/>
-            	<c:param name="search" value="${search}"/>
-            	<c:param name="keyword" value="${keyword }"/>            	            
-            </c:url>
-            <a href="${endPageUrl}">마지막</a>&emsp;
-            
-            
-                <ul class="pagination">
-                    <li class="page-item"><a class="page-link" href="#">1</a></li>
-                    <li class="page-item active"><a class="page-link" href="#">2</a></li>
-                    <li class="page-item"><a class="page-link" href="#">3</a></li>
-                </ul>
-            </nav>
+		<nav aria-label="Page navigation">
+		    <ul class="pagination justify-content-center">
+				<!-- paging 처음 생성 -->
+		        <c:url var="firstPageUrl" value="/product/adminProductList.do">
+		            <c:param name="startIdx" value="0"/>
+		            <c:param name="search" value="${search}"/>
+		            <c:param name="keyword" value="${keyword}"/>
+		        </c:url>
+		        <li class="page-item">
+		            <a class="page-link" href="${firstPageUrl}" aria-label="First">
+		                <span aria-hidden="true">&laquo;&laquo; 처음</span>
+		            </a>
+		        </li>
+		
+		        <c:choose>
+		            <c:when test="${listStartPage > pageListSize}">
+		                <c:url var="beforePageUrl" value="/product/adminProductList.do">
+		                    <c:param name="startIdx" value="${(listStartPage - pageListSize - 1) * pageSize}" />
+		                    <c:param name="search" value="${search}"/>
+		                    <c:param name="keyword" value="${keyword}"/>
+		                </c:url>
+		                <li class="page-item">
+		                    <a class="page-link" href="${beforePageUrl}">이전</a>
+		                </li>
+		            </c:when>
+		            <c:otherwise>
+		                <li class="page-item disabled"><span class="page-link">이전</span></li>
+		            </c:otherwise>
+		        </c:choose>
+		
+		        <c:forEach var="i" begin="${listStartPage}" end="${listEndPage}">
+		            <c:if test="${i <= totalPage}"> <c:url var="forPageUrl" value="/product/adminProductList.do">
+		                    <c:param name="startIdx" value="${(i-1) * pageSize}"/>
+		                    <c:param name="search" value="${search}"/>
+		                    <c:param name="keyword" value="${keyword}"/>
+		                </c:url>
+						<li class="page-item ${i == (startIdx / pageSize + 1) ? 'active' : ''}">
+            				<a class="page-link" href="${forPageUrl}">${i}</a>
+        				</li>
+		            </c:if>
+		        </c:forEach>
+		
+		        <c:choose>
+		            <c:when test="${listEndPage < totalPage}">
+		                <c:url var="afterPageUrl" value="/product/adminProductList.do">
+		                    <c:param name="startIdx" value="${listEndPage * pageSize}" />
+		                    <c:param name="search" value="${search}"/>
+		                    <c:param name="keyword" value="${keyword}"/>
+		                </c:url>
+		                <li class="page-item">
+		                    <a class="page-link" href="${afterPageUrl}">다음</a>
+		                </li>
+		            </c:when>
+		            <c:otherwise>
+		                <li class="page-item disabled"><span class="page-link">다음</span></li>
+		            </c:otherwise>
+		        </c:choose>
+		
+		        <c:url var="endPageUrl" value="/product/adminProductList.do">
+		            <c:param name="startIdx" value="${(totalPage-1) * pageSize}"/>
+		            <c:param name="search" value="${search}"/>
+		            <c:param name="keyword" value="${keyword}"/>
+		        </c:url>
+		        <li class="page-item">
+		            <a class="page-link" href="${endPageUrl}" aria-label="Last">
+		                <span aria-hidden="true">마지막 &raquo;&raquo;</span>
+		            </a>
+		        </li>
+		
+		    </ul>
+		</nav>
         </div>
     </div>
 </div>
 
 <script>
-
-window.onload = function() {
-
-	// 1. 오늘 날짜 가져오기
-	const today = new Date();
-	const lastMonth = new Date();
-    // 2. YYYY-MM-DD 형식으로 변환
-    const yyyy = today.getFullYear();
-    const mm = String(today.getMonth() + 1).padStart(2, '0'); // 월은 0부터 시작하므로 +1
-    const dd = String(today.getDate()).padStart(2, '0');
-    
-    const formattedToday = `${yyyy}-${mm}-${dd}`;
-    
-    lastMonth.setMonth(today.getMonth() - 1);
-    const startM = String(lastMonth.getMonth() + 1).padStart(2, '0');
-
- // 3. input 태그에 값 할당
-    document.getElementById('startDate').value = `${yyyy}-${startM}-${dd}`;  
-    document.getElementById('endDate').value = formattedToday;
-};
-
 document.getElementById('bulkAction').addEventListener('change', function() {
     const action = this.value;
     const bulkInput = document.getElementById('bulkInput');
@@ -174,37 +161,58 @@ document.getElementById('bulkAction').addEventListener('change', function() {
 
 document.addEventListener('DOMContentLoaded', function() {
     const selectAllCheck = document.getElementById('selectAll');
-    const itemChecks = document.querySelectorAll('.item-check');
     const applyBtn = document.getElementById('applyBulkAction');
 
     // 1. 전체 선택/해제 로직
-    selectAllCheck.addEventListener('change', function() {
-        itemChecks.forEach(cb => {
-            cb.checked = this.checked;
+    if (selectAllCheck) {
+        $(selectAllCheck).on('change', function() {
+            $('.item-check').prop('checked', this.checked);
         });
-    });
+    }
 
-    // 2. 적용 버튼 클릭 시 (체크된 항목 수집)
+    // 2. 적용 버튼 클릭 시 (AJAX 통신)
     applyBtn.addEventListener('click', function() {
         const selectedIds = [];
-        itemChecks.forEach(cb => {
-            if (cb.checked) {
-                // 체크박스의 value에 상품 ID가 담겨있다고 가정
-                selectedIds.push(cb.value);
-            }
+        
+        // 체크된 항목의 value(상품코드)를 수집
+        $('.item-check:checked').each(function() {
+            selectedIds.push($(this).val());
         });
 
+        // 유효성 검사
         if (selectedIds.length === 0) {
-            alert('적용할 상품을 선택해주세요.');
+            alert('변경할 상품을 선택해주세요.');
             return;
         }
 
-        const action = document.getElementById('bulkAction').value;
-        console.log("선택된 ID들:", selectedIds);
-        console.log("수행할 작업:", action);
-        
-        // 여기서 fetch나 $.ajax를 이용해 서버로 데이터를 보냅니다.
-        alert(selectedIds.length + '개의 항목에 [' + action + '] 기능을 적용합니다.');
+        // 선택된 상태값 (추천, 세일, 해제 등)
+        const action = $('#bulkAction').val();
+
+        if (confirm(`${selectedIds.length}개의 항목을 [${action}] 상태로 변경하시겠습니까?`)) {
+            
+            $.ajax({
+            	type: 'POST',
+            	url: '/product/adminUpdateStatus.do',                
+                traditional: true, // 중요: 배열 데이터를 'ids=1&ids=2' 형태로 보낼 때 필요
+                data: {
+                    'productCodes': selectedIds, // 배열 그대로 전달
+                    'status': action,
+                    'statusValue': actionValue
+                },
+                success: function(result) {
+                    if (result === "success") {
+                        alert('성공적으로 변경되었습니다.');
+                        location.reload(); // 화면 갱신
+                    } else {
+                        alert('변경 중 오류가 발생했습니다.');
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error('에러 발생:', error);
+                    alert('저장 실패: ' + status + '(' + error + ')');
+                }
+            });
+        }
     });
 });
 </script>
