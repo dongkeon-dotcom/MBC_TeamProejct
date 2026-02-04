@@ -8,19 +8,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-<!-- 
-top.jsp에 들어가야할것들
-로고(메인페이지로 이동), 세일, 추천, 아우터, 상의, 바지, 치마, 원피스, 검색, 마이페이지, 장바구니 / 관리자
-아우터,상의,바지,치마,원피스 는 마우스 위로 올리면 하위 카테고리가 탑드롭 형식으로 쭈루룩
-아우터: 자켓, 코트, 패딩/점퍼, 가디건, 베스트, 레더/무스탕
-상의: 티셔츠, 셔츠/블라우스, 니트, 맨투맨/후드, 슬리브리스
-바지: 데님, 슬랙스, 코튼팬츠, 조거/트레이닝, 쇼츠
-치마: 미니스커트, 미디/롱스커트, H라인 스커트, 플리츠/A라인, 데님 스커트
-원피스: 미니 원피스, 롱/맥시 원피스, 셔츠 원피스, 니트 원피스, 점프슈트
-
-관리자: 상품등록, 관리자 상품리스트 관리, 매출통계
- -->
-
 
 <title>의류 쇼핑몰</title>
 <link href="${path}/resources/css/top.css" rel="stylesheet">
@@ -96,7 +83,7 @@ top.jsp에 들어가야할것들
 
         <!-- 우측 검색창 + 유저 메뉴 -->
 <div class="right-area">
-    <form class="search-form" action="/search" method="post">
+    <form class="search-form" action="${path}/search" method="post">
         <input type="text" name="keyword" placeholder="검색어 입력">
         <button type="submit">검색</button>
     </form>
@@ -120,7 +107,7 @@ top.jsp에 들어가야할것들
                 </span>
               
               <a href="${path}/user/mypage.do">마이페이지</a>
-        <a href="/cart">장바구니</a>
+        <a href="${path}/cart">장바구니</a>
           <a href="${path}/user/logout.do" style="margin-left:10px;">로그아웃</a>
             </c:otherwise>
         </c:choose>
@@ -150,7 +137,5 @@ top.jsp에 들어가야할것들
       });
     });
     </script>
-</body>
-</html>
 
 

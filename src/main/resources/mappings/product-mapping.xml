@@ -144,17 +144,17 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     
     <select id="EDIT_PRODUCT_IMG" parameterType="int" resultType="ProductImgVO">
     	SELECT * FROM ProductImg 
-    	WHERE product_idx = ${productIdx}
+    	WHERE product_idx = ${value}
     </select>
 
     <select id="EDIT_PRODUCT_DESC_IMG" parameterType="int" resultType="ProductDescImgVO">
     	SELECT * FROM ProductDescImg 
-    	WHERE product_idx = ${productIdx}
+    	WHERE product_idx = ${value}
     </select>
 
     <select id="EDIT_PRODUCT_OPTION" parameterType="int" resultType="ProductOptionVO">
     	SELECT * FROM ProductOption
-    	WHERE product_idx = ${productIdx}
+    	WHERE product_idx = ${value}
     </select>
 
 

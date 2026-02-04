@@ -224,6 +224,12 @@ public class ProductController {
 		model.addAttribute("imgList",service.adminProductEditImg(idx));
 		model.addAttribute("descImgList",service.adminProductEditDescImg(idx));
 		model.addAttribute("optionList",service.adminProductEditOption(idx));
+		
+		System.out.println("********************************************");
+		System.out.println(service.adminProductEditImg(idx));
+		System.out.println(service.adminProductEditDescImg(idx));
+		
+		
 		return "product/productEdit";
 	}
 

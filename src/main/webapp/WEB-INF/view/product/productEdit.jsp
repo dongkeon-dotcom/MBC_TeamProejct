@@ -22,7 +22,7 @@
 							name="category" id="category"
 							onchange="updateSubCategories()">
 							<option selected>-- 카테고리 선택 --</option>
-							<option value="아우터" ${m.category == '아우터' ? 'selected' : }>아우터</option>
+							<option value="아우터" ${m.category == '아우터' ? 'selected' : ''}>아우터</option>
 							<option value="상의" ${m.category == '상의' ? 'selected' : ''}>상의</option>
 							<option value="바지" ${m.category == '바지' ? 'selected' : ''}>바지</option>
 							<option value="치마" ${m.category == '치마' ? 'selected' : ''}>치마</option>
@@ -58,7 +58,7 @@
 						<input type="text"
 							class="form-control bg-light"
 							name="regDate" id="regDate"
-							value="<fmt:formatDate value='${m.regDate}' pattern='yyyy-MM-dd' />"
+							value="${m.regDate}"
 							readonly>
 					</div>
 				</div>
@@ -97,11 +97,11 @@
 							<c:forEach var="img" items="${imgList}" varStatus="status">
 				                <div class="input-group mb-2 shadow-sm align-items-center flex-nowrap existing-file-item">
 				                    <span class="input-group-text bg-light p-1">
-				                        <img class="img-preview" src="${path}/resources/images/ProductImg/${img}" 
+				                        <img class="img-preview" src="${path}/resources/images/ProductImg/${img.productImg}" 
 				                             style="width: 40px; height: 40px; object-fit: cover; border-radius: 4px;">
 				                    </span>
-				                    <input type="text" class="form-control bg-white name-display" value="${img} (기존)" readonly style="pointer-events: none; font-size: 0.9rem;">
-				                    <input type="hidden" name="existingProductDetailImgList" value="${img}">
+				                    <input type="text" class="form-control bg-white name-display" value="${img.productImg} (기존)" readonly style="pointer-events: none; font-size: 0.9rem;">
+				                    <input type="hidden" name="existingProductDetailImgList" value="${img.productImg}">
 				                    <button type="button" class="btn btn-danger btn-sm px-3" style="height: 48px;" onclick="removeFileItem(this, true)">삭제</button>
 				                </div>
 				            </c:forEach>
@@ -119,11 +119,11 @@
 							<c:forEach var="descImg" items="${descImgList}" varStatus="status">
 				                <div class="input-group mb-2 shadow-sm align-items-center flex-nowrap existing-file-item">
 				                    <span class="input-group-text bg-light p-1">
-				                        <img class="img-preview" src="${path}/resources/images/ProductDescImg/${descImg}" 
+				                        <img class="img-preview" src="${path}/resources/images/ProductDescImg/${descImg.productDescImg}" 
 				                             style="width: 40px; height: 40px; object-fit: cover; border-radius: 4px;">
 				                    </span>
-				                    <input type="text" class="form-control bg-white name-display" value="${descImg} (기존)" readonly style="pointer-events: none; font-size: 0.9rem;">
-				                    <input type="hidden" name="existingProductDescImgList" value="${descImg}">
+				                    <input type="text" class="form-control bg-white name-display" value="${descImg.productDescImg} (기존)" readonly style="pointer-events: none; font-size: 0.9rem;">
+				                    <input type="hidden" name="existingProductDescImgList" value="${descImg.productDescImg}">
 				                    <button type="button" class="btn btn-danger btn-sm px-3" style="height: 48px;" onclick="removeFileItem(this, true)">삭제</button>
 				                </div>
 				            </c:forEach>						
@@ -174,7 +174,7 @@
 						</tr>
 					</thead>
 					<tbody id="optionBody" name="optionBody">
-						<c:forEach var="opt" items = ${option} varStatus="status">
+						<c:forEach var="opt" items = "${optionList}" varStatus="status">
 							<tr class="option-row">
 								<td>
 									<select name="productOptionList[${status.index}].color" class="form-select">
@@ -219,13 +219,15 @@
 	
 //카테고리쪽
 
-window.onload=function(){
-	updateSubCategories();
-	
-	const savedSubCategory = "${m.subCategory}";
-	if(savedSubCategory){
-		document.getElementById("subCateogry").value=savedSubCateogry;
-	}
+window.onload = function() {
+     updateSubCategories();
+    
+    const savedSubCategory = "${m.subCategory}";
+    
+    if (savedSubCategory) {
+        const subCatSelect = document.getElementById("subCategory");
+        subCatSelect.value = savedSubCategory;
+    }
 }
 
 const subCategories = {
