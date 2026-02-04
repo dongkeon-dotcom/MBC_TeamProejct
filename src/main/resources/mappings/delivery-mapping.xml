@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper 
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<mapper namespace="ADDRESS">
+
+   <select id="ADDRLIST" parameterType="long" resultType="com.mbcTeam.shop.DeliveryVO">
+        SELECT 
+            delivery_Idx        AS deliveryIdx,
+            user_Idx            AS userIdx,
+            delivery_Name       AS deliveryName,
+            Receiver            AS Receiver,
+            delivery_Phone      AS deliveryPhone,
+            address             AS address,
+            Extra_Address       AS extraAddress,
+            Zipcode             AS zipcode,
+            is_Default_Address  AS isDefaultAddress
+        FROM Delivery 
+        WHERE user_Idx = #{userIdx}
+        ORDER BY is_Default_Address DESC, delivery_Idx DESC
+    </select>
+
+    <insert id="ADDRINSERT" parameterType="com.mbcTeam.shop.DeliveryVO">
+        INSERT INTO Delivery (
+            user_Idx, delivery_Name, Receiver, delivery_Phone, 
+            address, Extra_Address, Zipcode, is_Default_Address
+        ) VALUES (
+            #{userIdx}, #{deliveryName}, #{Receiver}, #{deliveryPhone}, 
+            #{address}, #{extraAddress}, #{zipcode}, #{isDefaultAddress}
+        )
+    </insert>
+
+    <delete id="ADDRDELLIST" parameterType="java.util.List">
+        DELETE FROM Delivery 
+        WHERE delivery_Idx IN 
+        <foreach item="id" collection="list" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <update id="resetDefaultAddress" parameterType="long">
+        UPDATE Delivery 
+        SET is_Default_Address = 0 
+        WHERE user_Idx = #{userIdx}
+    </update>
+
+    <update id="setDefaultAddress" parameterType="java.util.Map">
+        UPDATE Delivery 
+        SET is_Default_Address = 1 
+        WHERE delivery_Idx = #{deliveryIdx}
+    </update>
+
+</mapper>

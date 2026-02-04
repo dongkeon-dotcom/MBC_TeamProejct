@@ -1,11 +1,13 @@
 
 package com.mbcTeam.controller;
 
-import java.io.File; 
+import java.io.File;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.stream.Collectors; 
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -21,6 +23,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.mbcTeam.shop.DeliveryService;
 import com.mbcTeam.shop.DeliveryVO;
 import com.mbcTeam.shop.OrderItemedVO;
 import com.mbcTeam.shop.OrderedService;
@@ -45,7 +48,8 @@ public class UserController {
 	
 	@Autowired
 	private ReviewService rservice;
-
+	@Autowired
+    private DeliveryService dservice;
 
 	@GetMapping(value = "/list.do")
 	public String list(UserVO vo, Model model) {
@@ -121,21 +125,17 @@ public class UserController {
 	    // 중요: DB가 수정되었으므로 세션 정보도 최신화해야 함
 	    // (보통 다시 조회해서 넣거나, vo 객체를 다시 세션에 저장)
 	    UserVO updatedMember = service.getUserById(vo.getId());
-	    System.out.println("************************************************");
-	    System.out.println("기존값: " + session.getAttribute("loginMember"));
-	    System.out.println("신규값: " + updatedMember);
+	  //  System.out.println("************************************************");
+	   // System.out.println("기존값: " + session.getAttribute("loginMember"));
+	  //  System.out.println("신규값: " + updatedMember);
+	  //  System.out.println("전달받은 ID: " + vo.getId()); 
+	   // System.out.println("전달받은 VO: " + vo);
 	    
-	    //session.setAttribute("loginMember", updatedMember);
+	    session.setAttribute("loginMember", updatedMember);
 	    
 	    return "redirect:/user/mypage.do"; // 수정 완료 후 메인으로
 	}
 
-	@GetMapping(value = "/addressList.do")
-	public String addresses(UserVO vo) {
-		System.out.println("/ADDRESS.DO");
-		return "user/addressList";
-
-	}
 
 //orderlist 에서  orderdetailList로 이동하기
 	@GetMapping(value = "/orderDetailList.do")
@@ -386,7 +386,53 @@ public class UserController {
 	    // 6. 작성 완료 후 원래 보고 있던 주문 상세 페이지로 리다이렉트
 	    return "redirect:/user/orderDetailList.do?orderIdx=" + orderIdx; 
 	}
+//주소관리 *****************************************************
+	
+	
+	// 1. 주소록 목록 보기 +	//링크를 통해 addressList로 향하기 위한컨트롤러
+    @GetMapping("/addressList.do")
+    public String addressList(HttpSession session, Model model) {
+        // 세션에서 로그인한 유저 정보 가져오기 (세션 key는 프로젝트에 맞게 수정하세요)
+        UserVO loginUser = (UserVO) session.getAttribute("loginMember");
+        
+        if (loginUser == null) {
+            return "redirect:/user/login.do"; // 로그인 안 되어 있으면 로그인으로
+        }
 
+        // 로그인한 유저의 고유 번호(idx)로 주소 목록 조회
+        List<DeliveryVO> list = dservice.getAddressList(loginUser.getUserIdx());
+        model.addAttribute("addressList", list);
+        
+        return "user/addressList"; // JSP 파일 경로
+    }
+
+    // 2. 단일 주소 삭제 (버튼 클릭)
+    @GetMapping("/deleteAddress.do")
+    public String deleteAddress(@RequestParam("deliveryIdx") long deliveryIdx) {
+        // 서비스에서 만든 단일 삭제 호출 (또는 Arrays.asList로 감싸서 전달)
+        dservice.deleteAddresses(Arrays.asList(deliveryIdx));
+        
+        return "redirect:/user/addressList.do";
+    }
+
+    // 3. 선택 주소 삭제 (체크박스 다중 삭제)
+    @GetMapping("/deleteAddresses.do")
+    public String deleteAddresses(@RequestParam("ids") String ids) {
+        // 쉼표로 구분된 문자열 "1,2,5"를 List<Long>으로 변환
+        List<Long> idList = Arrays.stream(ids.split(","))
+                                  .map(Long::parseLong)
+                                  .collect(Collectors.toList());
+        
+        dservice.deleteAddresses(idList);
+        
+        return "redirect:/user/addressList.do";
+    }
+    
+    // 4. 주소 추가 팝업창 띄우기
+	@RequestMapping("/addressInsert.do")
+	public String openPopup() {
+	    return "user/addressInsert"; // 팝업으로 보여줄 jsp 파일명
+	} 
 }
 	
 	

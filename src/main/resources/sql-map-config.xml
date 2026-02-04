@@ -22,6 +22,7 @@
               <typeAlias alias="DeliveryVO"  type="com.mbcTeam.shop.DeliveryVO" />
         <typeAlias alias="ReviewVO"  type="com.mbcTeam.user.ReviewVO" />
          <typeAlias alias="ReviewImageVO"  type="com.mbcTeam.user.ReviewImageVO" />
+                <typeAlias alias="DeliveryVO"  type="com.mbcTeam.shop.DeliveryVO" />
     
   </typeAliases>
   
@@ -33,6 +34,7 @@
        <mapper resource="mappings/ordered-mapping.xml"  />
          <mapper resource="mappings/ordered-mapping.xml"  />
           <mapper resource="mappings/review-mapping.xml"  />
+           <mapper resource="mappings/delivery-mapping.xml"  />
     <!-- <mapper resource="mappings/member-mapping.xml"  /> -->
   </mappers>
   
