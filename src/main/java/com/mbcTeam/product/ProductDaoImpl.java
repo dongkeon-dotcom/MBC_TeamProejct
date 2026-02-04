@@ -84,6 +84,32 @@ public class ProductDaoImpl implements ProductDao {
 
 	@Override
 	public List<ProductVO> adminSelect(ProductVO vo) {
-		return mybatis.selectList("SELECT_ADMIN_PRODUCT_LIST", vo);
+		return mybatis.selectList("PRODUCT.SELECT_ADMIN_PRODUCT_LIST", vo);
+	}
+
+	@Override
+	public void adminUpdateProductStatus(ProductVO vo) {
+		mybatis.update("PRODUCT.UPDATE_PRODUCTS_STATUS", vo);
+
+	}
+
+	@Override
+	public ProductVO adminProductEdit(ProductVO vo) {
+		return mybatis.selectOne("PRODUCT.EDIT_PRODUCT", vo);
+	}
+
+	@Override
+	public List<ProductImgVO> adminProductEditImg(int productIdx) {
+		return mybatis.selectList("PRODUCT.EDIT_PRODUCT_IMG", productIdx);
+	}
+
+	@Override
+	public List<ProductDescImgVO> adminProductEditDescImg(int productIdx) {
+		return mybatis.selectList("PRODUCT.EDIT_PRODUCT_DESC_IMG", productIdx);		
+	}
+
+	@Override
+	public List<ProductOptionVO> adminProductEditOption(int productIdx) {
+		return mybatis.selectList("PRODUCT.EDIT_PRODUCT_OPTION", productIdx);
 	}
 }

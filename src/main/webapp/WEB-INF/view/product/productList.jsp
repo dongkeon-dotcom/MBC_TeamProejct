@@ -40,7 +40,11 @@
                 <tr>
                     <td><input type="checkbox" class="form-check-input item-check" value="${m.productIdx}"></td>
                     <td>${m.productIdx}</td>
-                    <td>${m.productName}</td>
+                    <td>
+                    <a href="${path}/product/adminProductEdit.do?productIdx=${m.productIdx}">
+                    ${m.productName}
+                    </a>
+                    </td>
                     <td>${m.recommended ? "추천" : "보통"}</td>
                     <td>${m.discountRate}</td>
                     <td>${m.category}</td>                    
@@ -142,73 +146,99 @@
     </div>
 </div>
 
+<script src="https://code.jquery.com/jquery-1.10.2.js"></script>
 <script>
-document.getElementById('bulkAction').addEventListener('change', function() {
-    const action = this.value;
-    const bulkInput = document.getElementById('bulkInput');
-    const bulkUnit = document.getElementById('bulkUnit');
-
-    if (action === 'sale') {
-        // '세일'일 때만 보임
-    	bulkInput.classList.remove('d-none');
-        bulkUnit.classList.remove('d-none');
-    } else {
-        // '추천'이나 '해제'일 때는 숨김
-    	bulkInput.classList.add('d-none');
-        bulkUnit.classList.add('d-none');
-    }
-});
-
 document.addEventListener('DOMContentLoaded', function() {
+    // 0. jQuery 존재 여부 확인 (에러 방지)
+    if (typeof $ === 'undefined') {
+        console.error('jQuery가 로드되지 않았습니다. top.jsp에 jQuery CDN이 있는지 확인하세요.');
+        return;
+    }
+
     const selectAllCheck = document.getElementById('selectAll');
     const applyBtn = document.getElementById('applyBulkAction');
+    const bulkActionSelect = document.getElementById('bulkAction');
+    const bulkInput = $('#bulkInput');
+    const bulkUnit = $('#bulkUnit');
 
-    // 1. 전체 선택/해제 로직
+    // 1. 선택 박스 변경 시 세일 입력창 UI 제어
+    // 초기 상태 설정 (페이지 로드 시 세일이 아니면 숨김)
+    if (bulkActionSelect.value !== 'sale') {
+        bulkInput.addClass('d-none');
+        bulkUnit.addClass('d-none');
+    }
+
+    bulkActionSelect.addEventListener('change', function() {
+        if (this.value === 'sale') {
+            bulkInput.removeClass('d-none');
+            bulkUnit.removeClass('d-none');
+        } else {
+            bulkInput.addClass('d-none');
+            bulkUnit.addClass('d-none');
+        }
+    });
+
+    // 2. 전체 선택/해제 로직
     if (selectAllCheck) {
         $(selectAllCheck).on('change', function() {
             $('.item-check').prop('checked', this.checked);
         });
     }
 
-    // 2. 적용 버튼 클릭 시 (AJAX 통신)
+    // 3. 적용 버튼 클릭 시 (AJAX 통신)
     applyBtn.addEventListener('click', function() {
         const selectedIds = [];
         
-        // 체크된 항목의 value(상품코드)를 수집
         $('.item-check:checked').each(function() {
             selectedIds.push($(this).val());
         });
 
-        // 유효성 검사
         if (selectedIds.length === 0) {
             alert('변경할 상품을 선택해주세요.');
             return;
         }
 
-        // 선택된 상태값 (추천, 세일, 해제 등)
-        const action = $('#bulkAction').val();
-
-        if (confirm(`${selectedIds.length}개의 항목을 [${action}] 상태로 변경하시겠습니까?`)) {
-            
+        const action = $('#bulkAction').val(); 
+        let actionColumn = "";
+        let actionValue = 0;
+        
+        // ✨ 변수 오타 수정 완료: action 값에 따라 분기
+        if (action === 'recommend') {
+            actionColumn = 'is_recommended';
+            actionValue = 1;
+        }
+        else if (action === 'reset') {
+            actionColumn = 'is_recommended';
+            actionValue = 0;
+        }
+        else if (action === 'sale') {
+            actionColumn = 'sale';
+            actionValue = bulkInput.val();
+            if (actionValue === "" || actionValue < 0) {
+                alert("유효한 세일 값을 입력해주세요.");
+                return;
+            }
+        }
+		var path = '${path}';
+        if (confirm(selectedIds.length + "개의 항목을 변경하시겠습니까?")) {
             $.ajax({
-            	type: 'POST',
-            	url: '/product/adminUpdateStatus.do',                
-                traditional: true, // 중요: 배열 데이터를 'ids=1&ids=2' 형태로 보낼 때 필요
+                type: 'POST',
+                url: path + '/product/adminUpdateStatus.do',                
+                traditional: true, 
                 data: {
-                    'productCodes': selectedIds, // 배열 그대로 전달
-                    'status': action,
-                    'statusValue': actionValue
+                    'productIdxs': selectedIds,
+                    'productStatus': actionColumn,
+                    'productStatusValue': actionValue
                 },
                 success: function(result) {
-                    if (result === "success") {
+                    if (result === "T") {
                         alert('성공적으로 변경되었습니다.');
-                        location.reload(); // 화면 갱신
+                        location.reload();
                     } else {
                         alert('변경 중 오류가 발생했습니다.');
                     }
                 },
                 error: function(xhr, status, error) {
-                    console.error('에러 발생:', error);
                     alert('저장 실패: ' + status + '(' + error + ')');
                 }
             });

@@ -30,6 +30,11 @@ public class ProductVO {
 	//페이지 사이즈 조절용 데이터
 	private int startIdx;		//검색 시작번호
 	private int pageSize;		//표시할 갯수
+	
+	//제품 상태(추천, 세일) 변경용 데이터
+	private String productStatus;
+	private int productStatusValue;
+	private List<String> productIdxs;
 
 	// 옵션 리스트 포함
 	private List<ProductOptionVO> options;
