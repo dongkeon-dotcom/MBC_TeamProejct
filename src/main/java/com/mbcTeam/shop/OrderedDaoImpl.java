@@ -8,8 +8,6 @@ import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import com.mbcTeam.order.OrderItemVO;
-import com.mbcTeam.order.OrderVO;
 @Repository
 public class OrderedDaoImpl implements OrderedDao{
 
@@ -19,27 +17,27 @@ public class OrderedDaoImpl implements OrderedDao{
 	
 
 	@Override
-	public List<OrderVO> selectOrderList(Map<String, Object> params) {
+	public List<OrderedVO> selectOrderedList(Map<String, Object> params) {
 		// TODO Auto-generated method stub
-		return mybatis.selectList("ORDER.SELECT_ORDER_LIST", params);
+		return mybatis.selectList("ORDERED.SELECT_ORDER_LIST", params);
 	}
 
 	@Override
-	public int countOrderList(Map<String, Object> params) {
+	public int countOrderedList(Map<String, Object> params) {
 		// TODO Auto-generated method stub
-		return mybatis.selectOne("ORDER.COUNT_ORDER_LIST", params);
+		return mybatis.selectOne("ORDERED.COUNT_ORDER_LIST", params);
 	}
 
 	@Override
-	public OrderVO selectOrderByOrderIdx(long orderIdx) {
+	public OrderedVO selectOrderByOrderedIdx(long orderIdx) {
 		// orderdetailList에서 표시하기 위한매소드 
-		return mybatis.selectOne("ORDER.DETAILLIST",orderIdx);
+		return mybatis.selectOne("ORDERED.DETAILLIST",orderIdx);
 	}
 
 	@Override
-	public List<OrderItemVO> selectOrderItems(long orderIdx) {
+	public List<OrderItemedVO> selectOrderedItems(long orderIdx) {
 		// TODO Auto-generated method stub
-		return mybatis.selectList("ORDER.DETAILITEM",orderIdx);
+		return mybatis.selectList("ORDERED.DETAILITEM",orderIdx);
 	}
 
 	    

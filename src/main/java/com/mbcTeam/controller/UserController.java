@@ -21,9 +21,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.mbcTeam.order.OrderItemVO;
+
+import com.mbcTeam.shop.OrderItemedVO;
 import com.mbcTeam.shop.OrderedService;
-import com.mbcTeam.order.OrderVO;
+import com.mbcTeam.shop.OrderedVO;
+
 import com.mbcTeam.user.ReviewImageVO;
 import com.mbcTeam.user.ReviewService;
 import com.mbcTeam.user.ReviewVO;
@@ -138,10 +140,10 @@ public class UserController {
 
 	 // 2. 서비스 호출하여 데이터 가져오기
 	    // (1) 주문 기본 정보 (주소, 수령인, 총 결제금액 등)
-	    OrderVO order = oservice.selectOrderByOrderIdx(orderIdx);
+	    OrderedVO order = oservice.selectOrderedByOrderIdx(orderIdx);
 	    
 	    // (2) 해당 주문의 상세 상품 리스트 (상품명, 수량, 옵션 등)
-	    List<OrderItemVO> detailList = oservice.selectOrderItems(orderIdx);
+	    List<OrderItemedVO> detailList = oservice.selectOrderedItems(orderIdx);
 	    // 3. 보안 체크 (주문한 본인인지 확인하는 로직 - 권장)
 	    if (order != null && order.getUserIdx() != login.getUserIdx()) {
 	        return "redirect:/user/orderList.do"; // 본인 주문이 아니면 목록으로 튕겨냄
@@ -284,8 +286,8 @@ public class UserController {
         long userIdx = login.getUserIdx(); // long 타입 그대로 유지
 
         // 3. 서비스 호출
-        List<OrderVO> orderli = oservice.selectOrderList(userIdx, startDate, endDate, offset, pageSize);
-        int totalCount = oservice.countOrderList(userIdx, startDate, endDate);
+        List<OrderedVO> orderli = oservice.selectOrderedList(userIdx, startDate, endDate, offset, pageSize);
+        int totalCount = oservice.countOrderedList(userIdx, startDate, endDate);
 
         // 4. 페이징 로직 처리
         int totalPage = (int) Math.ceil((double) totalCount / pageSize);

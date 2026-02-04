@@ -13,4 +13,4 @@ public class DeliveryVO {
     private String extraAddress;        //상세주소
     private int zipcode;                //우편번호
     private boolean isDefaultAddress;        //기본배송지 유무
-}
+} 	
