@@ -11,15 +11,15 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             delivery_Idx        AS deliveryIdx,
             user_Idx            AS userIdx,
             delivery_Name       AS deliveryName,
-            Receiver            AS Receiver,
+            Receiver            AS receiver,
             delivery_Phone      AS deliveryPhone,
             address             AS address,
             Extra_Address       AS extraAddress,
             Zipcode             AS zipcode,
-            is_Default_Address  AS isDefaultAddress
+            is_Default_Address  AS defaultAddress
         FROM Delivery 
         WHERE user_Idx = #{userIdx}
-        ORDER BY is_Default_Address DESC, delivery_Idx DESC
+        ORDER BY is_Default_Address DESC, delivery_Idx asc
     </select>
 
     <insert id="ADDRINSERT" parameterType="com.mbcTeam.shop.DeliveryVO">
@@ -27,8 +27,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             user_Idx, delivery_Name, Receiver, delivery_Phone, 
             address, Extra_Address, Zipcode, is_Default_Address
         ) VALUES (
-            #{userIdx}, #{deliveryName}, #{Receiver}, #{deliveryPhone}, 
-            #{address}, #{extraAddress}, #{zipcode}, #{isDefaultAddress}
+            #{userIdx}, #{deliveryName}, #{receiver}, #{deliveryPhone}, 
+            #{address}, #{extraAddress}, #{zipcode}, #{defaultAddress}
         )
     </insert>
 
@@ -38,18 +38,54 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <foreach item="id" collection="list" open="(" separator="," close=")">
             #{id}
         </foreach>
+
     </delete>
 
-    <update id="resetDefaultAddress" parameterType="long">
-        UPDATE Delivery 
-        SET is_Default_Address = 0 
-        WHERE user_Idx = #{userIdx}
-    </update>
+   
 
-    <update id="setDefaultAddress" parameterType="java.util.Map">
+  
+
+
+<select id="getOneAddress" parameterType="long" resultType="com.mbcTeam.shop.DeliveryVO">
+    SELECT 
+        delivery_Idx        AS deliveryIdx,
+        user_Idx            AS userIdx,
+        delivery_Name       AS deliveryName,
+        Receiver            AS receiver,
+        delivery_Phone      AS deliveryPhone,
+        address             AS address,
+        Extra_Address       AS extraAddress,
+        Zipcode             AS zipcode,
+        is_Default_Address  AS isDefaultAddress
+    FROM Delivery 
+    WHERE delivery_Idx = #{deliveryIdx}
+</select>
+
+
+
+<update id="addrUpdate" parameterType="com.mbcTeam.shop.DeliveryVO">
+    UPDATE Delivery 
+    SET 
+        delivery_Name = #{deliveryName},
+        Receiver = #{receiver},
+        delivery_Phone = #{deliveryPhone},
+        address = #{address},
+        Extra_Address = #{extraAddress},
+        Zipcode = #{zipcode},
+        is_Default_Address = #{defaultAddress}
+    WHERE delivery_Idx = #{deliveryIdx}
+</update>
+ <!-- 기본 배송지 셋팅을 위한 나머지 초기화  -->
+<update id="resetDefaultAddress" parameterType="long">
+    UPDATE Delivery 
+    SET is_Default_Address = 0 
+    WHERE user_Idx = #{userIdx}
+</update>
+
+
+  <update id="setDefaultAddress" parameterType="java.util.Map">
         UPDATE Delivery 
         SET is_Default_Address = 1 
         WHERE delivery_Idx = #{deliveryIdx}
     </update>
-
 </mapper>

@@ -19,11 +19,11 @@
     
   
        <typeAlias alias="OrderedVO"  type="com.mbcTeam.shop.OrderedVO" />
-              <typeAlias alias="DeliveryVO"  type="com.mbcTeam.shop.DeliveryVO" />
+    
         <typeAlias alias="ReviewVO"  type="com.mbcTeam.user.ReviewVO" />
          <typeAlias alias="ReviewImageVO"  type="com.mbcTeam.user.ReviewImageVO" />
-                <typeAlias alias="DeliveryVO"  type="com.mbcTeam.shop.DeliveryVO" />
-    
+                
+     <typeAlias alias="DeliveryVO"  type="com.mbcTeam.shop.DeliveryVO" />
   </typeAliases>
   
   <mappers>    

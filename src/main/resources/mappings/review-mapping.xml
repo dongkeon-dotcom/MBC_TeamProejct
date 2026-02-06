@@ -18,4 +18,16 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
      				   VALUES (#{reviewIdx}, #{reviewImg} )
     </insert>
     
+    <select id="REVIEWLIST" parameterType="long" resultType="com.mbcTeam.user.ReviewVO">
+
+     SELECT DISTINCT
+        r.review_Idx   AS reviewIdx,
+        r.product_Idx  AS productIdx,
+        r.user_Idx     AS userIdx,
+        r.review       AS review,
+        CONCAT(oi.color, '_', oi.size) AS userName 
+    FROM Reviews r
+    INNER JOIN OrderItems oi ON r.product_Idx = oi.product_Idx
+    WHERE r.user_Idx = #{userIdx}
+    </select>
 </mapper>

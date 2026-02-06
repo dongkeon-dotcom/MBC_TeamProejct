@@ -1,5 +1,7 @@
 package com.mbcTeam.user;
 
+import java.util.List;
+
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -20,6 +22,12 @@ public class ReviewDaoImpl implements ReviewDao {
 	public int insertReviewImg(ReviewImageVO imgVO) {
 		// TODO Auto-generated method stub
 		return mybatis.insert("REVIEW.REVIEWINSERTIMG",imgVO);
+	}
+
+	@Override
+	public List<ReviewVO> getReviewListByUserIdx(long userIdx) {
+		// TODO Auto-generated method stub
+		return mybatis.selectList("REVIEW.REVIEWLIST",userIdx);
 	}
 
 }

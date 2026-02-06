@@ -25,7 +25,8 @@
             <thead>
                 <tr> 
                     <th><input type="checkbox" id="selectAll" onclick="toggleSelectAll()"></th> 
-                    <th>배송지명</th> 
+                    <th>배송지명</th>
+                    <th>기본배송유무 </th> 
                     <th>수령인</th> 
                     <th>전화번호</th> 
                     <th>주소</th> 
@@ -39,14 +40,12 @@
                         <input type="checkbox" name="selectedIdx" value="${m.deliveryIdx}" class="chk">
                     </td>
                     <td>
-                        ${m.deliveryName}
-                       <c:if test="${m.defaultAddress}">
-                            <span class="default-badge">기본</span>
-                        </c:if>
-                    </td> 
-                    <td>${m.Receiver}</td> <td>${m.deliveryPhone}</td> 
+                        ${m.deliveryName}</td>
+                         
+                    <td>${m.defaultAddress ? '<span style="color:red;">[기본]</span>' : ''}</td>
+                    <td>${m.receiver}</td> <td>${m.deliveryPhone}</td> 
                     <td align="left">
-                        (${m.zipcode}) ${m.address} ${m.extraAddress}
+                       <a href="${path}/delivery/addrEdit.do?deliveryIdx=${m.deliveryIdx}"> (${m.zipcode}) ${m.address} ${m.extraAddress} </a>
                     </td> 
                     <td>
                         <input type="button" onClick="addressDel('${m.deliveryIdx}')" value="삭제">
@@ -61,7 +60,8 @@
                 </c:if>
             </tbody>
         </table>
-   <button type="button" onclick="addrDel()">선택사항 삭제</button> <button type="button" onclick="AddADDR()">주소 추가 </button>
+   <button type="button" onclick="addrDel()">선택사항 삭제</button> 
+   <button type="button" onclick="AddADDR()">주소 추가 </button>
     
      
      
@@ -80,12 +80,14 @@ function AddADDR() {
     var top = (window.screen.height / 2) - (height / 2);
     
     // window.open("경로", "창이름", "옵션")
-    var url = "${path}/user/addressInsert.do"; // 주소 API가 있는 JSP와 매핑된 URL
+    var url = "${path}/delivery/addressInsert.do"; // 주소 API가 있는 JSP와 매핑된 URL
     window.open(url, "AddADDR", 
                 "width=" + width + ", height=" + height + 
                 ", top=" + top + ", left=" + left + 
                 ", resizable=no, scrollbars=yes");
 }
+
+
 
 function toggleSelectAll() {
     const selectAll = document.getElementById('selectAll');
@@ -95,7 +97,7 @@ function toggleSelectAll() {
 //3. 단일 삭제
 function addressDel(idx) {
     if(confirm("이 주소를 삭제하시겠습니까?")) {
-        location.href = "${path}/user/deleteAddress.do?deliveryIdx=" + idx;
+        location.href = "${path}/delivery/deleteAddress.do?deliveryIdx=" + idx;
     }
 }
 //4. 선택 삭제 (다중 삭제)
@@ -109,8 +111,9 @@ function deleteSelected() {
     if(confirm(checkedBoxes.length + "개의 주소를 삭제하시겠습니까?")) {
         const ids = Array.from(checkedBoxes).map(cb => cb.value);
         // 리스트 형태(1,2,3)로 파라미터 전달
-        location.href = "${path}/user/deleteAddresses.do?ids=" + ids.join(",");
+        location.href = "${path}/delivery/deleteAddresses.do?ids=" + ids.join(",");
     }
+  }
 </script>
 
 

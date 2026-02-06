@@ -16,4 +16,8 @@ public interface DeliveryService {
     // 4. (선택사항) 기본 배송지 변경
     // 새 주소를 기본 배송지로 설정할 경우 기존 기본 배송지를 일반으로 바꿔주는 로직
     void updateDefaultAddress(long userIdx, long deliveryIdx);
+    //주소 하나만 받아서 주소 수정에 넣기위해서 
+    DeliveryVO getOneAddress(long deliveryIdx);
+//주소 수정을 위한 업데이트매소드
+    void addrUpdate(DeliveryVO vo);
 }

@@ -15,8 +15,8 @@
     <tr> <td> <strong>${sessionScope.loginMember.userName}</strong>님 환영합니다!</td></tr>
       <tr> <td>  <a href="${path}/user/memberEdit.do">회원정보 수정 </a></td></tr>
        <tr> <td>  <a href="${path}/user/orderList.do">주문내역</a></td></tr>
-        <tr> <td><a href="${path}/user/addressList.do">주소지관리</a></td></tr>
-        <tr> <td><a href="${path}/cart/list.do">장바구니관</a></td></tr>
+        <tr> <td><a href="${path}/delivery/addressList.do">주소지관리</a></td></tr>
+        <tr> <td><a href="${path}/order/cartlist.do">장바구니관</a></td></tr>
       
       </table> 
 

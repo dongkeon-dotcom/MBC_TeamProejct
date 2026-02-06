@@ -1,5 +1,7 @@
 package com.mbcTeam.user;
 
+import java.util.List;
+
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -9,4 +11,5 @@ public interface ReviewDao {
 
     // 2. 리뷰 이미지 개별 저장
     int insertReviewImg(ReviewImageVO imgVO);
+    List<ReviewVO> getReviewListByUserIdx(long userIdx);
 }

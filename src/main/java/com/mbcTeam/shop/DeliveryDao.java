@@ -16,4 +16,9 @@ public interface DeliveryDao {
     // 4. (선택사항) 기본 배송지 변경
     // 새 주소를 기본 배송지로 설정할 경우 기존 기본 배송지를 일반으로 바꿔주는 로직
     void updateDefaultAddress(long userIdx, long deliveryIdx);
+    //단일 객채로필요한 데이터만 받아오기 위한 메소드 
+    DeliveryVO getOneAddress(long deliveryIdx);
+    
+    void addrUpdate(DeliveryVO vo);
+    void resetDefaultAddress(long userIdx); // 새로 추가
 }

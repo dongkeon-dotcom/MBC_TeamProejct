@@ -39,4 +39,19 @@ public class DeliveryServiceImpl implements  DeliveryService{
 		ddao.updateDefaultAddress(userIdx, deliveryIdx);
     }
 
+	@Override
+	public DeliveryVO getOneAddress(long deliveryIdx) {
+		// TODO Auto-generated method stub
+		return ddao.getOneAddress(deliveryIdx);
+	}
+
+	
+	
+	@Override
+	public void addrUpdate(DeliveryVO vo) {
+	
+	    ddao.addrUpdate(vo);
+	}
+
+	
 }

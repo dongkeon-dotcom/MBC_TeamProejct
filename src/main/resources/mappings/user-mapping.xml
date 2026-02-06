@@ -69,7 +69,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         UPDATE users
         SET
             user_Name  = #{userName},
-            user_phone = #{userPhone}
+            user_phone = #{userPhone},
+            password   = #{password}
         WHERE user_Idx = #{userIdx}
     </update>
 
