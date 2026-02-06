@@ -81,4 +81,35 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     WHERE user_Idx = #{userIdx}
   </select>
    
+   	<!-- 차트 월별 매출통계용 -->
+	<select id="getMonthlySales" resultType="map">
+		SELECT
+			DATE_FORMAT(order_Date, '%m') as MONTH,
+			SUM(total_Price) as TOTAL_SUM
+		FROM Orders
+		WHERE DATE_FORMAT(order_Date, '%Y') = #{year}
+		GROUP BY MONTH
+		ORDER BY MONTH
+	</select>   
+   
+   <select id="getCategorySales" resultType="map">
+   SELECT 
+	    OI.category as CATEGORY,
+	    SUM(
+	        CASE 
+	            WHEN OI.discount_rate > 0 
+	            THEN OI.price * (1 - OI.discount_rate / 100) * OI.quantity
+	            ELSE OI.price * OI.quantity
+	        END
+	    ) as TOTAL_SUM
+	FROM OrderItems OI
+	JOIN Orders O ON OI.order_Idx = O.order_Idx
+	WHERE DATE_FORMAT(O.order_Date, '%Y') = #{year}
+	  AND DATE_FORMAT(O.order_Date, '%m') = #{month}
+	GROUP BY OI.category
+	ORDER BY TOTAL_SUM DESC;
+   </select>
+   
+   
+   
 </mapper>

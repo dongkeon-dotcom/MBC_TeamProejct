@@ -30,6 +30,7 @@
                 
                 <li><a href="${path}/product/productAddForm.do">상품등록(관리자_동건)</a></li>
                 <li><a href="${path}/product/adminProductList.do">상품목록(관리자_동건) </a></li>
+                <li><a href="${path}/admin/salesChart.do">매출통계 </a></li>
                 <li><a href="${path}/product/list.do">상품목록(관리자) </a></li>                
                 
                 <li class="has-submenu"><a href="#">아우터</a>
