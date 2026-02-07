@@ -1,0 +1,31 @@
+@charset "UTF-8";
+
+body {
+    background-color: #f8f9fa;
+    padding: 20px;
+    color: #333;
+}
+
+.table-container {
+    background: white;
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+}
+
+.search-select {
+    width: 110px !important;
+}
+
+/* 테이블 헤더 강조 및 텍스트 줄바꿈 방지 */
+.table thead th {
+    background-color: #f8f9fa;
+    font-weight: 600;
+    white-space: nowrap; 
+}
+
+/* 구매확인 버튼 스타일 (추가 제안) */
+.btn-detail {
+    padding: 4px 12px;
+    font-size: 0.85rem;
+}

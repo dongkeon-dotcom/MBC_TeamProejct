@@ -107,4 +107,52 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
       AND is_Default_Address = 1
 </select>
 
+
+<sql id = "searchInclude">
+	<where>       
+       <if test="search == 'code'">
+           AND INSTR(${prefix}user_idx, #{keyword}) > 0
+       </if>
+       <if test="search == 'name'">
+           AND INSTR(${prefix}user_Name, #{keyword}) > 0
+       </if>
+	</where>
+</sql>
+
+
+<!-- ADMIN 관리자_회원관리 페이지 용  -->
+<select id="getUserManagement" resultType="com.mbcTeam.dto.UserManagementDTO">
+	select
+		u.reg_date,
+		u.user_idx,
+		u.id,
+		u.user_phone,
+		u.user_name,
+		IFNULL(CONCAT(d.address,' ',d.Extra_Address), 'NONE') AS full_address,
+		IFNULL(SUM(o.total_Price), '0') AS total_spent
+	FROM users u
+	LEFT JOIN Delivery d ON u.user_idx = d.user_Idx AND d.is_Default_Address=1
+	LEFT JOIN Orders o ON u.user_idx = o.user_Idx 
+	<include refid="searchInclude">
+		<property name="prefix" value="u."/>
+	</include>
+	GROUP BY
+		u.user_idx,
+		d.address,
+		d.Extra_Address
+	<![CDATA[
+	ORDER BY u.user_idx desc limit #{startIdx}, #{pageSize}
+	]]>
+</select>
+
+<select id="GET_USER_TOTAL_COUNT" parameterType="com.mbcTeam.dto.UserManagementDTO" resultType="int">
+	select count(*) as totalCount from users u
+	<include refid="searchInclude">
+		<property name="prefix" value=""/>
+	</include>
+</select>
+
+
+
+
 </mapper>

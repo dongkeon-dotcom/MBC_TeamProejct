@@ -13,15 +13,15 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.mbcTeam.order.OrderService;
-import com.mbcTeam.order.OrderVO;
+import com.mbcTeam.admin.AdminService;
+import com.mbcTeam.dto.UserManagementDTO;
 
 @RequestMapping("/admin")
 @Controller
 public class AdminController {
 	
 	@Autowired
-	private OrderService service;
+	private AdminService service;
 	
 	@GetMapping("/salesChart.do")
 	public String SalesChart(Model model,
@@ -58,4 +58,53 @@ public class AdminController {
 	    // 4. 리턴된 resultMap은 Jackson 라이브러리에 의해 JSON으로 변환되어 JS로 전달됩니다.
 	    return resultMap; 
 	}
+	
+	@GetMapping("/userManagement.do")
+	public String userManagement(@RequestParam(value = "search", defaultValue = "code", required = false) String search,
+			@RequestParam(value = "keyword", defaultValue = "", required = false) String keyword,
+			Model model, UserManagementDTO dto) {
+		
+		dto.setSearch(search);
+		dto.setKeyword(keyword);
+		int pageSize=20;
+		int pageListSize=10;
+		
+		if (dto.getStartIdx() == 0) {
+			dto.setStartIdx(0);
+		} else {
+			dto.setStartIdx(dto.getStartIdx());
+		}
+		
+		int totalCount = service.getUserTotalCount(dto);
+		
+		dto.setPageSize(pageSize);
+		
+		int totalPage = (int) Math.ceil((double) totalCount / pageSize);
+		int nowPage = (dto.getStartIdx() / pageSize) + 1;
+		int lastPage = (totalPage - 1) * pageSize;
+
+		int listStartPage = (nowPage - 1) / pageListSize * pageListSize + 1;
+
+		int listEndPage = listStartPage + pageListSize - 1;
+		
+		model.addAttribute("startIdx", dto.getStartIdx());
+		model.addAttribute("pageSize", dto.getPageSize());
+		
+		model.addAttribute("li", service.getUserManagement(dto));
+		
+		model.addAttribute("totalCount", totalCount);
+		model.addAttribute("lastPage", lastPage);
+		model.addAttribute("pageListSize", pageListSize);
+		model.addAttribute("listStartPage", listStartPage);
+		model.addAttribute("listEndPage", listEndPage);
+		
+		model.addAttribute("totalPage", totalPage);
+		model.addAttribute("nowPage", nowPage);
+		
+		model.addAttribute("search", dto.getSearch());
+		model.addAttribute("keyword", dto.getKeyword());
+		
+		return "admin/userManagement";
+	}
+	
 }

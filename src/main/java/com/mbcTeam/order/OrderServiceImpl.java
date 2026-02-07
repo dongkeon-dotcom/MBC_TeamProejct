@@ -46,14 +46,5 @@ public class OrderServiceImpl implements OrderService {
 		return dao.selectOrderByOrderIdx(orderIdx);
 	}
 
-	@Override
-	public List<Map<String,Object>>  getMonthlySales(String year) {
-		
-		return dao.getMonthlySales(year);	
-	}
 
-	@Override
-	public List<Map<String, Object>> getCategorySales(Map<String,Object> data) {
-		return dao.getCategorySales(data);
-	}
 }

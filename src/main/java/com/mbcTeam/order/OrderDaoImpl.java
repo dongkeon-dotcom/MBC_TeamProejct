@@ -49,14 +49,6 @@ public class OrderDaoImpl implements OrderDao {
 		return mybatis.selectOne("ORDER.DETAILLIST",orderIdx);
 	}
 
-	@Override
-	public List<Map<String,Object>> getMonthlySales(String year) {
-		return mybatis.selectList("ORDER.getMonthlySales", year);
-		
-	}
 
-	@Override
-	public List<Map<String, Object>> getCategorySales(Map<String, Object> data) {
-		return mybatis.selectList("ORDER.getCategorySales",data);
-	}
+
 }
