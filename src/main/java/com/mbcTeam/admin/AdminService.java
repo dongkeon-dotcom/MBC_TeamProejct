@@ -4,6 +4,9 @@ import java.util.List;
 import java.util.Map;
 
 import com.mbcTeam.dto.UserManagementDTO;
+import com.mbcTeam.order.OrderItemVO;
+import com.mbcTeam.order.OrderVO;
+import com.mbcTeam.user.UserVO;
 
 public interface AdminService {
 
@@ -14,4 +17,9 @@ public interface AdminService {
     //회원관리 페이지용
     List<UserManagementDTO> getUserManagement(UserManagementDTO dto);
     int getUserTotalCount(UserManagementDTO dto);
+    
+    //구매자 이력 확인페이지
+    UserVO getUserInfo(long value);
+    List<OrderVO> getUserOrderList(long value);
+    List<OrderItemVO> getUserDetailOrderItems(long value);
 }

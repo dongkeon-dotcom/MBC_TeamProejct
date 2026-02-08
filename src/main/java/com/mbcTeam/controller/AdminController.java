@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mbcTeam.admin.AdminService;
 import com.mbcTeam.dto.UserManagementDTO;
+import com.mbcTeam.order.OrderItemVO;
 
 @RequestMapping("/admin")
 @Controller
@@ -106,5 +107,26 @@ public class AdminController {
 		
 		return "admin/userManagement";
 	}
+	
+	
+	@GetMapping("/userPurchaseDetail.do")
+	public String userPurchaseDetail(Model model, int userIdx) {
+		System.out.println("/userPurchaseDetail.do");
+		
+		model.addAttribute("userInfo", service.getUserInfo(userIdx));
+		model.addAttribute("orderInfo", service.getUserOrderList(userIdx));
+		
+		return "admin/userPurchaseDetail";
+	}
+	
+	@ResponseBody
+	@GetMapping("/userDetailOrderItemsAjax.do")
+	public List<OrderItemVO> userDetailOrderItemsAjax(int orderIdx){
+		System.out.println("/userDetailOrderItemsAjax.do");
+		
+		List<OrderItemVO> list = service.getUserDetailOrderItems(orderIdx);
+		return list;
+	}
+	
 	
 }

@@ -109,6 +109,32 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	GROUP BY OI.category
 	ORDER BY TOTAL_SUM DESC;
    </select>
+
+	<!-- ADMIN 관리자_구매자 이력 확인 페이지 용 -->
+	<select id="GET_USER_ORDER_LIST" parameterType="Long" resultType="OrderVO">
+	SELECT
+		order_Date,
+		order_Idx,
+		CONCAT(address, ' ', Extra_Address) AS address,
+		total_Price
+	FROM Orders
+	WHERE user_idx= #{userIdx};
+	</select>
+	<select id="GET_USER_DETAIL_ORDER_ITEMS" parameterType="Long" resultType="OrderItemVO">
+	SELECT
+		product_Name,
+		color,
+		size,
+		quantity,
+		CASE 
+			WHEN discount_rate > 0 
+			THEN price * (1 - discount_rate / 100)
+			ELSE price
+		END AS price
+	FROM OrderItems
+	WHERE order_idx = #{orderIdx};
+   </select>
+   
    
    
    

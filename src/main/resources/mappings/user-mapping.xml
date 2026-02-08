@@ -152,7 +152,16 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	</include>
 </select>
 
-
+<!-- ADMIN 관리자_구매자 이력 확인 페이지 용 -->
+<select id="GET_USER_INFO" parameterType="Long" resultType = "UserVO">
+	SELECT 
+		user_idx,
+		user_name,
+		user_phone 
+	FROM
+		users
+	where user_idx=#{userIdx}
+</select>
 
 
 </mapper>
