@@ -61,7 +61,7 @@ public class AdminController {
 	}
 	
 	@GetMapping("/userManagement.do")
-	public String userManagement(@RequestParam(value = "search", defaultValue = "code", required = false) String search,
+	public String UserManagement(@RequestParam(value = "search", defaultValue = "code", required = false) String search,
 			@RequestParam(value = "keyword", defaultValue = "", required = false) String keyword,
 			Model model, UserManagementDTO dto) {
 		
@@ -110,7 +110,7 @@ public class AdminController {
 	
 	
 	@GetMapping("/userPurchaseDetail.do")
-	public String userPurchaseDetail(Model model, int userIdx) {
+	public String UserPurchaseDetail(Model model, int userIdx) {
 		System.out.println("/userPurchaseDetail.do");
 		
 		model.addAttribute("userInfo", service.getUserInfo(userIdx));
@@ -121,11 +121,18 @@ public class AdminController {
 	
 	@ResponseBody
 	@GetMapping("/userDetailOrderItemsAjax.do")
-	public List<OrderItemVO> userDetailOrderItemsAjax(int orderIdx){
+	public List<OrderItemVO> UserDetailOrderItemsAjax(int orderIdx){
 		System.out.println("/userDetailOrderItemsAjax.do");
 		
 		List<OrderItemVO> list = service.getUserDetailOrderItems(orderIdx);
 		return list;
+	}
+	
+	@GetMapping("/orderManagement.do")
+	public String OrderManagement(){
+
+		
+		return "admin/orderManagement";
 	}
 	
 	
