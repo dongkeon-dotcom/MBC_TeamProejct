@@ -108,7 +108,7 @@ top.jsp에 들어가야할것들
                 <a href="${path}/user/login.do">로그인</a>
                 <a href="${path}/user/member.do">회원가입</a>
                    <a href="${path}/user/mypage.do">마이페이지</a>
-        <a href="/cart">장바구니</a>
+       <a href="${path}/cart/cartlist.do">장바구니</a> 
             </c:when>
             
             <%-- 2. 로그인 상태일 때 --%>
@@ -120,7 +120,7 @@ top.jsp에 들어가야할것들
                 </span>
               
               <a href="${path}/user/mypage.do">마이페이지</a>
-        <a href="/cart">장바구니</a>
+        <a href="${path}/cart/cartlist.do">장바구니</a> 
           <a href="${path}/user/logout.do" style="margin-left:10px;">로그아웃</a>
             </c:otherwise>
         </c:choose>
