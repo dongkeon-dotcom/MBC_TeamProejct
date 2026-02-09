@@ -11,9 +11,11 @@
 	<div class="container my-5" style="max-width: 800px;">
 		<h2 class="text-center mb-5 fw-bold">상품 정보 수정 페이지</h2>
 
-		<form action="${path}/product/productEditOK.do" method="post"
+		<form action="${path}/product/adminProductEditOK.do" method="post"
 			enctype="multipart/form-data" onsubmit="return handleFormSubmit(event)">
 			<input type="hidden" name="productIdx" value = "${m.productIdx }"/>
+			<!-- OldImgDelete 값 담아두는용 -->
+			<div id = "delete-container"></div>
 			<div class="card p-4 mb-4 shadow-sm mx-auto" style="max-width: 80%;">
 				<div class="row px-md-5">
 					<div class="col-12 mb-4">
