@@ -5,7 +5,7 @@
 
 
 <section>
-   <h3>리뷰 폼 </h3>
+   <h3> 후기 수정 페이지  </h3>
 <br>
 <div class="product-detail">
 
