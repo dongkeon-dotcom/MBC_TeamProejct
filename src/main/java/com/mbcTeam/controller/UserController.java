@@ -396,8 +396,14 @@ public class UserController {
 	    // 6. 작성 완료 후 원래 보고 있던 주문 상세 페이지로 리다이렉트
 	    return "redirect:/user/orderDetailList.do?orderIdx=" + orderIdx; 
 	}
-//주소관리 *****************************************************
 	
+	@GetMapping(value = "/reviewEdit.do")
+	public String reviewEdit() {
+		System.out.println("/reviewEdit.DO");
+
+		return "user/reviewEdit";
+	}
+
 }
 	
 	
