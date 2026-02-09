@@ -137,7 +137,53 @@
 		</form>
 	</div>
 
-	<script>
+
+<script src="https://code.jquery.com/jquery-1.10.2.js"></script>
+<script>
+
+$(document).ready(function() {
+    $('.ai-gen-btn').on('click', function() {
+        // 1. 필요한 입력값 가져오기 (input 태그의 id를 확인하세요!)
+        var pName = $('#productName').val(); // 상품명 입력란 id
+        var pFeature = $('#subCategory').val(); // 특징 입력란 id
+
+        if(!pName) {
+            alert("상품명을 입력해주세요.");
+            return;
+        }
+
+        // 2. 버튼 상태 변경 (중복 클릭 방지)
+        var $btn = $(this);
+        $btn.prop('disabled', true).text('생성 중...');
+
+        
+        // 3. Ajax 호출
+        
+        const path = '${path}';
+        $.ajax({
+            url: path + '/admin/geminiAjax.do',
+            type: 'GET',
+            data: {
+                name: pName,
+                feature: pFeature
+            },
+            success: function(response) {
+                // 4. 결과값을 textarea에 넣기
+                $('#productDesc').val(response);
+            },
+            error: function(xhr, status, error) {
+                console.error(error);
+                alert("AI 설명 생성에 실패했습니다. 다시 시도해주세요.");
+            },
+            complete: function() {
+                // 5. 버튼 복구
+                $btn.prop('disabled', false).text('ai 생성');
+            }
+        });
+    });
+});
+
+
 //카테고리쪽
 const subCategories = {
 	    "아우터": ["자켓", "코트", "패딩/점퍼", "가디건", "베스트", "레더/무스탕"],
