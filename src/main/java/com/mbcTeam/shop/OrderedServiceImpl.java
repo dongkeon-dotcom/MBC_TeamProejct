@@ -7,9 +7,6 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.mbcTeam.order.OrderItemVO;
-import com.mbcTeam.order.OrderVO;
-
 @Service
 public class OrderedServiceImpl implements OrderedService{
 	
@@ -17,7 +14,7 @@ public class OrderedServiceImpl implements OrderedService{
     private OrderedDao odao;
 
     @Override
-    public List<OrderVO> selectOrderList(long userIdx, String startDate, String endDate, int offset, int pageSize) {
+    public List<OrderedVO> selectOrderedList(long userIdx, String startDate, String endDate, int offset, int pageSize) {
         Map<String, Object> params = new HashMap<>();
         params.put("userIdx", userIdx);
         params.put("startDate", startDate);
@@ -25,28 +22,28 @@ public class OrderedServiceImpl implements OrderedService{
         params.put("offset", offset);
         params.put("pageSize", pageSize);
         
-        return odao.selectOrderList(params);
+        return odao.selectOrderedList(params);
     }
 
     @Override
-    public int countOrderList(long userIdx, String startDate, String endDate) {
+    public int countOrderedList(long userIdx, String startDate, String endDate) {
         Map<String, Object> params = new HashMap<>();
         params.put("userIdx", userIdx);
         params.put("startDate", startDate);
         params.put("endDate", endDate);
         
-        return odao.countOrderList(params);
+        return odao.countOrderedList(params);
     }
 
 	@Override
-	public OrderVO selectOrderByOrderIdx(long orderIdx) {
+	public OrderedVO selectOrderedByOrderIdx(long orderIdx) {
 		// TODO Auto-generated method stub
-		return odao.selectOrderByOrderIdx(orderIdx);
+		return odao.selectOrderByOrderedIdx(orderIdx);
 	}
 
 	@Override
-	public List<OrderItemVO> selectOrderItems(long orderIdx) {
+	public List<OrderItemedVO> selectOrderedItems(long orderIdx) {
 		// TODO Auto-generated method stub
-		return odao.selectOrderItems(orderIdx);
+		return odao.selectOrderedItems(orderIdx);
 	}
 }

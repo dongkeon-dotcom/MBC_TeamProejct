@@ -35,7 +35,7 @@
 				
 					<c:choose>
 						<c:when test="${not empty p.productMainImg}">
-							<img src="${path}/resources/images/${p.productMainImg}"
+							<img src="${path}/resources/images/ProductMainImg/${p.productMainImg}"
 								alt="${p.productName}">
 						</c:when>
 						<c:otherwise>

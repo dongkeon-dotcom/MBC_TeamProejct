@@ -11,8 +11,20 @@
   <typeAliases>      
     <typeAlias alias="UserVO"  type="com.mbcTeam.user.UserVO" />  
     <typeAlias alias="ProductVO"  type="com.mbcTeam.product.ProductVO" />
+    <typeAlias alias="ProductImgVO"  type="com.mbcTeam.product.ProductImgVO" />
+    <typeAlias alias="ProductDescImgVO"  type="com.mbcTeam.product.ProductDescImgVO" />
+    <typeAlias alias="ProductOptionVO"  type="com.mbcTeam.product.ProductOptionVO" />
     <typeAlias alias="OrderVO"  type="com.mbcTeam.order.OrderVO" />
+    <typeAlias alias="OrderItemVO"  type="com.mbcTeam.order.OrderItemVO" />
     <typeAlias alias="CartVO"  type="com.mbcTeam.cart.CartVO" />
+    
+  
+       <typeAlias alias="OrderedVO"  type="com.mbcTeam.shop.OrderedVO" />
+    
+        <typeAlias alias="ReviewVO"  type="com.mbcTeam.user.ReviewVO" />
+         <typeAlias alias="ReviewImageVO"  type="com.mbcTeam.user.ReviewImageVO" />
+                
+     <typeAlias alias="DeliveryVO"  type="com.mbcTeam.shop.DeliveryVO" />
   </typeAliases>
   
   <mappers>    
@@ -20,6 +32,10 @@
     <mapper resource="mappings/product-mapping.xml"  />
     <mapper resource="mappings/order-mapping.xml"  />
     <mapper resource="mappings/cart-mapping.xml"  />
+       <mapper resource="mappings/ordered-mapping.xml"  />
+         <mapper resource="mappings/ordered-mapping.xml"  />
+          <mapper resource="mappings/review-mapping.xml"  />
+           <mapper resource="mappings/delivery-mapping.xml"  />
     <!-- <mapper resource="mappings/member-mapping.xml"  /> -->
   </mappers>
   
