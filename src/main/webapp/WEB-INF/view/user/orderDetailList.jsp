@@ -42,59 +42,52 @@
         </tr>
     </thead>
     <tbody>
- <c:forEach var="item" items="${detailList}">
+<%-- 상세 주문 리스트 반복 시작 --%>
+<c:forEach var="item" items="${detailList}">
     <tr>
-        <%-- 1. 상품 이미지 영역 --%>
+        <%-- 1. 상품 이미지 --%>
         <td class="text-center">
             <img src="${path}/resources/images/${item.productMainImg}" class="product-img" style="width:80px; height:80px; object-fit:cover;">
         </td>
         
-        <%-- 2. 상품명 및 옵션 정보 영역 --%>
+        <%-- 2. 상품명 및 옵션 정보 --%>
         <td colspan="2">
             <div class="fw-bold">${item.productName}</div>
-            <%-- 현재 주문의 옵션 정보 표시 --%>
             <div class="text-secondary small">
                 옵션: ${item.color} / ${item.size}
             </div>
             <div class="text-muted small">구매수량: ${item.quantity}개</div>
         </td>
         
-        <%-- 3. 주문 금액 영역 --%>
+        <%-- 3. 주문 금액 --%>
         <td class="text-end">
             <fmt:formatNumber value="${item.price * item.quantity}" />원
         </td>
         
-        <%-- 4. 후기 버튼 영역 (옵션 매칭 로직) --%>
+        <%-- 4. 후기 버튼 영역 (VO에 추가된 필드 활용) --%>
         <td class="text-center">
-            <%-- 상품마다 후기번호 0으로 리셋 --%>
+            <%-- 매칭되는 후기 번호를 담을 변수 리셋 --%>
             <c:set var="thisItemReviewIdx" value="0" />
 
-            <%-- 내가 쓴 모든 후기 리스트(myReviews)를 돌면서 체크 --%>
+            <%-- 내가 쓴 후기 리스트(myReviews)를 돌며 현재 상품+옵션과 일치하는지 체크 --%>
             <c:forEach var="rev" items="${myReviews}">
-                <%-- 
-                    [중요] VO 수정을 피하기 위해, 
-                    XML에서 rev.userName에 "컬러_사이즈" 정보를 담아왔다고 가정합니다. 
-                --%>
-                <c:set var="revFullKey"><c:out value="${rev.productIdx}_${rev.userName}" /></c:set>
-                <c:set var="itemFullKey"><c:out value="${item.productIdx}_${item.color}_${item.size}" /></c:set>
-                
-                <%-- 상품번호 + 옵션 조합이 100% 일치하는지 확인 --%>
-                <c:if test="${revFullKey eq itemFullKey}">
+                <c:if test="${rev.productIdx == item.productIdx && rev.color eq item.color && rev.size eq item.size}">
+                    <%-- 일치하면 해당 후기 번호를 변수에 저장 --%>
                     <c:set var="thisItemReviewIdx" value="${rev.reviewIdx}" />
                 </c:if>
             </c:forEach>
 
-            <%-- 매칭 결과에 따른 버튼 출력 --%>
+            <%-- 버튼 출력 로직 --%>
             <c:choose>
-                <c:when test="${thisItemReviewIdx != 0 && thisItemReviewIdx != '0'}">
-                    <%-- 일치하는 후기번호가 있으면 수정 버튼 --%>
+                <%-- 후기 번호가 0이 아니면 이미 쓴 후기가 있다는 뜻 --%>
+                <c:when test="${thisItemReviewIdx != 0}">
                     <button type="button" class="btn btn-outline-secondary btn-sm" 
                             onclick="editReview('${thisItemReviewIdx}')">
                         후기수정
                     </button>
                 </c:when>
+                <%-- 후기 번호가 0이면 새로 작성 --%>
                 <c:otherwise>
-                    <%-- 없으면 새로 쓰기 버튼 --%>
                     <button type="button" class="btn btn-primary btn-sm" 
                             onclick="review('${item.productIdx}', '${order.orderIdx}', '${item.color}', '${item.size}')">
                         후기쓰기
@@ -145,6 +138,12 @@ function review(pIdx, oIdx){
 	
 }
 
+function editReview(rIdx) {
+    if(confirm("작성하신 후기를 수정하시겠습니까?")) {
+        // 후기 번호(reviewIdx)를 가지고 수정 폼으로 이동
+        location.href = "${path}/user/reviewEdit.do?reviewIdx=" + rIdx;
+    }
+}
 
 </script>
 </body>
