@@ -34,4 +34,5 @@ public interface ProductService {
 
     List<ProductVO> selectAll(); // 전체 상품 조회
     List<ProductVO> selectByCategory(String category); // 카테고리별 조회
+	List<ProductVO> getRecentProducts(int i);
 }
