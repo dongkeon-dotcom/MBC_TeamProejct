@@ -79,7 +79,7 @@ public class OrderController {
         OrderVO order = new OrderVO();
         order.setUserIdx(1L); // 로그인 사용자 ID (임시)
         order.setTotalPrice(totalPrice);
-        order.setRecevier("홍길동");
+        order.setReceiver("홍길동");
         order.setDeliveryPhone("010-1234-5678");
         order.setAddress("서울시 강남구");
         order.setExtraAddress("101호");

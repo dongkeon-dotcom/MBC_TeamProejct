@@ -9,11 +9,13 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mbcTeam.admin.AdminService;
+import com.mbcTeam.admin.GeminiService;
 import com.mbcTeam.dto.UserManagementDTO;
 import com.mbcTeam.order.OrderItemVO;
 
@@ -23,6 +25,18 @@ public class AdminController {
 	
 	@Autowired
 	private AdminService service;
+	
+	@Autowired
+	private GeminiService geminiService;
+	
+    @ResponseBody
+    @RequestMapping(value = "/geminiAjax.do", 
+            method = RequestMethod.GET, 
+            produces = "text/plain;charset=UTF-8")
+    public String GeminiAjax(@RequestParam String name, @RequestParam String feature) {
+		System.out.println("GeminiAjax.DO");
+        return geminiService.getAiDescription(name, feature);
+    }
 	
 	@GetMapping("/salesChart.do")
 	public String SalesChart(Model model,
@@ -44,7 +58,8 @@ public class AdminController {
 	@ResponseBody
 	@GetMapping("/salesChartAjax.do")
 	public Map<String, Object> SalesChartAjax(String year, String month) throws Exception {
-	    // 1. 결과 데이터를 담을 Map 생성
+	    System.out.println("SalesChartAjax.do");
+		// 1. 결과 데이터를 담을 Map 생성
 	    Map<String, Object> resultMap = new HashMap<>();
 	    
 	    // 2. 쿼리용 파라미터 Map 생성
@@ -61,7 +76,7 @@ public class AdminController {
 	}
 	
 	@GetMapping("/userManagement.do")
-	public String userManagement(@RequestParam(value = "search", defaultValue = "code", required = false) String search,
+	public String UserManagement(@RequestParam(value = "search", defaultValue = "code", required = false) String search,
 			@RequestParam(value = "keyword", defaultValue = "", required = false) String keyword,
 			Model model, UserManagementDTO dto) {
 		
@@ -110,7 +125,7 @@ public class AdminController {
 	
 	
 	@GetMapping("/userPurchaseDetail.do")
-	public String userPurchaseDetail(Model model, int userIdx) {
+	public String UserPurchaseDetail(Model model, int userIdx) {
 		System.out.println("/userPurchaseDetail.do");
 		
 		model.addAttribute("userInfo", service.getUserInfo(userIdx));
@@ -121,11 +136,18 @@ public class AdminController {
 	
 	@ResponseBody
 	@GetMapping("/userDetailOrderItemsAjax.do")
-	public List<OrderItemVO> userDetailOrderItemsAjax(int orderIdx){
+	public List<OrderItemVO> UserDetailOrderItemsAjax(int orderIdx){
 		System.out.println("/userDetailOrderItemsAjax.do");
 		
 		List<OrderItemVO> list = service.getUserDetailOrderItems(orderIdx);
 		return list;
+	}
+	
+	@GetMapping("/orderManagement.do")
+	public String OrderManagement(){
+
+		
+		return "admin/orderManagement";
 	}
 	
 	

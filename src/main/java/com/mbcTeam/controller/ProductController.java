@@ -232,6 +232,101 @@ public class ProductController {
 		
 		return "product/productEdit";
 	}
+	
+	@Transactional
+	@PostMapping(value="/adminProductEditOK.do")
+	public String adminProductEditOK(Model model, ProductVO vo, ProductRequestDTO dto) throws Exception {
+		System.out.println("adminProductEditOK");
+		ProductVO oldData = service.edit(vo);
+		int productIdx = vo.getProductIdx();
+		
+		//제품 메인 이미지 처리
+		MultipartFile mainFile = vo.getProductMainImgfile();
+		String mainFileName = mainFile.getOriginalFilename().replace(" (기존)", "");
+		
+		String uploadMainDir = imgPath + "ProductMainImg";
+		
+		if(!mainFile.isEmpty()) {
+			if(!oldData.getProductMainImg().equals(mainFileName)) {
+				File oldFile = new File(uploadMainDir+oldData.getProductMainImg());
+				if(oldFile.exists()) {
+					oldFile.delete();
+				}
+				
+				mainFileName = System.currentTimeMillis()+"_MAIN_"+mainFile.getOriginalFilename();
+				String uploadPath = uploadMainDir + File.separator + mainFileName;
+				mainFile.transferTo(new File(uploadPath));
+			}			
+		}
+		
+		//제품 사이즈 이미지 처리
+		MultipartFile sizeFile = vo.getProductSizeImgfile();
+		String sizeFileName = sizeFile.getOriginalFilename().replace(" (기존)", "");
+		
+		String uploadSizeDir = imgPath + "ProductSizeImg";
+		
+		if(!sizeFile.isEmpty()) {
+			if(!oldData.getProductSizeImg().equals(sizeFileName)) {
+				File oldFile = new File(uploadSizeDir + oldData.getProductSizeImg());
+				if(oldFile.exists()) {
+					oldFile.delete();
+				}
+				sizeFileName = System.currentTimeMillis() + "_SIZE_" + sizeFile.getOriginalFilename();
+				String uploadPath = uploadSizeDir + File.separator + sizeFileName;
+				sizeFile.transferTo(new File(uploadPath));
+			}
+		}
+		//서비스 INSERT 작업
+		vo.setProductMainImg(mainFileName);
+		vo.setProductSizeImg(sizeFileName);
+		service.insert(vo);
+		
+
+		if(dto.getDeleteImgIdx() != null) {
+			for(Integer imgIdx : dto.getDeleteImgIdx()) {
+				ProductImgVO oldImg = service.adminOneImg(imgIdx);
+				String imgDir = imgPath + "ProductImg";
+				File file = new File(imgDir + oldImg.getProductImg());
+				if(file.exists()) {
+					file.delete();
+				}
+				service.deleteImg(imgIdx);				
+			}
+		}
+		int imgCount = service.imgCount(productIdx);
+		for(int i=0;i<imgCount;i++) {
+			ProductImgVO orderUpdateIVO = new ProductImgVO();
+			orderUpdateIVO.setProductImgOrder(i);
+			service.updateImgOrder(orderUpdateIVO);
+		}
+		
+		if(dto.getProductImgList() != null) {
+			for(int i=0;i<dto.getProductImgList().size();i++) {
+				ProductImgVO ivo = new ProductImgVO();
+				MultipartFile imgFile = dto.getProductImgList().get(i);
+				String imgFileName = imgFile.getOriginalFilename();
+				String uploadImgDir = imgPath + "ProductImg";
+				
+				if(!imgFile.isEmpty()) {
+					imgFileName = System.currentTimeMillis() +"_IMG_" + imgFile.getOriginalFilename();
+					String uploadPath = uploadImgDir + File.separator + imgFileName;
+					
+					imgFile.transferTo(new File(uploadPath));
+				}
+				ivo.setProductIdx(productIdx);
+				ivo.setProductImg(imgFileName);
+				ivo.setProductImgOrder(i+imgCount);
+				service.insertImg(ivo);
+			}	
+		}
+		
+		
+		
+		
+		
+		
+		return "redirect:/product/adminProductList.do";
+	}
 
 	@GetMapping("/edit.do")
 	public String edit(Model model, ProductVO vo) {
