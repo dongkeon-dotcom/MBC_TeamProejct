@@ -114,4 +114,10 @@ public class ProductServiceImpl implements ProductService {
 	public List<ProductOptionVO> adminProductEditOption(int productIdx) {
 		return dao.adminProductEditOption(productIdx);
 	}
+
+	@Override
+	public List<ProductVO> getRecentProducts(int i) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }
