@@ -32,10 +32,10 @@
     <mapper resource="mappings/product-mapping.xml"  />
     <mapper resource="mappings/order-mapping.xml"  />
     <mapper resource="mappings/cart-mapping.xml"  />
-       <mapper resource="mappings/ordered-mapping.xml"  />
-         <mapper resource="mappings/ordered-mapping.xml"  />
-          <mapper resource="mappings/review-mapping.xml"  />
-           <mapper resource="mappings/delivery-mapping.xml"  />
+    <mapper resource="mappings/ordered-mapping.xml"  />
+    <mapper resource="mappings/ordered-mapping.xml"  />
+    <mapper resource="mappings/review-mapping.xml"  />
+    <mapper resource="mappings/delivery-mapping.xml"  />
     <!-- <mapper resource="mappings/member-mapping.xml"  /> -->
   </mappers>
   
