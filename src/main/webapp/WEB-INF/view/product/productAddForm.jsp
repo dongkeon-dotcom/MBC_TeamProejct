@@ -284,7 +284,7 @@ function addRow() {
  // 3. 이미지 업로드 핵심 함수 (새로 추가됨 - 버튼 동작의 핵심)
 function triggerFileSelect(containerId) {
 	 
-const container = document.getElementById(containerId);
+	const container = document.getElementById(containerId);
     
     // 1. 개수 제한 체크
     const currentCount = container.querySelectorAll('.input-group').length;

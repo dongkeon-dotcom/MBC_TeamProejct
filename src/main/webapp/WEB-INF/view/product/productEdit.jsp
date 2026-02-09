@@ -13,7 +13,7 @@
 
 		<form action="${path}/product/productEditOK.do" method="post"
 			enctype="multipart/form-data" onsubmit="return handleFormSubmit(event)">
-			<input type="hidden" name="orudctIdx" value = "${m.productIdx }"/>
+			<input type="hidden" name="productIdx" value = "${m.productIdx }"/>
 			<div class="card p-4 mb-4 shadow-sm mx-auto" style="max-width: 80%;">
 				<div class="row px-md-5">
 					<div class="col-12 mb-4">
@@ -102,7 +102,7 @@
 				                    </span>
 				                    <input type="text" class="form-control bg-white name-display" value="${img.productImg} (기존)" readonly style="pointer-events: none; font-size: 0.9rem;">
 				                    <input type="hidden" name="existingProductDetailImgList" value="${img.productImg}">
-				                    <button type="button" class="btn btn-danger btn-sm px-3" style="height: 48px;" onclick="removeFileItem(this, true)">삭제</button>
+				                    <button type="button" class="btn btn-danger btn-sm px-3" style="height: 48px;" onclick="OldImgDelete(this, '${img.productImgIdx}', 'Img')">삭제</button>
 				                </div>
 				            </c:forEach>
 						</div>
@@ -124,7 +124,7 @@
 				                    </span>
 				                    <input type="text" class="form-control bg-white name-display" value="${descImg.productDescImg} (기존)" readonly style="pointer-events: none; font-size: 0.9rem;">
 				                    <input type="hidden" name="existingProductDescImgList" value="${descImg.productDescImg}">
-				                    <button type="button" class="btn btn-danger btn-sm px-3" style="height: 48px;" onclick="removeFileItem(this, true)">삭제</button>
+				                    <button type="button" class="btn btn-danger btn-sm px-3" style="height: 48px;" onclick="OldImgDelete(this, '${descImg.productDescImgIdx}','desc')">삭제</button>
 				                </div>
 				            </c:forEach>						
 						
@@ -387,6 +387,22 @@ const container = document.getElementById(containerId);
     };
     input.click();
 }
+ 
+ function OldImgDelete(button, imgIdx, type){
+	 const deleteContainer = document.getElementById('delete-container');
+	 const input = document.createElement('input');
+	 
+	 input.type = 'hidden';
+	 input.name = (type === 'desc') ? 'deleteDescImgIdx' : 'deleteImgIdx';
+	 input.value = imgIdx;
+	 
+	 deleteContainer.appendChild(input);
+	 
+	 const item = button.closest('.input-group');
+	 item.remove();	 
+ }
+ 
+ 
 
 // 삭제 버튼 클릭 시 해당 아이템 전체 삭제 함수
 function removeFileItem(button) {
