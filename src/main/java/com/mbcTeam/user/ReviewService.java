@@ -1,5 +1,7 @@
 package com.mbcTeam.user;
 
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 
 
@@ -9,4 +11,6 @@ public interface ReviewService {
 
     // 2. 리뷰 이미지 개별 저장
     int insertReviewImg(ReviewImageVO imgVO);
+    
+    List<ReviewVO> getReviewListByUserIdx(long userIdx);
 }

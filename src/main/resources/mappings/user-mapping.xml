@@ -15,10 +15,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </insert>
 <select id="LOGIN" parameterType="com.mbcTeam.user.UserVO" resultType="com.mbcTeam.user.UserVO">
     SELECT  
-       user_idx       AS userIdx,
-        id, 
-        password, 
-        user_Name      AS userName,    user_Phone     AS userPhone,   user_Role      AS userRole,    is_easy_login  AS easyLogin,   is_deleted     AS deleted,     reg_Date       AS regDate      FROM users 
+       user_idx  AS userIdx, id,  password, user_Name AS userName, user_Phone  AS userPhone,   user_Role AS userRole, is_easy_login  AS easyLogin,   is_deleted     AS deleted,     reg_Date       AS regDate      FROM users 
     WHERE id = #{id} 
       AND password = #{password} 
       AND is_deleted = 0               </select>
@@ -38,18 +35,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         WHERE userIdx = #{userIdx}
     </select>
 
-    <update id="update" parameterType="com.mbcTeam.user.UserVO">
-        UPDATE users
-        SET
-            user_name  = #{userName},
-            user_phone = #{userPhone}
-        WHERE userIdx = #{userIdx}
-    </update>
-
     <update id="delete" parameterType="com.mbcTeam.user.UserVO">
         UPDATE users
         SET deleted = true
-        WHERE userIdx = #{userIdx}
+        WHERE user_Idx = #{userIdx}
     </update>
 
     <select id="countByEmail" parameterType="com.mbcTeam.user.UserVO" resultType="int">
@@ -60,7 +49,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
     <select id="getByEmail" parameterType="com.mbcTeam.user.UserVO" resultType="com.mbcTeam.user.UserVO">
         SELECT
-            userIdx        AS userIdx,
+            user_Idx        AS userIdx,
             id     AS id,
             password        AS password,
             userName      AS userName,
@@ -79,15 +68,16 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
  <update id="UPDATE_USER" parameterType="com.mbcTeam.user.UserVO">
         UPDATE users
         SET
-            id  = #{id},
-            user_phone = #{userPhone}
-        WHERE userIdx = #{userIdx}
+            user_Name  = #{userName},
+            user_phone = #{userPhone},
+            password   = #{password}
+        WHERE user_Idx = #{userIdx}
     </update>
 
 
 <select id="GET_USER_BY_ID" parameterType="String" resultType="com.mbcTeam.user.UserVO">
     SELECT  
-        userIdx,
+        user_Idx as userIdx,
         id, 
         password, 
         user_Name      AS userName,
@@ -99,5 +89,79 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     FROM users 
     WHERE id = #{id}  AND is_deleted = 0
 </select>
+
+<!-- 마이페이지 회원정보 수정에서 주소를 가져오기 위한 매퍼  -->
+<select id="getDelivery" parameterType="long" resultType="com.mbcTeam.shop.DeliveryVO">
+    SELECT 
+        delivery_Idx AS deliveryIdx,
+        user_Idx AS userIdx,
+        delivery_Name AS deliveryName,
+        Receiver AS Receiver,
+        delivery_Phone AS deliveryPhone,
+        address AS address,
+        Extra_Address AS extraAddress,
+        Zipcode AS zipcode,
+        is_Default_Address AS isDefaultAddress
+    FROM Delivery 
+    WHERE user_Idx = #{userIdx} 
+      AND is_Default_Address = 1
+</select>
+
+
+<sql id = "searchInclude">
+	<where>       
+       <if test="search == 'code'">
+           AND INSTR(${prefix}user_idx, #{keyword}) > 0
+       </if>
+       <if test="search == 'name'">
+           AND INSTR(${prefix}user_Name, #{keyword}) > 0
+       </if>
+	</where>
+</sql>
+
+
+<!-- ADMIN 관리자_회원관리 페이지 용  -->
+<select id="getUserManagement" resultType="com.mbcTeam.dto.UserManagementDTO">
+	select
+		u.reg_date,
+		u.user_idx,
+		u.id,
+		u.user_phone,
+		u.user_name,
+		IFNULL(CONCAT(d.address,' ',d.Extra_Address), 'NONE') AS full_address,
+		IFNULL(SUM(o.total_Price), '0') AS total_spent
+	FROM users u
+	LEFT JOIN Delivery d ON u.user_idx = d.user_Idx AND d.is_Default_Address=1
+	LEFT JOIN Orders o ON u.user_idx = o.user_Idx 
+	<include refid="searchInclude">
+		<property name="prefix" value="u."/>
+	</include>
+	GROUP BY
+		u.user_idx,
+		d.address,
+		d.Extra_Address
+	<![CDATA[
+	ORDER BY u.user_idx desc limit #{startIdx}, #{pageSize}
+	]]>
+</select>
+
+<select id="GET_USER_TOTAL_COUNT" parameterType="com.mbcTeam.dto.UserManagementDTO" resultType="int">
+	select count(*) as totalCount from users u
+	<include refid="searchInclude">
+		<property name="prefix" value=""/>
+	</include>
+</select>
+
+<!-- ADMIN 관리자_구매자 이력 확인 페이지 용 -->
+<select id="GET_USER_INFO" parameterType="Long" resultType = "UserVO">
+	SELECT 
+		user_idx,
+		user_name,
+		user_phone 
+	FROM
+		users
+	where user_idx=#{userIdx}
+</select>
+
 
 </mapper>

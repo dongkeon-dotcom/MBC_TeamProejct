@@ -1,0 +1,53 @@
+@charset "UTF-8";
+
+body {
+	font-family: 'Malgun Gothic', sans-serif;
+	padding: 30px;
+	background-color: #fcfcfc;
+}
+        
+		/* 1. 상단 버튼 영역 수정 */
+    	.nav-container { 
+        display: flex; 
+        gap: 40px; 
+        
+        /* 위아래 여백을 줘서 천장과 떨어뜨림 */
+        margin: 40px auto; 
+        
+        /* 상자 너비를 제한하고 가운데 정렬 */
+        max-width: 600px; 
+        
+        /* 테두리 디자인 다듬기 */
+        border: 2px solid #ff4d4d; 
+        padding: 15px 30px; 
+        justify-content: center; /* 내부 버튼들도 가운데 정렬 */
+        background: white;
+        border-radius: 4px; /* 살짝 굴곡을 주면 더 깔끔합니다 */
+    }
+
+    .nav-btn { 
+        font-size: 1.1rem; 
+        font-weight: bold; 
+        cursor: pointer; 
+        color: #333;
+        display: flex;
+        align-items: center;
+        transition: color 0.2s;
+    }
+
+    .nav-btn:hover { color: #ff4d4d; }
+    .nav-btn span { margin-right: 8px; }
+
+    /* 차트 컨테이너 */
+    .chart-wrapper { 
+        background: white; 
+        padding: 30px; 
+        border-radius: 12px; 
+        box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        max-width: 1000px;
+        margin: 20px auto; /* 차트도 중앙 정렬 */
+    }
+
+    /* 섹션 제어 */
+    #categorySection { display: none; }
+    h2 { margin-top: 0; color: #444; border-bottom: 2px solid #eee; padding-bottom: 10px; }

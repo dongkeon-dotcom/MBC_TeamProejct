@@ -1,6 +1,7 @@
 package com.mbcTeam.order;
 
 import java.util.List;
+import java.util.Map;
 
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,4 +48,7 @@ public class OrderDaoImpl implements OrderDao {
 		// orderdetailList에서 표시하기 위한매소드 
 		return mybatis.selectOne("ORDER.DETAILLIST",orderIdx);
 	}
+
+
+
 }

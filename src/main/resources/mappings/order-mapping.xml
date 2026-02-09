@@ -3,7 +3,7 @@
 PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="ORDERS">
+<mapper namespace="ORDER">
 
 
  <!-- 주문 등록 -->
@@ -80,5 +80,62 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     FROM Orders
     WHERE user_Idx = #{userIdx}
   </select>
+   
+   	<!-- 차트 월별 매출통계용 -->
+	<select id="getMonthlySales" resultType="map">
+		SELECT
+			DATE_FORMAT(order_Date, '%m') as MONTH,
+			SUM(total_Price) as TOTAL_SUM
+		FROM Orders
+		WHERE DATE_FORMAT(order_Date, '%Y') = #{year}
+		GROUP BY MONTH
+		ORDER BY MONTH
+	</select>   
+   
+   <select id="getCategorySales" resultType="map">
+   SELECT 
+	    OI.category as CATEGORY,
+	    SUM(
+	        CASE 
+	            WHEN OI.discount_rate > 0 
+	            THEN OI.price * (1 - OI.discount_rate / 100) * OI.quantity
+	            ELSE OI.price * OI.quantity
+	        END
+	    ) as TOTAL_SUM
+	FROM OrderItems OI
+	JOIN Orders O ON OI.order_Idx = O.order_Idx
+	WHERE DATE_FORMAT(O.order_Date, '%Y') = #{year}
+	  AND DATE_FORMAT(O.order_Date, '%m') = #{month}
+	GROUP BY OI.category
+	ORDER BY TOTAL_SUM DESC;
+   </select>
+
+	<!-- ADMIN 관리자_구매자 이력 확인 페이지 용 -->
+	<select id="GET_USER_ORDER_LIST" parameterType="Long" resultType="OrderVO">
+	SELECT
+		order_Date,
+		order_Idx,
+		CONCAT(address, ' ', Extra_Address) AS address,
+		total_Price
+	FROM Orders
+	WHERE user_idx= #{userIdx};
+	</select>
+	<select id="GET_USER_DETAIL_ORDER_ITEMS" parameterType="Long" resultType="OrderItemVO">
+	SELECT
+		product_Name,
+		color,
+		size,
+		quantity,
+		CASE 
+			WHEN discount_rate > 0 
+			THEN price * (1 - discount_rate / 100)
+			ELSE price
+		END AS price
+	FROM OrderItems
+	WHERE order_idx = #{orderIdx};
+   </select>
+   
+   
+   
    
 </mapper>

@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper 
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<mapper namespace="ORDERED">
+<select id="SELECT_ORDER_LIST" parameterType="hashmap" resultType="com.mbcTeam.shop.OrderedVO">
+        SELECT 
+            order_Idx AS orderIdx, user_Idx AS userIdx,total_Price AS totalPrice,receiver  AS receiver, 
+            delivery_Phone AS deliveryPhone, address AS address,Extra_Address AS extraAddress, Zipcode  AS zipcode,order_Date  AS orderDate
+        FROM Orders
+        WHERE user_Idx = #{userIdx}
+        <if test="startDate != null and startDate != ''">
+            AND order_Date &gt;= #{startDate}
+        </if>
+        <if test="endDate != null and endDate != ''">
+            AND order_Date &lt;= CONCAT(#{endDate}, ' 23:59:59')
+        </if>
+        ORDER BY order_Idx DESC
+        LIMIT #{offset}, #{pageSize}
+    </select>
+
+    <select id="COUNT_ORDER_LIST" parameterType="hashmap" resultType="int">
+        SELECT COUNT(*)
+        FROM Orders
+        WHERE user_Idx = #{userIdx}
+        <if test="startDate != null and startDate != ''">
+            AND order_Date &gt;= #{startDate}
+        </if>
+        <if test="endDate != null and endDate != ''">
+            AND order_Date &lt;= CONCAT(#{endDate}, ' 23:59:59')
+        </if>
+    </select>
+    
+   <select id="DETAILLIST" parameterType="long" resultType="com.mbcTeam.shop.OrderedVO">
+        SELECT 
+            order_Idx      AS orderIdx,
+            user_Idx       AS userIdx,
+            total_Price    AS totalPrice,
+            receiver       AS recevier,
+            delivery_Phone AS deliveryPhone,
+            address        AS address,
+            Extra_Address  AS extraAddress,
+            Zipcode        AS zipcode,
+            DATE_FORMAT(order_Date, '%Y-%m-%d') AS orderDate
+        FROM Orders
+        WHERE order_Idx = #{orderIdx}
+    </select>
+
+    <select id="DETAILITEM" parameterType="long" resultType="com.mbcTeam.shop.OrderItemedVO">
+        SELECT 
+            Item_Idx   AS itemIdx, order_Idx  AS orderIdx,product_Idx  AS productIdx, Category   AS category,subCategory  AS subCategory, product_Name   AS productName,
+            price  AS price, discount_rate  AS discountRate, color  AS color,size  AS size, quantity  AS quantity,product_main_img AS productMainImg
+        FROM OrderItems 
+        WHERE order_Idx = #{orderIdx}
+    </select>
+
+</mapper>
+
+        

@@ -1,13 +1,17 @@
 
 package com.mbcTeam.controller;
 
-import java.io.File; 
+import java.io.File;
+import java.io.PrintWriter;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.stream.Collectors; 
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,9 +25,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.mbcTeam.order.OrderItemVO;
+import com.mbcTeam.shop.DeliveryService;
+import com.mbcTeam.shop.DeliveryVO;
+import com.mbcTeam.shop.OrderItemedVO;
 import com.mbcTeam.shop.OrderedService;
-import com.mbcTeam.order.OrderVO;
+import com.mbcTeam.shop.OrderedVO;
+
 import com.mbcTeam.user.ReviewImageVO;
 import com.mbcTeam.user.ReviewService;
 import com.mbcTeam.user.ReviewVO;
@@ -43,7 +50,8 @@ public class UserController {
 	
 	@Autowired
 	private ReviewService rservice;
-
+	@Autowired
+    private DeliveryService dservice;
 
 	@GetMapping(value = "/list.do")
 	public String list(UserVO vo, Model model) {
@@ -96,7 +104,13 @@ public class UserController {
 	    if (loginMember == null) {
 	        return "redirect:/user/login.do"; 
 	    }
-
+	    //유저의 딜리버리 정보를 담아서 delivery에 담았음 
+	    DeliveryVO delivery = service.getDelivery(loginMember.getUserIdx());
+	 
+	  if (delivery == null) {
+	        delivery = new DeliveryVO();
+	    }
+	  model.addAttribute("d", delivery);
 	    // 3. JSP에서 'm'이라는 이름으로 쓰기로 했으므로 이름을 맞춰서 보냄
 	    model.addAttribute("m", loginMember);
 
@@ -104,28 +118,29 @@ public class UserController {
 	}
 	
 	
-	
-	@PostMapping("/update.do")
-	public String update(UserVO vo, HttpSession session) {
-	   
+	//loginMember
+	@PostMapping("/memberUpdate.do")
+	public String memberUpdate(UserVO vo, HttpSession session) {
+		UserVO loginMember = (UserVO) session.getAttribute("loginMember");
+	    if (loginMember == null) return "redirect:/user/login.do";
+
+	    // 2. [가장 중요] JSP에서 혹시 누락됐더라도 세션에서 가져온 번호를 강제로 넣어줌
+	    // 이렇게 하면 WHERE user_Idx = #{userIdx} 가 정상 작동합니다.
+	    vo.setUserIdx(loginMember.getUserIdx()); 
+
+	    System.out.println("수정 대상 번호: " + vo.getUserIdx());
+	    System.out.println("바꿀 이름: " + vo.getUserName());
+
+	    // 3. 이제 수정된 값이 담긴 vo를 던집니다.
 	    service.updateUser(vo);
-	    
-	    // 중요: DB가 수정되었으므로 세션 정보도 최신화해야 함
-	    // (보통 다시 조회해서 넣거나, vo 객체를 다시 세션에 저장)
-	    UserVO updatedMember = service.getUserById(vo.getId()); 
-	    session.setAttribute("loginMember", updatedMember);
-	    
-	    return "redirect:/user/mypage"; // 수정 완료 후 메인으로
+
+	    // 4. DB가 바뀌었으니 세션도 새 정보로 교체
+	    UserVO updated = service.getUserById(loginMember.getId());
+	    session.setAttribute("loginMember", updated);
+	    System.out.println("바꿀 비: " + vo.getPassword());
+	    return "redirect:/user/mypage.do";
 	}
-
-	@GetMapping(value = "/addressList.do")
-	public String addresses(UserVO vo) {
-		System.out.println("/ADDRESS.DO");
-		return "user/addressList";
-
-	}
-
-//orderlist 에서  orderdetailList로 이동하기
+	// orderlist 에서 orderdetailList로 이동하기
 	@GetMapping(value = "/orderDetailList.do")
 	public String orderDetailList(
 	        @RequestParam("orderIdx") long orderIdx, 
@@ -136,25 +151,32 @@ public class UserController {
 	    UserVO login = (UserVO) session.getAttribute("loginMember");
 	    if (login == null) return "redirect:/user/login.do";
 
-	 // 2. 서비스 호출하여 데이터 가져오기
-	    // (1) 주문 기본 정보 (주소, 수령인, 총 결제금액 등)
-	    OrderVO order = oservice.selectOrderByOrderIdx(orderIdx);
+	    // 2. 서비스 호출하여 데이터 가져오기
+	    // (1) 주문 기본 정보
+	    OrderedVO order = oservice.selectOrderedByOrderIdx(orderIdx);
 	    
-	    // (2) 해당 주문의 상세 상품 리스트 (상품명, 수량, 옵션 등)
-	    List<OrderItemVO> detailList = oservice.selectOrderItems(orderIdx);
-	    // 3. 보안 체크 (주문한 본인인지 확인하는 로직 - 권장)
+	    // (2) 해당 주문의 상세 상품 리스트
+	    List<OrderItemedVO> detailList = oservice.selectOrderedItems(orderIdx);
+
+	    // [추가 로직] (3) 로그인한 사용자가 쓴 모든 후기 리스트 가져오기
+	    // 이 리스트를 JSP에 보내서 현재 상품 리스트와 비교할 예정입니다.
+	    List<ReviewVO> myReviews = rservice.getReviewListByUserIdx(login.getUserIdx());
+
+	    // 3. 보안 체크 (주문한 본인인지 확인)
 	    if (order != null && order.getUserIdx() != login.getUserIdx()) {
-	        return "redirect:/user/orderList.do"; // 본인 주문이 아니면 목록으로 튕겨냄
+	        return "redirect:/user/orderList.do"; 
 	    }
 
 	    // 4. JSP로 데이터 전달
-	    model.addAttribute("order", order);      // 상세 상단용
-	    model.addAttribute("detailList", detailList); // 상세 하단 리스트용
+	    model.addAttribute("order", order);      
+	    model.addAttribute("detailList", detailList); 
+	    model.addAttribute("myReviews", myReviews); // <-- 추가된 부분
 	    
-	    // 콘솔 로그 확인 (값이 잘 오는지 체크)
+	    // 콘솔 로그 확인
 	    System.out.println("조회된 상품 수: " + (detailList != null ? detailList.size() : 0));
+	    System.out.println("내가 쓴 총 후기 수: " + (myReviews != null ? myReviews.size() : 0));
 	    
-	    return "user/orderDetailList"; // 파일명: orderDetailList.jsp
+	    return "user/orderDetailList"; 
 	}
 	
 	// 로그인 페이지 이동
@@ -284,8 +306,8 @@ public class UserController {
         long userIdx = login.getUserIdx(); // long 타입 그대로 유지
 
         // 3. 서비스 호출
-        List<OrderVO> orderli = oservice.selectOrderList(userIdx, startDate, endDate, offset, pageSize);
-        int totalCount = oservice.countOrderList(userIdx, startDate, endDate);
+        List<OrderedVO> orderli = oservice.selectOrderedList(userIdx, startDate, endDate, offset, pageSize);
+        int totalCount = oservice.countOrderedList(userIdx, startDate, endDate);
 
         // 4. 페이징 로직 처리
         int totalPage = (int) Math.ceil((double) totalCount / pageSize);
@@ -374,7 +396,8 @@ public class UserController {
 	    // 6. 작성 완료 후 원래 보고 있던 주문 상세 페이지로 리다이렉트
 	    return "redirect:/user/orderDetailList.do?orderIdx=" + orderIdx; 
 	}
-
+//주소관리 *****************************************************
+	
 }
 	
 	

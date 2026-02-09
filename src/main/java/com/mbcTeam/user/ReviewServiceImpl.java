@@ -1,5 +1,7 @@
 package com.mbcTeam.user;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,6 +20,12 @@ public class ReviewServiceImpl implements ReviewService {
 	public int insertReviewImg(ReviewImageVO imgVO) {
 		// TODO Auto-generated method stub
 		return rdao.insertReviewImg(imgVO);
+	}
+
+	@Override
+	public List<ReviewVO> getReviewListByUserIdx(long userIdx) {
+		// TODO Auto-generated method stub
+		return rdao.getReviewListByUserIdx(userIdx);
 	}
 	
 }

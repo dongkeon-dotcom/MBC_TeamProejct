@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.mbcTeam.product.ProductService;
@@ -155,7 +156,8 @@ public class ProductController {
 			@RequestParam(value = "keyword", defaultValue = "", required = false) String keyword, ProductVO vo,
 			Model model) {
 		System.out.println("/adminProductList.DO");
-
+		System.out.println("테스트: " + search);
+		System.out.println("테스트: " + keyword);
 		vo.setSearch(search);
 		vo.setKeyword(keyword);
 
@@ -196,7 +198,39 @@ public class ProductController {
 		model.addAttribute("search", vo.getSearch());
 		model.addAttribute("keyword", vo.getKeyword());
 		
-		return "product/adminProductList";
+		System.out.println("************************************************");
+		System.out.println("startIdx: " + vo.getStartIdx());
+		System.out.println("pageSize: " + vo.getPageSize());
+		System.out.println("search: " +  vo.getSearch());
+		System.out.println("keyword: " + vo.getKeyword());
+		
+		return "product/productList";
+	}
+	
+	@ResponseBody
+	@PostMapping("/adminUpdateStatus.do")
+	public String adminUpdateProductStatus(ProductVO vo) throws Exception {
+		System.out.println("/adminUpdateStatus.do");
+		service.adminUpdateProductStatus(vo);
+		return "T"; 
+		
+	}
+	
+	@GetMapping(value="/adminProductEdit.do")
+	public String adminProductEdit(Model model, ProductVO vo) {
+		System.out.println("/adminProductEdit");
+		int idx= vo.getProductIdx();
+		model.addAttribute("m",service.adminProductEdit(vo));
+		model.addAttribute("imgList",service.adminProductEditImg(idx));
+		model.addAttribute("descImgList",service.adminProductEditDescImg(idx));
+		model.addAttribute("optionList",service.adminProductEditOption(idx));
+		
+		System.out.println("********************************************");
+		System.out.println(service.adminProductEditImg(idx));
+		System.out.println(service.adminProductEditDescImg(idx));
+		
+		
+		return "product/productEdit";
 	}
 
 	@GetMapping("/edit.do")
