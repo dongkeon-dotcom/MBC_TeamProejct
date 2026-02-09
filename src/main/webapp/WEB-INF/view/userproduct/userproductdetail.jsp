@@ -51,7 +51,9 @@
 		<div class="product-image">
 			<c:choose>
 				<c:when test="${not empty product.productMainImg}">
-					<img src="${path}/resources/images/${product.productMainImg}" alt="${product.productName}">
+					<img
+						src="${path}/resources/images/ProductMainImg/${product.productMainImg}"
+						alt="${product.productName}">
 				</c:when>
 				<c:otherwise>
 					<div class="no-image">이미지 준비중</div>
@@ -69,40 +71,20 @@
 			</c:if>
 
 
-			<!-- 구매 버튼: 결제 페이지 및 장바구니 이동
-			<form id="productForm" method="post">
-				<input type="hidden" name="productIdx" value="${product.productIdx}">
-				<label for="option">옵션 선택</label> <select name="optionIdx"
-					id="option" required>
-					<c:forEach var="opt" items="${optionList}">
-						<option value="${opt.optionIdx}">${opt.color}/
-							${opt.size}</option>
-					</c:forEach>
-				</select> <label for="quantity">수량</label> <input type="number"
-					name="quantity" id="quantity" value="1" min="1"><br>
-
-
-				<button type="submit" onclick="submitForm('${path}/order/payment.do')">구매</button> 
-				<button type="submit" onclick="submitForm('${path}/cart/add.do')">장바구니 담기</button>
-			</form>
-			  -->
-
+			<!-- 구매 버튼: 결제 페이지 -->
 			<form action="${path}/order/payment.do" method="post">
 				<input type="hidden" name="productIdx" value="${product.productIdx}">
 
-				<label for="option">옵션 선택</label> 
-				<select name="optionIdx" id="option" required>
-					<c:forEach var="opt" items="${optionList}"> 
-					<option value="${opt.optionIdx}">${opt.color}/${opt.size}</option>
-					</c:forEach> </select> 
-					
-				<label for="quantity">수량</label> 
-				<input type="number" name="quantity" id="quantity" value="1" min="1">
+				<label for="option">옵션 선택</label> <select name="optionIdx"
+					id="option" required>
+					<c:forEach var="opt" items="${optionList}">
+						<option value="${opt.optionIdx}">${opt.color}/${opt.size}</option>
+					</c:forEach>
+				</select> <label for="quantity">수량</label> <input type="number"
+					name="quantity" id="quantity" value="1" min="1">
 
-				<!-- 버튼을 수량 밑에 나란히 배치 -->
 				<div class="button-row">
 					<button type="submit" class="btn-buy">구매</button>
-					<!-- 장바구니 버튼은 같은 줄에 -->
 					<button type="button" class="btn-cart"
 						onclick="document.getElementById('cartForm').submit();">장바구니
 						담기</button>
@@ -116,6 +98,7 @@
 				<input type="hidden" name="optionIdx" id="cartOption"> <input
 					type="hidden" name="quantity" id="cartQuantity">
 			</form>
+
 
 
 
