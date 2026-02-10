@@ -15,5 +15,15 @@ public class ProductRequestDTO {
 	private List<MultipartFile> productImgList;
 	private List<MultipartFile> productDescImgList;
 	
+	//Edit 페이지 이미지 제어 필드
+	private List<Integer> existingImgIdx;
+	private List<Integer> deleteImgIdx;
+	
+	private List<Integer> existingDescImgIdx;
+	private List<Integer> deleteDescImgIdx;
+	
+	private List<Integer> existingOptionIdx;
+	private List<Integer> deleteOptionIdx;
+	
 	
 }
