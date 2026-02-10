@@ -29,7 +29,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
                o.color,
                o.size
         FROM Carts c
-        JOIN Product p ON c.product_idx = p.product_idx
+        JOIN Products p ON c.product_idx = p.product_idx
         JOIN ProductOption o ON c.option_idx = o.option_idx
         WHERE c.user_idx = #{userIdx}
     </select>
