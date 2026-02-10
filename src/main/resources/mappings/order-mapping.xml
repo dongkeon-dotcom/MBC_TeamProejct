@@ -7,7 +7,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
 
  <!-- 주문 등록 -->
-  <insert id="insertOrder" parameterType="com.mbcTeam.order.OrderVO">
+  <insert id="insertOrder" parameterType="OrderVO">
     INSERT INTO Orders (
         user_Idx, total_Price, receiver, delivery_Phone, address, extra_Address, zipcode, order_Date
     )
@@ -19,7 +19,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
 
   <!-- 주문 상세 등록 -->
-  <insert id="insertOrderItem" parameterType="com.mbcTeam.order.OrderItemVO">
+  <insert id="insertOrderItem" parameterType="OrderItemVO">
     INSERT INTO OrderItems ( order_Idx, product_Idx, category, subCategory, product_Name,
        						 price, discount_rate, color, size, quantity, product_main_img
     )
@@ -28,7 +28,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   </insert>
 
   <!-- 주문 상세 조회 -->
-  <select id="selectOrderItems" parameterType="long" resultType="com.mbcTeam.order.OrderItemVO">
+  <select id="selectOrderItems" parameterType="long" resultType="OrderItemVO">
     SELECT 
         item_Idx AS itemIdx,
         order_Idx AS orderIdx,
@@ -50,7 +50,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
 
   <!-- 주문 수정 -->
-  <update id="updateOrder" parameterType="com.mbcTeam.order.OrderVO">
+  <update id="updateOrder" parameterType="OrderVO">
     UPDATE Orders
     SET total_Price = #{totalPrice},
         receiver = #{recevier},
@@ -62,12 +62,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   </update>
 
   <!-- 주문 삭제 -->
-  <delete id="deleteOrder" parameterType="com.mbcTeam.order.OrderVO">
+  <delete id="deleteOrder" parameterType="OrderVO">
     DELETE FROM Orders WHERE order_Idx = #{orderIdx}
   </delete>
 
   <!-- 주문 조회 -->
-  <select id="selectOrder" parameterType="com.mbcTeam.order.OrderVO" resultType="com.mbcTeam.order.OrderVO">
+  <select id="selectOrder" parameterType="OrderVO" resultType="OrderVO">
     SELECT order_Idx AS orderIdx,
            user_Idx AS userIdx,
            total_Price AS totalPrice,
@@ -120,18 +120,22 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	FROM Orders
 	WHERE user_idx= #{userIdx};
 	</select>
-	<select id="GET_USER_DETAIL_ORDER_ITEMS" parameterType="Long" resultType="OrderItemVO">
+	<select id="GET_USER_DETAIL_ORDER_ITEMS" parameterType="Long" resultType="UserPurchaseDTO">
 	SELECT
-		product_Name,
-		color,
-		size,
-		quantity,
-		CASE 
-			WHEN discount_rate > 0 
-			THEN price * (1 - discount_rate / 100)
-			ELSE price
-		END AS price
-	FROM OrderItems
+		oi.product_name,
+		oi.color,
+		oi.size,
+		oi.quantity,
+		CASE
+			WHEN oi.discount_Rate > 0
+			THEN oi.price * (1 - discount_Rate / 100)
+			ELSE oi.price
+		END AS finalPrice,
+		r.review,
+		r.rating,
+		r.is_Hide 
+	FROM OrderItems oi
+	LEFT JOIN Reviews r ON oi.Item_Idx = r.Item_Idx
 	WHERE order_idx = #{orderIdx};
    </select>
    

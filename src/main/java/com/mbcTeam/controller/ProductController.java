@@ -21,10 +21,10 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.mbcTeam.product.ProductService;
 import com.mbcTeam.product.ProductVO;
+import com.mbcTeam.dto.ProductRequestDTO;
 import com.mbcTeam.product.ProductDescImgVO;
 import com.mbcTeam.product.ProductImgVO;
 import com.mbcTeam.product.ProductOptionVO;
-import com.mbcTeam.product.ProductRequestDTO;
 
 @RequestMapping("/product")
 @Controller

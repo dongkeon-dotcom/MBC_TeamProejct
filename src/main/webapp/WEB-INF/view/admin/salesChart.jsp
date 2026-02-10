@@ -67,8 +67,7 @@ function showChart(type) {
         $("#monthlySection").hide();
         $("#categorySection").show();
     }
-    // 탭을 바꿀 때마다 최신 데이터로 업데이트하고 싶다면 아래 주석 해제
-    // updateSearch(); 
+    updateSearch(); 
 }
 
 function updateSearch() {
@@ -135,7 +134,7 @@ function drawMonthlyChart(dataList, selectedYear) {
     });
 }
 
-// 카테고리 차트 그리기 함수
+//카테고리 차트 그리기 함수
 function drawCategoryChart(dataList) {
     const ctx = document.getElementById('categoryChart').getContext('2d');
     
@@ -155,7 +154,16 @@ function drawCategoryChart(dataList) {
                 backgroundColor: ['#3e95cd', '#8e5ea2', '#3cba9f', '#e8c3b9', '#c45850']
             }]
         },
-        options: { responsive: true }
+        options: { 
+            responsive: true,
+            maintainAspectRatio: true, // 가로세로 비율 유지
+            aspectRatio: 1.5, // 숫자가 클수록 높이가 낮아짐 (1이면 정사각형, 2면 가로가 2배)
+            plugins: {
+                legend: {
+                    position: 'right', // 범례를 오른쪽으로 보내면 공간 활용이 좋습니다
+                }
+            }
+        }
     });
 }
 </script>

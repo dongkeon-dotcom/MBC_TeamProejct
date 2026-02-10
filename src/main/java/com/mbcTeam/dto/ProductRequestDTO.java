@@ -1,8 +1,10 @@
-package com.mbcTeam.product;
+package com.mbcTeam.dto;
 
 import java.util.List;
 
 import org.springframework.web.multipart.MultipartFile;
+
+import com.mbcTeam.product.ProductOptionVO;
 
 import lombok.Data;
 
