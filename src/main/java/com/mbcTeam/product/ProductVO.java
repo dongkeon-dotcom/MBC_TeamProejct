@@ -22,7 +22,7 @@ public class ProductVO {
 	private MultipartFile productSizeImgfile;
 	private int discountRate; // 제품할인률
 	private boolean isRecommended; // 제품추천
-
+	
 	//검색용 데이터
 	private String search;		//검색 항목
 	private String keyword; 	//검색 값
@@ -41,5 +41,8 @@ public class ProductVO {
 
 	private Integer avgRating; // 평균 평점
 	private Integer reviewCount; // 리뷰 개수
+	
 
+	
+	
 }

@@ -36,4 +36,10 @@ public interface ProductDao {
 
     List<ProductVO> selectAll(); // 전체 상품 조회
     List<ProductVO> selectByCategory(String category); // 카테고리별 조회
+
+    List<ProductVO> getRecommendedProducts(); // 추천 상품 조회
+    List<ProductVO> getSaleProducts();        // 세일 상품 조회
+    
+   
+    
 }

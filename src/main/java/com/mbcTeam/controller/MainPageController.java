@@ -1,59 +1,43 @@
+/*
 package com.mbcTeam.controller;
 
-import java.util.Collections;
-import java.util.List; 
-
-import javax.servlet.http.HttpServletRequest; 
-import javax.servlet.http.HttpSession;
-
-import org.springframework.stereotype.Controller;
+import org.springframework.stereotype.Controller;  
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 
-import com.mbcTeam.product.ProductVO;
-
-
+import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.mbcTeam.product.ProductService;
-
-
+import com.mbcTeam.product.ProductVO;
 
 @Controller
-public class StartController {
+public class MainPageController {
 
- 
+    private static final Logger logger = LoggerFactory.getLogger(MainPageController.class);
 
     private final ProductService productService;
 
-    public StartController(ProductService productService) {
+    public MainPageController(ProductService productService) {
         this.productService = productService;
     }
-	
+
     @GetMapping("/index.do")
-    public String index(Model model, HttpServletRequest request, HttpSession  session) {
+    public String mainPage(Model model) {
         // 추천 상품 (슬라이드 쇼용)
         List<ProductVO> recommendedProducts = productService.getRecommendedProducts();
-        Collections.shuffle(recommendedProducts); // 랜덤 섞기
-        
-        // 최대 8개만 추리기
-        if (recommendedProducts.size() > 8) {
-            recommendedProducts = recommendedProducts.subList(0, 8);
-        }
+        logger.info("추천상품 개수: {}", (recommendedProducts != null ? recommendedProducts.size() : "null"));
         model.addAttribute("recommendedProducts", recommendedProducts);
 
         // 세일 상품 (하단 리스트용)
         List<ProductVO> saleProducts = productService.getSaleProducts();
-        
+        logger.info("세일상품 개수: {}", (saleProducts != null ? saleProducts.size() : "null"));
         model.addAttribute("saleProducts", saleProducts);
 
-        
        
         
         return "index";
     }
-
-	
 }
+*/

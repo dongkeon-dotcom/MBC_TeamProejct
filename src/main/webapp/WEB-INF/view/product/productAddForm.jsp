@@ -3,8 +3,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <c:import url="/WEB-INF/view/include/top.jsp" />
-<link href="${path}/resources/css/product/productAdd.css"
-	rel="stylesheet">
+<link href="${path}/resources/css/product/productAdd.css" rel="stylesheet">
 
 <section>
 

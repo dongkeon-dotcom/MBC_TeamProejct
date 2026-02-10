@@ -1,106 +1,154 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>
+	pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+
 <c:import url="/WEB-INF/view/include/top.jsp" />
 
-
+<link
+	href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+	rel="stylesheet">
 <link href="${path}/resources/css/main.css" rel="stylesheet">
-<section>
-	<br>
-	<div align="center">
 
+<section class="container mt-4">
 
-		<p>슬라이드 쇼 </p>
-		
-		<!-- 슬라이드 쇼 컨테이너 -->
-		<div class="slideshow-container">
+	<h2 class="text-center mb-4">추천 상품</h2>
+	<c:if test="${empty recommendedProducts}">
+		<p class="text-center">추천 상품 데이터가 없습니다.</p>
+	</c:if>
 
-			<!-- 각 슬라이드 -->
-			<div class="slide fade">
-				<img src="resources/images/bgd_03.jpg" alt="슬라이드1">
+	<c:if test="${not empty recommendedProducts}">
+		<div id="recommendedCarousel" class="carousel slide"
+			data-bs-ride="carousel" data-bs-interval="4000">
+
+			<!-- 인디케이터 -->
+			<div class="carousel-indicators">
+				<c:forEach var="p" items="${recommendedProducts}" varStatus="status">
+					<button type="button" data-bs-target="#recommendedCarousel"
+						data-bs-slide-to="${status.index}"
+						class="${status.index == 0 ? 'active' : ''}"
+						aria-current="${status.index == 0 ? 'true' : 'false'}"></button>
+				</c:forEach>
 			</div>
 
-			<div class="slide fade">
-				<img src="resources/images/br_01.jpg" alt="슬라이드2">
+			<!-- 슬라이드 아이템 -->
+			<div class="carousel-inner">
+				<c:forEach var="p" items="${recommendedProducts}" varStatus="status">
+					<div class="carousel-item ${status.index == 0 ? 'active' : ''}">
+						<a
+							href="${path}/userproduct/userproductdetail.do?productIdx=${p.productIdx}"
+							class="carousel-link"> <c:choose>
+								<c:when test="${not empty p.productMainImg}">
+									<img
+										src="${path}/resources/images/ProductMainImg/${p.productMainImg}"
+										class="product-img" alt="${p.productName}">
+								</c:when>
+								<c:otherwise>
+									<div class="no-image">이미지 준비중</div>
+								</c:otherwise>
+							</c:choose>
+
+
+						</a>
+						<div class="carousel-caption d-none d-md-block">
+							<h5>${p.productName}</h5>
+						</div>
+					</div>
+				</c:forEach>
 			</div>
 
-			<div class="slide fade">
-				<img src="resources/images/br_03.jpg" alt="슬라이드3">
-			</div>
-
-			<!-- 좌우 버튼 -->
-			<a class="prev" onclick="plusSlides(-1)">&#10094;</a> <a class="next"
-				onclick="plusSlides(1)">&#10095;</a>
-
+			<!-- 컨트롤 버튼 -->
+			<button class="carousel-control-prev" type="button"
+				data-bs-target="#recommendedCarousel" data-bs-slide="prev">
+				<span class="carousel-control-prev-icon"></span>
+			</button>
+			<button class="carousel-control-next" type="button"
+				data-bs-target="#recommendedCarousel" data-bs-slide="next">
+				<span class="carousel-control-next-icon"></span>
+			</button>
 		</div>
+	</c:if>
 
-		<!-- 하단 점(네비게이션) -->
-		<div class="dots">
-			<span class="dot" onclick="currentSlide(1)"></span> <span class="dot"
-				onclick="currentSlide(2)"></span> <span class="dot"
-				onclick="currentSlide(3)"></span>
+
+	<br> <br>
+
+	<!-- 세일 상품 카테고리 버튼 -->
+	<div class="text-center mb-3">
+		<div class="btn-group" role="group">
+			<button type="button"
+				class="btn btn-outline-dark category-btn active" data-category="ALL">#ALL</button>
+			<button type="button" class="btn btn-outline-dark category-btn"
+				data-category="OUTER">#OUTER</button>
+			<button type="button" class="btn btn-outline-dark category-btn"
+				data-category="TOP">#TOP</button>
+			<button type="button" class="btn btn-outline-dark category-btn"
+				data-category="BOTTOM">#BOTTOM</button>
+			<button type="button" class="btn btn-outline-dark category-btn"
+				data-category="DRESS">#DRESS</button>
+			<button type="button" class="btn btn-outline-dark category-btn"
+				data-category="ETC">#ETC</button>
 		</div>
-
-
-
 	</div>
-	
+
+	<!-- 세일 상품 카드 -->
+	<div class="row">
+		<c:if test="${empty saleProducts}">
+			<p class="text-center">세일 상품 데이터가 없습니다.</p>
+		</c:if>
+		<c:forEach var="p" items="${saleProducts}">
+			<div class="col-md-3 mb-4 product-card" data-category="${p.category}">
+				<div class="card h-100 shadow-sm">
+					<a
+						href="${path}/userproduct/userproductdetail.do?productIdx=${p.productIdx}">
+
+						<c:choose>
+							<c:when test="${not empty p.productMainImg}">
+								<img
+									src="${path}/resources/images/ProductMainImg/${p.productMainImg}"
+									class="product-img" alt="${p.productName}">
+							</c:when>
+							<c:otherwise>
+								<div class="no-image">이미지 준비중</div>
+							</c:otherwise>
+						</c:choose>
+
+
+					</a>
+					<div class="card-body text-center">
+						<h5 class="card-title">${p.productName}</h5>
+						<p class="card-text">
+							<span class="text-muted text-decoration-line-through">
+								${(p.price * 100) / (100 - p.discountRate)}원 </span><br> <span
+								class="text-danger fw-bold">${p.price}원</span>
+							<c:if test="${p.discountRate > 0}">
+								<span class="badge bg-success ms-2">${p.discountRate}% 할인</span>
+							</c:if>
+						</p>
+					</div>
+				</div>
+			</div>
+		</c:forEach>
+	</div>
+
+</section>
+
+<script
+	src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-let slideIndex = 1;
-showSlides(slideIndex);
-
-// 좌우 버튼 제어
-function plusSlides(n) {
-  showSlides(slideIndex += n);
-}
-
-// 점 제어
-function currentSlide(n) {
-  showSlides(slideIndex = n);
-}
-
-// 슬라이드 표시 함수
-function showSlides(n) {
-  let slides = document.getElementsByClassName("slide");
-  let dots = document.getElementsByClassName("dot");
-
-  if (n > slides.length) { slideIndex = 1 }
-  if (n < 1) { slideIndex = slides.length }
-
-  for (let i = 0; i < slides.length; i++) {
-    slides[i].style.display = "none";
-  }
-  for (let i = 0; i < dots.length; i++) {
-    dots[i].className = dots[i].className.replace(" active", "");
-  }
-
-  slides[slideIndex-1].style.display = "block";
-  dots[slideIndex-1].className += " active";
-}
-
-// 자동 슬라이드
-let autoSlide = setInterval(() => plusSlides(1), 5000);
-
-// 자동 슬라이드 멈추기 + 일정 시간 후 다시 시작
-function pauseAutoSlide() {
-  clearInterval(autoSlide);
-  autoSlide = setInterval(() => plusSlides(1), 5000); // 다시 시작
-}
-
-// 이미지 클릭 시 이전/다음 이동 + 자동 슬라이드 잠깐 멈춤
-document.querySelectorAll(".slide img").forEach(img => {
-  img.addEventListener("click", (e) => {
-    pauseAutoSlide();
-    const half = img.clientWidth / 2;
-    if (e.offsetX < half) {
-      plusSlides(-1);
-    } else {
-      plusSlides(1);
-    }
+/* 세일 상품 필터링 */
+document.querySelectorAll('.category-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const category = btn.getAttribute('data-category');
+    document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    document.querySelectorAll('.product-card').forEach(card => {
+      if (category === 'ALL' || card.getAttribute('data-category') === category) {
+        card.style.display = "";
+      } else {
+        card.style.display = "none";
+      }
+    });
   });
 });
 </script>
 
-<br>
-</section>
 <c:import url="/WEB-INF/view/include/bottom.jsp" />

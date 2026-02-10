@@ -24,7 +24,7 @@ public class ProductDaoImpl implements ProductDao {
 
 	@Override
 	public void insertDescImg(ProductDescImgVO divo) {
-		mybatis.insert("INSERT_PRODUCT_DESC_IMG", divo);
+		mybatis.insert("PRODUCT.INSERT_PRODUCT_DESC_IMG", divo);
 	}
 
 	@Override
@@ -111,5 +111,21 @@ public class ProductDaoImpl implements ProductDao {
 	@Override
 	public List<ProductOptionVO> adminProductEditOption(int productIdx) {
 		return mybatis.selectList("PRODUCT.EDIT_PRODUCT_OPTION", productIdx);
+		
 	}
+	
+	@Override
+	public List<ProductVO> getRecommendedProducts() {
+	    return mybatis.selectList("PRODUCT.GET_RECOMMENDED_PRODUCTS");
+	}
+
+	@Override
+	public List<ProductVO> getSaleProducts() {
+	    return mybatis.selectList("PRODUCT.GET_SALE_PRODUCTS");
+	}
+
+
+	
+	
+	
 }

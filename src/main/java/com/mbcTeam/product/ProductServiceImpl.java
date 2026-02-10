@@ -116,8 +116,19 @@ public class ProductServiceImpl implements ProductService {
 	}
 
 	@Override
-	public List<ProductVO> getRecentProducts(int i) {
-		// TODO Auto-generated method stub
-		return null;
+	public List<ProductVO> getRecommendedProducts() {
+	    return dao.getRecommendedProducts();
 	}
+
+	@Override
+	public List<ProductVO> getSaleProducts() {
+	    return dao.getSaleProducts();
+	}
+	
+	
+	public List<ProductVO> getProductsByCategory(String category) {
+	    return dao.selectByCategory(category);
+	}
+
+
 }

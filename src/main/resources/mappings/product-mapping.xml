@@ -237,22 +237,29 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	</select>
 
 
-	<!-- 카테고리별 상품 조회 -->
-	<select id="SELECT_BY_CATEGORY" parameterType="string"
-		resultType="com.mbcTeam.product.ProductVO">
-		SELECT p.product_Idx,
-		p.category,
-		p.subCategory,
-		p.product_Name,
-		p.price,
-		p.reg_Date,
-		p.product_Desc,
-		p.discount_rate,
-		p.is_Recommended
-		FROM Products p
-		WHERE p.category = #{category}
-		ORDER BY p.reg_Date DESC
-	</select>
+		<!-- 카테고리별 상품 조회 -->
+		<select id="SELECT_BY_CATEGORY" parameterType="string"
+		        resultType="com.mbcTeam.product.ProductVO">
+		    SELECT p.product_Idx,
+		           p.category,
+		           p.subCategory,
+		           p.product_Name,
+		           p.price,
+		           p.reg_Date,
+		           p.product_Desc,
+		           p.discount_rate,
+		           p.is_Recommended,
+		           mainImg.product_Img AS pMainImgPath,
+		           sizeImg.product_Img AS pSizeImgPath
+		    FROM Products p
+		    LEFT JOIN ProductImg mainImg
+		      ON p.product_Idx = mainImg.product_Idx AND mainImg.product_Img_Order = 1
+		    LEFT JOIN ProductImg sizeImg
+		      ON p.product_Idx = sizeImg.product_Idx AND sizeImg.product_Img_Order = 2
+		    WHERE p.category = #{category}
+		    ORDER BY p.reg_Date DESC
+		</select>
+
 
 
 	<!-- 리뷰 조회 -->
@@ -270,6 +277,34 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		WHERE
 		r.product_Idx = #{productIdx}
 		ORDER BY r.reg_Date DESC
+	</select>
+
+		
+	<!-- 추천 상품 조회 -->
+	<select id="GET_RECOMMENDED_PRODUCTS" resultType="com.mbcTeam.product.ProductVO">
+	    SELECT product_idx AS productIdx,
+	           product_name AS productName,
+	           price,
+	           product_main_img AS productMainImg,
+	           discount_rate AS discountRate,
+	           is_recommended AS isRecommended
+	    FROM Products
+	    WHERE is_recommended = 1
+	    ORDER BY product_idx DESC
+	</select>
+	
+	
+	
+	<!-- 세일 상품 조회 -->
+	<select id="GET_SALE_PRODUCTS" resultType="com.mbcTeam.product.ProductVO">
+	    SELECT product_idx AS productIdx,
+	           product_name AS productName,
+	           price,
+	           product_main_img AS productMainImg,
+	           discount_rate AS discountRate
+	    FROM Products
+	    WHERE discount_rate > 0
+	    ORDER BY product_idx DESC
 	</select>
 
 
