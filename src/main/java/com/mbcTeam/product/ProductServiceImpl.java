@@ -116,12 +116,6 @@ public class ProductServiceImpl implements ProductService {
 	}
 
 	@Override
-	public List<ProductVO> getRecentProducts(int i) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
 	public ProductImgVO adminOneImg(int productImgIdx) {
 		return dao.adminOneImg(productImgIdx);
 	}
@@ -174,6 +168,24 @@ public class ProductServiceImpl implements ProductService {
 	@Override
 	public int descImgCount(int productIdx) {
 		return dao.descImgCount(productIdx);
+	}
+
+	@Override
+	public List<ProductVO> getRecommendedProducts() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<ProductVO> getSaleProducts() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<ProductVO> getProductsByCategory(String category) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 

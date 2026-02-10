@@ -21,10 +21,10 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.mbcTeam.product.ProductService;
 import com.mbcTeam.product.ProductVO;
+import com.mbcTeam.dto.ProductRequestDTO;
 import com.mbcTeam.product.ProductDescImgVO;
 import com.mbcTeam.product.ProductImgVO;
 import com.mbcTeam.product.ProductOptionVO;
-import com.mbcTeam.product.ProductRequestDTO;
 
 @RequestMapping("/product")
 @Controller
@@ -58,7 +58,7 @@ public class ProductController {
 		// 1. 전달받은 값 이외의 값 세팅
 		vo.setRegDate(LocalDateTime.now().toString());
 		vo.setDiscountRate(0);
-		vo.setRecommended(false);
+		vo.setRecommended(false); 
 
 		// 2. 제품 대표 이미지 처리
 		MultipartFile mainFile = vo.getProductMainImgfile();
@@ -382,5 +382,16 @@ public class ProductController {
 		model.addAttribute("product", service.edit(vo));
 		return "product/edit";
 	}
+	
+	
+	@GetMapping("/category.do")
+	public String categoryList(@RequestParam("category") String category, Model model) {
+	    List<ProductVO> productList = service.getProductsByCategory(category);
+	    model.addAttribute("productList", productList);
+	    model.addAttribute("category", category);
+	    return "product/productList"; // 카테고리별 상품 목록 JSP
+	}
+
+
 
 }

@@ -217,7 +217,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
     <!-- 전체 상품 조회 -->
     <select id="SELECT_ALL_PRODUCTS"
-        resultType="com.mbcTeam.product.ProductVO">
+        resultType="ProductVO">
         SELECT p.product_Idx,
                p.category,
                p.subCategory,
@@ -236,7 +236,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     	<include refid="searchInclude"/>
     </select>
 	<select id="SELECT_PRODUCT_OPTION_BY_ID" parameterType="int"
-		resultType="com.mbcTeam.product.ProductOptionVO">
+		resultType="ProductOptionVO">
 		SELECT 	option_Idx AS optionIdx,
 				product_Idx AS productIdx,
 				color,
@@ -251,7 +251,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
 	<!-- 상품 목록 조회 -->
 	<select id="SELECT_PRODUCT_LIST"
-		resultType="com.mbcTeam.product.ProductVO">
+		resultType="ProductVO">
 		SELECT p.product_Idx,
 		p.category,
 		p.subCategory,
@@ -273,7 +273,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
 	<!-- 상품 상세 조회 (사용자용) -->
 	<select id="SELECT_PRODUCT_DETAIL_USER" parameterType="int"
-		resultType="com.mbcTeam.product.ProductVO">
+		resultType="ProductVO">
 		SELECT p.product_Idx,
 		p.category,
 		p.subCategory,
@@ -296,7 +296,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
 	<!-- 카테고리별 상품 조회 -->
 	<select id="SELECT_BY_CATEGORY" parameterType="string"
-		resultType="com.mbcTeam.product.ProductVO">
+		resultType="ProductVO">
 		SELECT p.product_Idx,
 		p.category,
 		p.subCategory,
@@ -314,7 +314,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
 	<!-- 리뷰 조회 -->
 	<select id="SELECT_PRODUCT_REVIEWS" parameterType="int"
-		resultType="com.mbcTeam.user.ReviewVO">
+		resultType="ReviewVO">
 		SELECT r.review_Idx,
 		r.product_Idx,
 		r.user_Idx,

@@ -39,15 +39,30 @@ body {
     .nav-btn span { margin-right: 8px; }
 
     /* 차트 컨테이너 */
-    .chart-wrapper { 
-        background: white; 
-        padding: 30px; 
-        border-radius: 12px; 
-        box-shadow: 0 5px 15px rgba(0,0,0,0.05);
-        max-width: 1000px;
-        margin: 20px auto; /* 차트도 중앙 정렬 */
-    }
+	.chart-wrapper { 
+	    background: white; 
+	    padding: 30px; 
+	    border-radius: 12px; 
+	    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+	    max-width: 1000px; /* 전체적인 틀은 1000px 유지 */
+	    margin: 20px auto;
+	}
 
     /* 섹션 제어 */
-    #categorySection { display: none; }
-    h2 { margin-top: 0; color: #444; border-bottom: 2px solid #eee; padding-bottom: 10px; }
+	#monthlySection {
+	    width: 100%;
+	}
+	
+	#categorySection { 
+	    display: none; 
+	    /* 카테고리(도넛) 차트가 너무 커지지 않도록 너비 제한 */
+	    max-width: 600px; 
+	    margin: 0 auto; 
+	}
+	
+	
+	canvas {
+	    max-height: 500px !important;
+	}
+	
+	h2 { margin-top: 0; color: #444; border-bottom: 2px solid #eee; padding-bottom: 10px; }

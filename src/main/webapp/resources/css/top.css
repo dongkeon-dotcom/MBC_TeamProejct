@@ -1,117 +1,182 @@
-@charset "UTF-8"; /* CSS 파일의 문자 인코딩을 UTF-8로 지정 */
+@charset "UTF-8";
 
-/* ===== Footer ===== */
-footer {
-	background: #c7c0b8; /* 푸터 배경색: 어두운 회색 */
-	color: #fff; /* 글자색: 흰색 */
-	text-align: center; /* 텍스트 중앙 정렬 */
-	padding: 15px 0; /* 위아래 여백 15px */
-	font-size: 13px; /* 글자 크기 13px */
-	width: 100%; /* 화면 전체 폭 차지 */
-}
 
-/* 본문이 상단바에 가려지지 않도록 여백 */
+/* ===== 기본 설정 ===== */
 body {
-	margin: 0; /* 기본 margin 제거 */
-	padding-top: 60px; /* 상단바 높이만큼 본문을 아래로 밀기 */
+  margin: 0;
+  /* 스크립트로 padding-top이 자동 조절되므로 최소값만 설정 */
+  min-height: 100vh;
 }
 
-/* ===== 상단바 ===== */
+/* ===== 상단바 (Header) ===== */
 .top-header {
-	background: #c7c0b8; /* 상단바 배경색: 어두운 회색 */
-	color: #fff; /* 글자색: 흰색 */
-	display: flex; /* Flexbox 레이아웃 사용 */
-	align-items: center; /* 세로 중앙 정렬 */
-	justify-content: space-between; /* 좌/중앙/우 영역 분리 */
-	padding: 5px 0px; /* 내부 여백 */
-	position: fixed; /* 화면 상단에 고정 */
-	top: 0; /* 최상단 위치 */
-	left: 0; /* 왼쪽 끝 위치 */
-	width: 100%; /* 화면 전체 폭 */
-	z-index: 1000; /* 다른 요소보다 위에 표시 */
+  background: #c7c0b8; /* 기존 색상 유지 */
+  color: #fff;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 1000;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  padding: 10px 0; /* 상하 여백 */
 }
 
-/* ===== 로고 ===== */
-.logo h1 a {
-	color: #fff; /* 로고 글자색: 흰색 */
-	text-decoration: none; /* 밑줄 제거 */
-	font-size: 20px; /* 글자 크기 크게 */
-	font-weight: bold; /* 굵게 표시 */
+/* 내부 컨테이너 정렬 */
+.top-header .container-fluid {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  max-width: 1400px; /* 너무 퍼지지 않게 제한 */
+  margin: 0 auto;
+  padding: 0 20px;
 }
 
-/* ===== 메뉴 ===== */
-.main-nav {
-	flex: 1 1 auto; /* 공간 차지하되 줄어들 수 있게 */
-	display: flex;
-	justify-content: center;
-	flex-shrink: 1; /* 오른쪽 영역을 침범하지 않도록 줄어들 수 있게 */
-	min-width: 0; /* flexbox에서 줄어들 수 있도록 설정 */
-	margin-right: 10px; /* 중앙 메뉴 오른쪽 여백 줄이기 */
+/* ===== 네비게이션 (Navigation) ===== */
+nav {
+  display: flex;
+  align-items: center;
 }
 
-.main-nav ul.menu {
-	list-style: none; /* 불릿 제거 */
-	display: flex; /* 가로 배치 */
-	gap: 10px; /* 메뉴 간격 */
-	margin: 0; /* 기본 margin 제거 */
-	padding: 0; /* 기본 padding 제거 */
+.main-menu {
+  display: flex;
+  gap: 5px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
 }
 
-.main-nav ul.menu>li {
-	position: relative; /* 서브메뉴 위치 기준점 */
+/* 메뉴 항목 공통 */
+.has-submenu {
+  position: relative; /* 서브메뉴의 기준점 */
+  padding-bottom: 5px; /* 마우스가 서브메뉴로 내려갈 때 끊김 방지 */
 }
 
-.main-nav ul.menu>li>a {
-	padding: 15px 15px; /* 메뉴 버튼 여백 */
-	color: #fff; /* 글자색: 흰색 */
-	text-decoration: none; /* 밑줄 제거 */
-	font-size: 15px; /* 글자 크기 */
+.has-submenu > a {
+  padding: 8px 15px;
+  font-size: 15px;
+  font-weight: 500;
+  color: #fff;
+  text-decoration: none;
+  transition: all 0.2s;
 }
 
-.main-nav ul.menu>li>a:hover {
-	background: #0080c0; /* 마우스 올렸을 때 배경색 변경 */
+.has-submenu > a:hover {
+  color: #4a4a4a; /* 호버 시 글자색 변경 */
 }
 
-/* ===== 서브메뉴 ===== */
+/* ===== 서브메뉴 (Dropdown) ===== */
 .submenu {
-	display: none; /* 기본적으로 숨김 */
-	position: absolute; /* 부모 li 기준으로 위치 */
-	top: 100%; /* 부모 아래쪽에 표시 */
-	left: 0; /* 왼쪽 정렬 */
-	background: #0080c0; /* 서브메뉴 배경색 */
-	min-width: 150px; /* 최소 너비 */
-	list-style: none; /* 불릿 제거 */
-	margin: 0; /* 기본 margin 제거 */
-	padding: 0; /* 기본 padding 제거 */
+  display: none; /* 기본 숨김 */
+  position: absolute;
+  top: 100%; /* 부모의 아래쪽에 위치 */
+  left: 0;
+  background: #f8f9fa; /* 밝은 톤으로 변경하여 가독성 확보 */
+  min-width: 160px;
+  list-style: none;
+  margin: 0;
+  padding: 10px 0;
+  border-radius: 4px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  border: 1px solid #ddd;
+  z-index: 999;
 }
 
 .submenu li a {
-	display: block; /* 블록 요소로 전체 영역 클릭 가능 */
-	padding: 8px 12px; /* 내부 여백 */
-	color: #fff; /* 글자색: 흰색 */
-	text-decoration: none; /* 밑줄 제거 */
-	font-size: 13px; /* 글자 크기 */
+  display: block;
+  padding: 8px 20px;
+  color: #333;
+  text-decoration: none;
+  font-size: 14px;
+  transition: background 0.2s;
 }
 
 .submenu li a:hover {
-	background: #0066a0; /* 마우스 올렸을 때 배경색 변경 */
+  background: #e9ecef;
+  color: #000;
 }
 
-.submenu.show {
-	display: block; /* .show 클래스가 붙으면 표시됨 */
+/* 마우스 올리면 서브메뉴 표시 */
+.has-submenu:hover .submenu {
+  display: block;
 }
 
-/* ===== 오른쪽 영역 (검색창 + 유저 메뉴) ===== */
+/* ===== 우측 영역 (검색 + 유저메뉴) ===== */
 .right-area {
-	display: flex; /* Flexbox 레이아웃 */
-	align-items: center; /* 세로 중앙 정렬 */
-	gap: 8px; /* 기존 15px → 8px으로 줄여서 검색창/로그인/장바구니 간격 좁힘 */
-	text-align: center;
-
+  display: flex;
+  align-items: center;
+  gap: 15px;
 }
 
-.search-form {
-	display: flex;
-	align-items: center;
-	order: -1; /* 오른쪽 영역 안에서 맨 앞으로 이동 */
+/* 검색창 스타일 */
+.search-form input {
+  padding: 5px 12px;
+  border-radius: 20px; /* 둥근 검색창 */
+  border: 1px solid #fff;
+  background: rgba(255, 255, 255, 0.9);
+  font-size: 14px;
+  outline: none;
+}
+
+.search-form input:focus {
+  border-color: #4a4a4a;
+  background: #fff;
+}
+
+/* 유저 메뉴 */
+.user-menu {
+  display: flex;
+  align-items: center;
+  font-size: 14px;
+}
+
+.user-menu a {
+  color: #fff;
+  text-decoration: none;
+  margin-left: 10px;
+  transition: color 0.2s;
+}
+
+.user-menu a:hover {
+  color: #4a4a4a;
+  text-decoration: underline;
+}
+
+.user-menu strong {
+  color: #333; /* 사용자 이름 강조 */
+}
+
+/* 로그아웃 버튼 (form 내부 button) */
+.user-menu button {
+  font-size: 14px;
+  font-weight: normal;
+  transition: opacity 0.2s;
+}
+
+.user-menu button:hover {
+  opacity: 0.7;
+}
+
+/* 반응형 모바일 대응 (간단) */
+@media (max-width: 992px) {
+  .top-header .container-fluid {
+    flex-direction: column;
+    gap: 10px;
+  }
+  .main-menu {
+    gap: 0;
+  }
+  .main-menu > li > a {
+    font-size: 13px;
+    padding: 5px 8px;
+  }
+}
+
+/* ===== Footer ===== */
+footer {
+    background: #c7c0b8; /* 푸터 배경색: 어두운 회색 */
+    color: #fff; /* 글자색: 흰색 */
+    text-align: center; /* 텍스트 중앙 정렬 */
+    padding: 15px 0; /* 위아래 여백 15px */
+    font-size: 13px; /* 글자 크기 13px */
+    width: 100%; /* 화면 전체 폭 차지 */
 }

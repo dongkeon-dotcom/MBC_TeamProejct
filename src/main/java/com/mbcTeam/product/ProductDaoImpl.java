@@ -169,6 +169,18 @@ public class ProductDaoImpl implements ProductDao {
 		return mybatis.selectOne("PRODUCT.DESC_IMG_COUNT", productIdx);
 	}
 
+	@Override
+	public List<ProductVO> getRecommendedProducts() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<ProductVO> getSaleProducts() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 
 
 
