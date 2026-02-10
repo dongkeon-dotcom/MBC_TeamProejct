@@ -19,7 +19,15 @@ public class SecurityConfig {
 	
 	@Bean
 	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-		 http
+        http
+        .csrf(csrf -> csrf.disable())
+        .authorizeHttpRequests(auth -> auth.anyRequest().authenticated())
+        .formLogin();
+    System.out.println("SecurityConfig 1");
+    return http.build();
+} 
+/*		
+		http
 	        .csrf(csrf -> csrf.disable())
 	        .authorizeHttpRequests(auth -> auth
 	            .antMatchers("/", "/login/**", "/resources/**").permitAll() // 로그인 페이지 등은 허용
@@ -36,7 +44,7 @@ public class SecurityConfig {
 	            // .userInfoEndpoint(userInfo -> userInfo.userService(customOAuth2UserService)) // 사용자 정보 처리 (중요)
 	        );
 		  return http.build();}
-
+*/
     
     @Bean
     public UserDetailsService userDetailsService() {
@@ -52,6 +60,5 @@ public class SecurityConfig {
     public PasswordEncoder passwordEncoder() {
     	System.out.println("SecurityConfig 3");
         return new BCryptPasswordEncoder();
-    }
-    
+    }  
 }

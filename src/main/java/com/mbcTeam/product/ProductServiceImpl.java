@@ -120,4 +120,63 @@ public class ProductServiceImpl implements ProductService {
 		// TODO Auto-generated method stub
 		return null;
 	}
+
+	@Override
+	public ProductImgVO adminOneImg(int productImgIdx) {
+		return dao.adminOneImg(productImgIdx);
+	}
+
+	@Override
+	public ProductDescImgVO adminOneDescImg(int productDescImgIdx) {
+		return dao.adminOneDescImg(productDescImgIdx);
+	}
+
+	@Override
+	public void deleteImg(int productImgIdx) {
+		dao.deleteImg(productImgIdx);
+		
+	}
+
+	@Override
+	public void deleteDescImg(int productDescImgIdx) {
+		dao.deleteDescImg(productDescImgIdx);
+		
+	}
+	
+	@Override
+	public void deleteOption(int optionIdx) {
+		dao.deleteOption(optionIdx);
+	}
+
+	@Override
+	public void updateImgOrder(ProductImgVO vo) {
+		dao.updateImgOrder(vo);
+		
+	}
+
+	@Override
+	public void updateDescImgOrder(ProductDescImgVO vo) {
+		dao.updateDescImgOrder(vo);
+		
+	}
+	
+	@Override
+	public void updateOption(ProductOptionVO vo) {
+		dao.updateOption(vo);
+		
+	}
+
+	@Override
+	public int imgCount(int productIdx) {
+		return dao.imgCount(productIdx);
+	}
+
+	@Override
+	public int descImgCount(int productIdx) {
+		return dao.descImgCount(productIdx);
+	}
+
+
+
+
 }

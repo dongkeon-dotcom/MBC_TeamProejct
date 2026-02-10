@@ -156,6 +156,63 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     	SELECT * FROM ProductOption
     	WHERE product_idx = ${value}
     </select>
+    
+    <select id="SELECT_ONE_IMG" parameterType="int" resultType="ProductImgVO">
+    	SELECT * FROM ProductImg
+    	WHERE product_Img_Idx = ${value}
+    </select>
+    
+    <select id="SELECT_ONE_DESC_IMG" parameterType="int" resultType="ProductDescImgVO">
+    	SELECT * FROM ProductDescImg
+    	WHERE product_Desc_Img_Idx = ${value}
+    </select>
+    <delete id="DELETE_IMG" parameterType="int">	 
+    	DELETE FROM ProductImg WHERE product_Img_Idx = ${value}
+   	</delete>
+    <delete id="DELETE_DESC_IMG" parameterType="int">	 
+    	DELETE FROM ProductDescImg WHERE product_Desc_Img_Idx = ${value}
+   	</delete>
+   	<update id="UPDATE_IMG_ORDER" parameterType="ProductImgVO">
+   		UPDATE ProductImg
+   		SET Product_Img_Order = #{productImgOrder}
+   		WHERE product_Img_Idx = #{productImgIdx}
+   	</update>
+   	<update id="UPDATE_DESC_IMG_ORDER" parameterType="ProductDescImgVO">
+   		UPDATE ProductDescImg
+   		SET Product_Desc_Img_Order = #{productDescImgOrder}
+   		WHERE product_Desc_Img_Idx = #{productDescImgIdx}
+   	</update>
+   	<select id="IMG_COUNT" parameterType="int" resultType="int">
+   		select count(*) as imgCount from ProductImg WHERE product_idx = ${value}
+   	</select>
+   	<select id="DESC_IMG_COUNT" parameterType="int" resultType="int">
+   		select count(*) as descImgCount from ProductDescImg WHERE product_idx = ${value}
+   	</select>
+   	<update id="UPDATE_PRODUCT" parameterType="ProductVO">
+   		UPDATE Products
+		SET
+			category=#{category},
+			subCategory=#{subCategory},
+			product_Name=#{productName},
+			price=#{price},
+			product_Desc=#{productDesc},
+			product_main_Img=#{productMainImg},
+			product_size_Img=#{productSizeImg},
+			discount_rate=#{discountRate},
+			is_Recommended=#{isRecommended}
+		WHERE product_Idx = #{productIdx}
+   	</update>
+   	<delete id="DELETE_PRODUCT_OPTION" parameterType = "int">
+   		DELETE FROM ProductOption WHERE option_Idx = ${value}
+   	</delete>
+   	<update id="UPDATE_PRODUCT_OPTION" parameterType="ProductOptionVO">
+   		UPDATE ProductOption
+   		SET
+   			color = #{color},
+   			size = #{size},
+   			stock = #{stock}
+   		WHERE option_Idx = #{optionIdx}   	
+   	</update>
 
 
     <!-- 전체 상품 조회 -->

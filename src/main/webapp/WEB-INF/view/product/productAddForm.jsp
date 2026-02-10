@@ -151,6 +151,10 @@ $(document).ready(function() {
             alert("상품명을 입력해주세요.");
             return;
         }
+        if(pFeature === '-- 하위 카테고리 선택 --'){
+        	alert("하위카테고리를 선택해주세요.");
+        	return;
+        }
 
         // 2. 버튼 상태 변경 (중복 클릭 방지)
         var $btn = $(this);
@@ -284,7 +288,7 @@ function addRow() {
  // 3. 이미지 업로드 핵심 함수 (새로 추가됨 - 버튼 동작의 핵심)
 function triggerFileSelect(containerId) {
 	 
-const container = document.getElementById(containerId);
+	const container = document.getElementById(containerId);
     
     // 1. 개수 제한 체크
     const currentCount = container.querySelectorAll('.input-group').length;

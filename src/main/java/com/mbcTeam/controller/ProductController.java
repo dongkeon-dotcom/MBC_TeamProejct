@@ -21,7 +21,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.mbcTeam.product.ProductService;
 import com.mbcTeam.product.ProductVO;
-import com.google.protobuf.Option;
 import com.mbcTeam.product.ProductDescImgVO;
 import com.mbcTeam.product.ProductImgVO;
 import com.mbcTeam.product.ProductOptionVO;
@@ -181,7 +180,7 @@ public class ProductController {
 		int listStartPage = (nowPage - 1) / pageListSize * pageListSize + 1;
 
 		int listEndPage = listStartPage + pageListSize - 1;
-		
+
 		model.addAttribute("startIdx", vo.getStartIdx());
 		model.addAttribute("pageSize", vo.getPageSize());
 
@@ -191,46 +190,190 @@ public class ProductController {
 		model.addAttribute("pageListSize", pageListSize);
 		model.addAttribute("listStartPage", listStartPage);
 		model.addAttribute("listEndPage", listEndPage);
-		
+
 		model.addAttribute("totalPage", totalPage);
 		model.addAttribute("nowPage", nowPage);
-		
+
 		model.addAttribute("search", vo.getSearch());
 		model.addAttribute("keyword", vo.getKeyword());
-		
+
 		System.out.println("************************************************");
 		System.out.println("startIdx: " + vo.getStartIdx());
 		System.out.println("pageSize: " + vo.getPageSize());
-		System.out.println("search: " +  vo.getSearch());
+		System.out.println("search: " + vo.getSearch());
 		System.out.println("keyword: " + vo.getKeyword());
-		
+
 		return "product/productList";
 	}
-	
+
 	@ResponseBody
 	@PostMapping("/adminUpdateStatus.do")
 	public String adminUpdateProductStatus(ProductVO vo) throws Exception {
 		System.out.println("/adminUpdateStatus.do");
 		service.adminUpdateProductStatus(vo);
-		return "T"; 
-		
+		return "T";
+
 	}
-	
-	@GetMapping(value="/adminProductEdit.do")
+
+	@GetMapping(value = "/adminProductEdit.do")
 	public String adminProductEdit(Model model, ProductVO vo) {
 		System.out.println("/adminProductEdit");
-		int idx= vo.getProductIdx();
-		model.addAttribute("m",service.adminProductEdit(vo));
-		model.addAttribute("imgList",service.adminProductEditImg(idx));
-		model.addAttribute("descImgList",service.adminProductEditDescImg(idx));
-		model.addAttribute("optionList",service.adminProductEditOption(idx));
-		
-		System.out.println("********************************************");
-		System.out.println(service.adminProductEditImg(idx));
-		System.out.println(service.adminProductEditDescImg(idx));
-		
-		
+		int idx = vo.getProductIdx();
+		model.addAttribute("m", service.adminProductEdit(vo));
+		model.addAttribute("imgList", service.adminProductEditImg(idx));
+		model.addAttribute("descImgList", service.adminProductEditDescImg(idx));
+		model.addAttribute("optionList", service.adminProductEditOption(idx));
+
 		return "product/productEdit";
+	}
+
+	@Transactional
+	@PostMapping(value = "/adminProductEditOK.do")
+	public String adminProductEditOK(Model model, ProductVO vo, ProductRequestDTO dto) throws Exception {
+		System.out.println("adminProductEditOK");
+		ProductVO oldData = service.adminProductEdit(vo);
+		int productIdx = vo.getProductIdx();
+
+		// 제품 메인 이미지 처리
+		MultipartFile mainFile = vo.getProductMainImgfile();
+		String mainFileName = oldData.getProductMainImg();
+		if (mainFile != null && !mainFile.isEmpty()) {
+			String uploadMainDir = imgPath + "ProductMainImg";
+			File oldFile = new File(uploadMainDir + File.separator + oldData.getProductMainImg());
+			if (oldFile.exists()) {
+				oldFile.delete();
+			}
+
+			mainFileName = System.currentTimeMillis() + "_MAIN_" + mainFile.getOriginalFilename();
+			String uploadPath = uploadMainDir + File.separator + mainFileName;
+			mainFile.transferTo(new File(uploadPath));
+		}
+
+		// 제품 사이즈 이미지 처리
+		MultipartFile sizeFile = vo.getProductSizeImgfile();
+		String sizeFileName = oldData.getProductSizeImg();
+
+		if (sizeFile != null && !sizeFile.isEmpty()) {
+			String uploadSizeDir = imgPath + "ProductSizeImg";
+			File oldFile = new File(uploadSizeDir + File.separator + oldData.getProductSizeImg());
+			if (oldFile.exists()) {
+				oldFile.delete();
+			}
+			sizeFileName = System.currentTimeMillis() + "_SIZE_" + sizeFile.getOriginalFilename();
+			String uploadPath = uploadSizeDir + File.separator + sizeFileName;
+			sizeFile.transferTo(new File(uploadPath));
+
+		}
+		// 서비스 INSERT 작업
+		vo.setProductMainImg(mainFileName);
+		vo.setProductSizeImg(sizeFileName);
+		service.update(vo);
+
+		//이미지 제거, Order 재정렬, 등록
+		if (dto.getDeleteImgIdx() != null) {
+			for (Integer imgIdx : dto.getDeleteImgIdx()) {
+				ProductImgVO oldImg = service.adminOneImg(imgIdx);
+				String imgDir = imgPath + "ProductImg";
+				File file = new File(imgDir + File.separator + oldImg.getProductImg());
+				if (file.exists()) {
+					file.delete();
+				}
+				service.deleteImg(imgIdx);
+			}
+		}
+
+		int imgCount = service.imgCount(productIdx);
+		for (int i = 0; i < imgCount; i++) {
+			ProductImgVO orderUpdateIVO = new ProductImgVO();
+			orderUpdateIVO.setProductImgOrder(i+1);
+			orderUpdateIVO.setProductImgIdx(dto.getExistingImgIdx().get(i));
+			
+			service.updateImgOrder(orderUpdateIVO);
+		}
+		
+		
+		if (dto.getProductImgList() != null) {
+			for (int i = 0; i < dto.getProductImgList().size(); i++) {
+				ProductImgVO ivo = new ProductImgVO();
+				MultipartFile imgFile = dto.getProductImgList().get(i);
+				String imgFileName = imgFile.getOriginalFilename();
+				String uploadImgDir = imgPath + "ProductImg";
+
+				if (!imgFile.isEmpty()) {
+					imgFileName = System.currentTimeMillis() + "_IMG_" + imgFile.getOriginalFilename();
+					String uploadPath = uploadImgDir + File.separator + imgFileName;
+
+					imgFile.transferTo(new File(uploadPath));
+				}
+				ivo.setProductIdx(productIdx);
+				ivo.setProductImg(imgFileName);
+				ivo.setProductImgOrder(i + 1 + imgCount);
+				service.insertImg(ivo);
+			}
+		}
+
+		if (dto.getDeleteDescImgIdx() != null) {
+			for (Integer descImgIdx : dto.getDeleteDescImgIdx()) {
+				ProductDescImgVO oldDescImg = service.adminOneDescImg(descImgIdx);
+				String descImgDir = imgPath + "ProductDescImg";
+				File file = new File(descImgDir + File.separator + oldDescImg.getProductDescImg());
+				if (file.exists()) {
+					file.delete();
+				}
+				service.deleteDescImg(descImgIdx);
+			}
+		}
+		int descImgCount = service.descImgCount(productIdx);
+		for (int i = 0; i < descImgCount; i++) {
+			ProductDescImgVO orderUpdateDIVO = new ProductDescImgVO();
+			orderUpdateDIVO.setProductDescImgOrder(i+1);
+			orderUpdateDIVO.setProductDescImgIdx(dto.getExistingDescImgIdx().get(i));
+			
+			service.updateDescImgOrder(orderUpdateDIVO);
+		}
+
+		if (dto.getProductDescImgList() != null) {
+			for (int i = 0; i < dto.getProductDescImgList().size(); i++) {
+				ProductDescImgVO divo = new ProductDescImgVO();
+				MultipartFile descImgFile = dto.getProductDescImgList().get(i);
+				String descImgFileName = descImgFile.getOriginalFilename();
+				String uploadDescImgDir = imgPath + "ProductDescImg";
+
+				if (!descImgFile.isEmpty()) {
+					descImgFileName = System.currentTimeMillis() + "_DESCIMG_" + descImgFile.getOriginalFilename();
+					String uploadPath = uploadDescImgDir + File.separator + descImgFileName;
+
+					descImgFile.transferTo(new File(uploadPath));
+				}
+				divo.setProductIdx(productIdx);
+				divo.setProductDescImg(descImgFileName);
+				divo.setProductDescImgOrder(i + 1 + descImgCount);
+				service.insertDescImg(divo);
+			}
+		}
+		
+		//옵션처리
+		if (dto.getDeleteOptionIdx() != null) {
+			for (Integer optionIdx : dto.getDeleteOptionIdx()) {
+				service.deleteOption(optionIdx);
+			}
+		}
+		
+		if(dto.getProductOptionList() != null) {
+			for(ProductOptionVO ovo: dto.getProductOptionList()) {
+				if(ovo.getOptionIdx() == 0) {
+					//OptionIdx가 없으면 신규(insert)
+					ovo.setProductIdx(productIdx);
+					service.insertOption(ovo);
+				}else {
+					//OptionIdx가 있으면 기존꺼(update)
+					service.updateOption(ovo);
+				}
+			}
+		}
+		
+
+		return "redirect:/product/adminProductList.do";
 	}
 
 	@GetMapping("/edit.do")
