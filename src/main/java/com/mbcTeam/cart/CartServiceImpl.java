@@ -1,29 +1,33 @@
-
 package com.mbcTeam.cart;
 
-import java.util.List;
 
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
 public class CartServiceImpl implements CartService {
 
-	@Autowired
-	private CartDao dao; // 이제 정상 주입됨
+    @Autowired
+    private CartDao dao;
 
-	@Override
-	public void insertCart(CartVO cart) {
-		dao.insertCart(cart);
-	}
+    @Override
+    public int insertCart(CartVO cartvo) {
+        return dao.insertCart(cartvo);
+    }
 
-	@Override
-	public List<CartVO> selectCart(long userIdx) {
-		return dao.selectCart(userIdx);
-	}
+    @Override
+    public List<CartVO> selectCart(long userIdx) {
+        return dao.selectCart(userIdx);
+    }
 
-	@Override
-	public void deleteCart(long cartIdx) {
-		dao.deleteCart(cartIdx);
-	}
+    @Override
+    public int deleteCart(long cartIdx) {
+        return dao.deleteCart(cartIdx);
+    }
+
+    @Override
+    public int updateCart(CartVO cartvo) {
+        return dao.updateCart(cartvo);
+    }
 }
