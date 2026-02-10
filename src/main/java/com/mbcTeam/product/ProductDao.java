@@ -25,12 +25,14 @@ public interface ProductDao {
     ProductDescImgVO adminOneDescImg(int productDescImgIdx);
     void updateImgOrder(ProductImgVO vo);
     void updateDescImgOrder(ProductDescImgVO vo);
+    void updateOption(ProductOptionVO vo);
     
     int imgCount(int productIdx);
     int descImgCount(int productIdx);
     
     void deleteImg(int productImgIdx);
-    void deleteDescImg(int productDescImgIdx);;
+    void deleteDescImg(int productDescImgIdx);
+    void deleteOption(int optionIdx);
     
     int  totalCount(ProductVO vo); //제품 전체 갯수
     

@@ -21,7 +21,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.mbcTeam.product.ProductService;
 import com.mbcTeam.product.ProductVO;
-import com.google.protobuf.Option;
 import com.mbcTeam.product.ProductDescImgVO;
 import com.mbcTeam.product.ProductImgVO;
 import com.mbcTeam.product.ProductOptionVO;
@@ -225,10 +224,6 @@ public class ProductController {
 		model.addAttribute("descImgList", service.adminProductEditDescImg(idx));
 		model.addAttribute("optionList", service.adminProductEditOption(idx));
 
-		System.out.println("********************************************");
-		System.out.println(service.adminProductEditImg(idx));
-		System.out.println(service.adminProductEditDescImg(idx));
-
 		return "product/productEdit";
 	}
 
@@ -244,7 +239,7 @@ public class ProductController {
 		String mainFileName = oldData.getProductMainImg();
 		if (mainFile != null && !mainFile.isEmpty()) {
 			String uploadMainDir = imgPath + "ProductMainImg";
-			File oldFile = new File(uploadMainDir + oldData.getProductMainImg());
+			File oldFile = new File(uploadMainDir + File.separator + oldData.getProductMainImg());
 			if (oldFile.exists()) {
 				oldFile.delete();
 			}
@@ -260,7 +255,7 @@ public class ProductController {
 
 		if (sizeFile != null && !sizeFile.isEmpty()) {
 			String uploadSizeDir = imgPath + "ProductSizeImg";
-			File oldFile = new File(uploadSizeDir + oldData.getProductSizeImg());
+			File oldFile = new File(uploadSizeDir + File.separator + oldData.getProductSizeImg());
 			if (oldFile.exists()) {
 				oldFile.delete();
 			}
@@ -272,26 +267,31 @@ public class ProductController {
 		// 서비스 INSERT 작업
 		vo.setProductMainImg(mainFileName);
 		vo.setProductSizeImg(sizeFileName);
-		service.insert(vo);
+		service.update(vo);
 
+		//이미지 제거, Order 재정렬, 등록
 		if (dto.getDeleteImgIdx() != null) {
 			for (Integer imgIdx : dto.getDeleteImgIdx()) {
 				ProductImgVO oldImg = service.adminOneImg(imgIdx);
 				String imgDir = imgPath + "ProductImg";
-				File file = new File(imgDir + oldImg.getProductImg());
+				File file = new File(imgDir + File.separator + oldImg.getProductImg());
 				if (file.exists()) {
 					file.delete();
 				}
 				service.deleteImg(imgIdx);
 			}
 		}
+
 		int imgCount = service.imgCount(productIdx);
 		for (int i = 0; i < imgCount; i++) {
 			ProductImgVO orderUpdateIVO = new ProductImgVO();
-			orderUpdateIVO.setProductImgOrder(i);
+			orderUpdateIVO.setProductImgOrder(i+1);
+			orderUpdateIVO.setProductImgIdx(dto.getExistingImgIdx().get(i));
+			
 			service.updateImgOrder(orderUpdateIVO);
 		}
-
+		
+		
 		if (dto.getProductImgList() != null) {
 			for (int i = 0; i < dto.getProductImgList().size(); i++) {
 				ProductImgVO ivo = new ProductImgVO();
@@ -307,7 +307,7 @@ public class ProductController {
 				}
 				ivo.setProductIdx(productIdx);
 				ivo.setProductImg(imgFileName);
-				ivo.setProductImgOrder(i + imgCount);
+				ivo.setProductImgOrder(i + 1 + imgCount);
 				service.insertImg(ivo);
 			}
 		}
@@ -316,7 +316,7 @@ public class ProductController {
 			for (Integer descImgIdx : dto.getDeleteDescImgIdx()) {
 				ProductDescImgVO oldDescImg = service.adminOneDescImg(descImgIdx);
 				String descImgDir = imgPath + "ProductDescImg";
-				File file = new File(descImgDir + oldDescImg.getProductDescImg());
+				File file = new File(descImgDir + File.separator + oldDescImg.getProductDescImg());
 				if (file.exists()) {
 					file.delete();
 				}
@@ -326,7 +326,9 @@ public class ProductController {
 		int descImgCount = service.descImgCount(productIdx);
 		for (int i = 0; i < descImgCount; i++) {
 			ProductDescImgVO orderUpdateDIVO = new ProductDescImgVO();
-			orderUpdateDIVO.setProductDescImgOrder(i);
+			orderUpdateDIVO.setProductDescImgOrder(i+1);
+			orderUpdateDIVO.setProductDescImgIdx(dto.getExistingDescImgIdx().get(i));
+			
 			service.updateDescImgOrder(orderUpdateDIVO);
 		}
 
@@ -343,12 +345,33 @@ public class ProductController {
 
 					descImgFile.transferTo(new File(uploadPath));
 				}
-				divo.setProductDescImgIdx(productIdx);
+				divo.setProductIdx(productIdx);
 				divo.setProductDescImg(descImgFileName);
-				divo.setProductDescImgOrder(i + descImgCount);
+				divo.setProductDescImgOrder(i + 1 + descImgCount);
 				service.insertDescImg(divo);
 			}
 		}
+		
+		//옵션처리
+		if (dto.getDeleteOptionIdx() != null) {
+			for (Integer optionIdx : dto.getDeleteOptionIdx()) {
+				service.deleteOption(optionIdx);
+			}
+		}
+		
+		if(dto.getProductOptionList() != null) {
+			for(ProductOptionVO ovo: dto.getProductOptionList()) {
+				if(ovo.getOptionIdx() == 0) {
+					//OptionIdx가 없으면 신규(insert)
+					ovo.setProductIdx(productIdx);
+					service.insertOption(ovo);
+				}else {
+					//OptionIdx가 있으면 기존꺼(update)
+					service.updateOption(ovo);
+				}
+			}
+		}
+		
 
 		return "redirect:/product/adminProductList.do";
 	}

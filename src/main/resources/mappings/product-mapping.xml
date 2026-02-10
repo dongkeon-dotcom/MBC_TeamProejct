@@ -188,6 +188,31 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
    	<select id="DESC_IMG_COUNT" parameterType="int" resultType="int">
    		select count(*) as descImgCount from ProductDescImg WHERE product_idx = ${value}
    	</select>
+   	<update id="UPDATE_PRODUCT" parameterType="ProductVO">
+   		UPDATE Products
+		SET
+			category=#{category},
+			subCategory=#{subCategory},
+			product_Name=#{productName},
+			price=#{price},
+			product_Desc=#{productDesc},
+			product_main_Img=#{productMainImg},
+			product_size_Img=#{productSizeImg},
+			discount_rate=#{discountRate},
+			is_Recommended=#{isRecommended}
+		WHERE product_Idx = #{productIdx}
+   	</update>
+   	<delete id="DELETE_PRODUCT_OPTION" parameterType = "int">
+   		DELETE FROM ProductOption WHERE option_Idx = ${value}
+   	</delete>
+   	<update id="UPDATE_PRODUCT_OPTION" parameterType="ProductOptionVO">
+   		UPDATE ProductOption
+   		SET
+   			color = #{color},
+   			size = #{size},
+   			stock = #{stock}
+   		WHERE option_Idx = #{optionIdx}   	
+   	</update>
 
 
     <!-- 전체 상품 조회 -->

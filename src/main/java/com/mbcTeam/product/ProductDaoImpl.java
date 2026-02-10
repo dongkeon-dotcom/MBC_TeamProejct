@@ -134,6 +134,12 @@ public class ProductDaoImpl implements ProductDao {
 		mybatis.delete("PRODUCT.DELETE_DESC_IMG",productDescImgIdx);
 		
 	}
+	
+	@Override
+	public void deleteOption(int optionIdx) {
+		mybatis.delete("PRODUCT.DELETE_PRODUCT_OPTION", optionIdx);
+		
+	}
 
 	@Override
 	public void updateImgOrder(ProductImgVO vo) {
@@ -146,6 +152,12 @@ public class ProductDaoImpl implements ProductDao {
 		mybatis.update("PRODUCT.UPDATE_DESC_IMG_ORDER",vo);
 		
 	}
+	
+	@Override
+	public void updateOption(ProductOptionVO vo) {
+		mybatis.update("PRODUCT.UPDATE_PRODUCT_OPTION", vo);
+		
+	}
 
 	@Override
 	public int imgCount(int productIdx) {
@@ -156,4 +168,8 @@ public class ProductDaoImpl implements ProductDao {
 	public int descImgCount(int productIdx) {
 		return mybatis.selectOne("PRODUCT.DESC_IMG_COUNT", productIdx);
 	}
+
+
+
+
 }

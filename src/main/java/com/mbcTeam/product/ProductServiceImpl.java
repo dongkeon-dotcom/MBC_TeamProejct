@@ -142,6 +142,11 @@ public class ProductServiceImpl implements ProductService {
 		dao.deleteDescImg(productDescImgIdx);
 		
 	}
+	
+	@Override
+	public void deleteOption(int optionIdx) {
+		dao.deleteOption(optionIdx);
+	}
 
 	@Override
 	public void updateImgOrder(ProductImgVO vo) {
@@ -154,6 +159,12 @@ public class ProductServiceImpl implements ProductService {
 		dao.updateDescImgOrder(vo);
 		
 	}
+	
+	@Override
+	public void updateOption(ProductOptionVO vo) {
+		dao.updateOption(vo);
+		
+	}
 
 	@Override
 	public int imgCount(int productIdx) {
@@ -164,4 +175,8 @@ public class ProductServiceImpl implements ProductService {
 	public int descImgCount(int productIdx) {
 		return dao.descImgCount(productIdx);
 	}
+
+
+
+
 }

@@ -25,12 +25,14 @@ public interface ProductService {
     ProductDescImgVO adminOneDescImg(int productDescImgIdx);
     void updateImgOrder(ProductImgVO vo);
     void updateDescImgOrder(ProductDescImgVO vo);
+    void updateOption(ProductOptionVO vo);
     
     int imgCount(int productIdx);
     int descImgCount(int productIdx);
     
     void deleteImg(int productImgIdx);
-    void deleteDescImg(int productDescImgIdx);
+    void deleteDescImg(int productDescImgIdx);    
+    void deleteOption(int optionIdx);
     
     void update(ProductVO vo); // 상품 수정
     void delete(ProductVO vo); // 상품 삭제
