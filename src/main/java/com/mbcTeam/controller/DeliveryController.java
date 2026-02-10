@@ -9,6 +9,8 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import com.mbcTeam.product.ProductOptionVO;
 import com.mbcTeam.product.ProductService;
 import com.mbcTeam.product.ProductVO;
+import com.mbcTeam.security.MemberMapper;
 import com.mbcTeam.shop.DeliveryService;
 import com.mbcTeam.shop.DeliveryVO;
 import com.mbcTeam.shop.OrderedService;
@@ -35,25 +38,36 @@ public class DeliveryController {
 	@Autowired
     private DeliveryService dservice;
     
-
+	@Autowired
+	MemberMapper memberMapper;
 	
-	// 1. 주소록 목록 보기 +	//링크를 통해 addressList로 향하기 위한컨트롤러
+	@Autowired
+	private UserService service;
+	
+	private UserVO getLoginUser() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth == null || !auth.isAuthenticated() || "anonymousUser".equals(auth.getPrincipal())) {
+            return null;
+        }
+        // 시큐리티의 username(여기서는 id/email)으로 DB 조회
+        return service.getByEmail(auth.getName());
+    }
+	
+	
+	// 1. 주소록 목록 보기
     @GetMapping("/addressList.do")
-    public String addressList(HttpSession session, Model model) {
-        // 세션에서 로그인한 유저 정보 가져오기 (세션 key는 프로젝트에 맞게 수정하세요)
-        UserVO loginUser = (UserVO) session.getAttribute("loginMember");
+    public String addressList(Model model) {
+        UserVO loginUser = getLoginUser();
         
         if (loginUser == null) {
-            return "redirect:/user/login.do"; // 로그인 안 되어 있으면 로그인으로
+            return "redirect:/user/login.do";
         }
 
-        // 로그인한 유저의 고유 번호(idx)로 주소 목록 조회
         List<DeliveryVO> list = dservice.getAddressList(loginUser.getUserIdx());
         model.addAttribute("addressList", list);
         
-        return "delivery/addressList"; // JSP 파일 경로
+        return "delivery/addressList";
     }
-
     // 2. 단일 주소 삭제 (버튼 클릭)
     @GetMapping("/deleteAddress.do")
     public String deleteAddress(@RequestParam("deliveryIdx") long deliveryIdx) {
@@ -82,46 +96,38 @@ public class DeliveryController {
         return "delivery/addressInsert"; // addressInsert.jsp 호출
     }
 	
-	
-	// @ResponseBody 지워진 상태여야 함!
-	@PostMapping("/addressInsertProcess.do")
-	public String addressInsertProcess(DeliveryVO dvo, HttpSession session, HttpServletResponse response) throws Exception {
-		System.out.println("전달된 VO 객체: " + dvo.toString());
-		System.out.println("기본배송지 체크여부: " + dvo.isDefaultAddress());
-	    // 이 로그가 찍히는지 확인하는 게 최우선!
-	    System.out.println(">>> [진입성공] 전달받은 이름: " + dvo.getDeliveryName());
-	    
-	    UserVO loginUser = (UserVO) session.getAttribute("loginMember");
-	    
-	    if (loginUser == null) {
-	        // 세션 없을 때 처리
-	        response.setContentType("text/html; charset=UTF-8");
-	        PrintWriter out = response.getWriter();
-	        out.println("<script>alert('세션이 만료되었습니다. 다시 로그인해주세요.'); window.close();</script>");
-	        out.flush();
-	        return null;
-	    }
+ // 5. 주소 등록/수정 프로세스 (팝업창에서 호출)
+    @PostMapping("/addressInsertProcess.do")
+    public String addressInsertProcess(DeliveryVO dvo, HttpServletResponse response) throws Exception {
+        UserVO loginUser = getLoginUser();
+        
+        response.setContentType("text/html; charset=UTF-8");
+        PrintWriter out = response.getWriter();
 
-	    dvo.setUserIdx(loginUser.getUserIdx());
-	 // 핵심: PK(deliveryIdx)가 있으면 수정, 없으면 등록
-	    if (dvo.getDeliveryIdx() > 0) {
-	        dservice.addrUpdate(dvo); // 아까 만든 update 메서드 호출
-	    } else {
-	        dservice.insertAddress(dvo); 
-	    }
+        if (loginUser == null) {
+            out.println("<script>alert('로그인이 필요합니다.'); window.close();</script>");
+            out.flush();
+            return null;
+        }
 
-	    response.setContentType("text/html; charset=UTF-8");
-	    PrintWriter out = response.getWriter();
-	    out.println("<script>");
-	    out.println("alert('" + (dvo.getDeliveryIdx() > 0 ? "수정" : "등록") + "되었습니다.');");
-	    out.println("if(window.opener) window.opener.location.reload();");
-	    out.println("window.close();");
-	    out.println("</script>");
-	    out.flush();
-	    
-	    return null;
-	}
-	
+        dvo.setUserIdx(loginUser.getUserIdx());
+
+        // PK(deliveryIdx)가 있으면 수정, 없으면 등록
+        if (dvo.getDeliveryIdx() > 0) {
+            dservice.addrUpdate(dvo);
+        } else {
+            dservice.insertAddress(dvo); 
+        }
+
+        out.println("<script>");
+        out.println("alert('" + (dvo.getDeliveryIdx() > 0 ? "수정" : "등록") + "되었습니다.');");
+        out.println("if(window.opener) window.opener.location.reload();");
+        out.println("window.close();");
+        out.println("</script>");
+        out.flush();
+        
+        return null;
+    }
 //// deliveyLIst에서 주소 선택시 수정하기로 넘어가는 컨트롤러 	
 	// 2-1. 수정 페이지 이동 (기존 데이터 채워진 화면)
     @GetMapping("/addrEdit.do")
@@ -134,23 +140,19 @@ public class DeliveryController {
         
         return "delivery/addrEdit"; // addressEdit.jsp 호출
     }
- // 2-2. 수정 실행 (DB 업데이트)
+ // 7. 수정 실행 (목록에서 바로 수정할 경우 등)
     @PostMapping("/addressUpdateProcess.do")
-    public String addressUpdateProcess(DeliveryVO vo,@RequestParam(value="defaultCheck", defaultValue="false") boolean defaultCheck // 여기서 낚아챔
-    		) {
-    	vo.setDefaultAddress(defaultCheck);
-    	System.out.println("========== 수정 시도 데이터 확인 ==========");
-        System.out.println("사용자 번호(userIdx): " + vo.getUserIdx());
-        System.out.println("배송지 번호(deliveryIdx): " + vo.getDeliveryIdx());
-        System.out.println("기본배송지 여부(isDefaultAddress): " + vo.isDefaultAddress());
-        System.out.println("기본배송지 여부(isDefaultAddress): " + defaultCheck);
-        System.out.println("=========================================");
-    	// DAO의 addrUpdate를 호출하게 됩니다.
-    	dservice.addrUpdate(vo); 
+    public String addressUpdateProcess(DeliveryVO vo, @RequestParam(value="defaultCheck", defaultValue="false") boolean defaultCheck) {
+        UserVO loginUser = getLoginUser();
+        if (loginUser == null) return "redirect:/user/login.do";
+
+        vo.setUserIdx(loginUser.getUserIdx()); // 사용자 번호 유지
+        vo.setDefaultAddress(defaultCheck);
         
-        // 수정 완료 후 목록으로 이동하면서 팝업을 닫으려면 
-        // 별도의 'close.jsp'를 보내거나 redirect를 활용합니다.
+        dservice.addrUpdate(vo); 
+        
         return "redirect:/delivery/addressList.do";
     }
 }
+
 

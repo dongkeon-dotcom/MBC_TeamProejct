@@ -2,25 +2,22 @@
 package com.mbcTeam.controller;
 
 import java.io.File;
-import java.io.PrintWriter;
-import java.util.ArrayList;
-import java.util.Arrays;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import java.util.stream.Collectors; 
+
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
+
 import org.springframework.security.core.context.SecurityContextHolder;
+
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -32,6 +29,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.mbcTeam.security.MemberMapper;
 import com.mbcTeam.shop.DeliveryService;
 import com.mbcTeam.shop.DeliveryVO;
 import com.mbcTeam.shop.OrderItemedVO;
@@ -49,6 +47,11 @@ import com.mbcTeam.user.UserVO;
 @Controller
 public class UserController {
 
+	
+
+	@Autowired
+MemberMapper memberMapper;
+	
 	@Autowired
 	private UserService service;
 	
@@ -63,6 +66,18 @@ public class UserController {
 	
 	@Autowired
 	PasswordEncoder  passwordEncoder;
+	
+	
+	private UserVO getLoginUser() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth == null || !auth.isAuthenticated() || "anonymousUser".equals(auth.getPrincipal())) {
+            return null;
+        }
+        // 시큐리티의 username(여기서는 id/email)으로 DB 조회
+        return service.getByEmail(auth.getName());
+    }
+	
+	
 	@GetMapping(value = "/list.do")
 	public String list(UserVO vo, Model model) {
 		System.out.println("/LIST.DO");
@@ -87,122 +102,83 @@ public class UserController {
 	}
 
 	@GetMapping(value = "/mypage.do")
-	public String mypage(HttpSession session, Model model) {
-	    // 1. 세션에서 로그인 정보("loginMember")를 꺼냅니다.
-	    UserVO login = (UserVO) session.getAttribute("loginMember");
+	public String mypage(Model model) { // 매개변수에서 @AuthenticationPrincipal 부분 삭제
+		// 1. 직접 시큐리티 컨텍스트에서 인증 정보 추출
+	    Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 
-	    // 2. 로그인 정보가 없으면 로그인 페이지로 튕겨냅니다. (보안)
-	    if (login == null) {
+	    // 2. 로그인 여부 체크
+	    if (auth == null || !auth.isAuthenticated() || "anonymousUser".equals(auth.getPrincipal())) {
 	        return "redirect:/user/login.do";
 	    }
 
-	    // 3. 화면(JSP)에서 사용할 수 있도록 모델에 담아줍니다.
-	    // 로그상에서 'userVO'라는 이름을 찾고 있으므로 이름을 맞춰줍니다.
-	    model.addAttribute("userVO", login);
+	    // 3. 로그인된 아이디(이메일) 가져오기
+	    String userId = auth.getName(); 
+	    
+	    // 4. DB에서 실제 사용자 정보(이름 등) 가져오기
+	    // MemberMapperDao를 활용합니다. (컨트롤러 상단에 @Autowired 되어있어야 함)
+	    UserVO userVO = memberMapper.getByEmail(userId);
+	    
+	    // 5. JSP로 전달
+	    model.addAttribute("userVO", userVO);
+	    model.addAttribute("userId", userId);
 
-	    System.out.println("마이페이지 접속: " + login.getId());
 	    return "user/mypage";
 	}
 	
+	// 1. 개인정보 수정 페이지
+    @GetMapping("/memberEdit.do")
+    public String edit(Model model) {
+        UserVO loginMember = getLoginUser();
+        if (loginMember == null) return "redirect:/user/login.do";
+
+        DeliveryVO delivery = service.getDelivery(loginMember.getUserIdx());
+        if (delivery == null) delivery = new DeliveryVO();
+
+        model.addAttribute("d", delivery);
+        model.addAttribute("m", loginMember);
+        return "user/memberEdit";
+    }
 	
-	
-	@GetMapping("/memberEdit.do")
-	public String edit(HttpSession session, Model model) {
-	    System.out.println("개인정보수정페이지 /memberEdit.do");
+ // 2. 회원 정보 수정 처리
+    @PostMapping("/memberUpdate.do")
+    public String memberUpdate(UserVO vo) {
+        UserVO loginMember = getLoginUser();
+        if (loginMember == null) return "redirect:/user/login.do";
 
-	    // 1. 세션에서 로그인된 회원 정보 가져오기
-	    UserVO loginMember = (UserVO) session.getAttribute("loginMember");
+        // 세션 대신 가져온 loginMember에서 번호 추출
+        vo.setUserIdx(loginMember.getUserIdx());
 
-	    // 2. 로그인이 안 된 경우 처리 (보안)
-	    if (loginMember == null) {
-	        return "redirect:/user/login.do"; 
-	    }
-	    //유저의 딜리버리 정보를 담아서 delivery에 담았음 
-	    DeliveryVO delivery = service.getDelivery(loginMember.getUserIdx());
-	 
-	  if (delivery == null) {
-	        delivery = new DeliveryVO();
-	    }
-	  model.addAttribute("d", delivery);
-	    // 3. JSP에서 'm'이라는 이름으로 쓰기로 했으므로 이름을 맞춰서 보냄
-	    model.addAttribute("m", loginMember);
+        // 비밀번호 처리
+        if (vo.getPassword() != null && !vo.getPassword().trim().isEmpty()) {
+            vo.setPassword(passwordEncoder.encode(vo.getPassword()));
+        } else {
+            vo.setPassword(loginMember.getPassword());
+        }
 
-	    return "user/memberEdit";
-	}
-	
-	
-	//loginMember
-	@PostMapping("/memberUpdate.do")
-	public String memberUpdate(UserVO vo, HttpSession session) {
-		UserVO loginMember = (UserVO) session.getAttribute("loginMember");
-	    if (loginMember == null) return "redirect:/user/login.do";
+        service.updateUser(vo);
+        // 시큐리티를 사용하므로 세션 교체 코드는 불필요 (다음에 조회할 때 DB에서 다시 읽어옴)
+        return "redirect:/user/mypage.do";
+    }
+ // 3. 주문 상세 내역
+    @GetMapping(value = "/orderDetailList.do")
+    public String orderDetailList(@RequestParam("orderIdx") long orderIdx, Model model) {
+        UserVO login = getLoginUser();
+        if (login == null) return "redirect:/user/login.do";
 
-	    // 2. [가장 중요] JSP에서 혹시 누락됐더라도 세션에서 가져온 번호를 강제로 넣어줌
-	    // 이렇게 하면 WHERE user_Idx = #{userIdx} 가 정상 작동합니다.
-	    vo.setUserIdx(loginMember.getUserIdx()); 
+        OrderedVO order = oservice.selectOrderedByOrderIdx(orderIdx);
+        List<OrderItemedVO> detailList = oservice.selectOrderedItems(orderIdx);
+        List<ReviewVO> myReviews = rservice.getReviewListByUserIdx(login.getUserIdx());
 
-	    System.out.println("수정 대상 번호: " + vo.getUserIdx());
-	    System.out.println("바꿀 이름: " + vo.getUserName());
+        // 본인 확인 보안 체크
+        if (order != null && order.getUserIdx() != login.getUserIdx()) {
+            return "redirect:/user/orderList.do";
+        }
 
-	    // 3. 이제 수정된 값이 담긴 vo를 던집니다.
-	    service.updateUser(vo);
-	
-	    // 사용자가 비밀번호를 입력했다면 암호화 진행
-	    if (vo.getPassword() != null && !vo.getPassword().trim().isEmpty()) {
-	        String encodedPassword = passwordEncoder.encode(vo.getPassword());
-	        vo.setPassword(encodedPassword);
-	        System.out.println("비밀번호 암호화 완료: " + encodedPassword);
-	    } else {
-	        // 만약 사용자가 비밀번호를 입력하지 않았다면, 
-	        // 기존 비밀번호가 바뀌지 않도록 세션에 있는 기존 암호화된 비번을 그대로 유지
-	        vo.setPassword(loginMember.getPassword());
-	    }
-	    
-	    
-	    // 4. DB가 바뀌었으니 세션도 새 정보로 교체
-	    UserVO updated = service.getUserById(loginMember.getId());
-	    session.setAttribute("loginMember", updated);
-	    System.out.println("바꿀 비: " + vo.getPassword());
-	    return "redirect:/user/mypage.do";
-	}
-	// orderlist 에서 orderdetailList로 이동하기
-	@GetMapping(value = "/orderDetailList.do")
-	public String orderDetailList(
-	        @RequestParam("orderIdx") long orderIdx, 
-	        HttpSession session, 
-	        Model model) {
-	    
-	    // 1. 로그인 체크
-	    UserVO login = (UserVO) session.getAttribute("loginMember");
-	    if (login == null) return "redirect:/user/login.do";
-
-	    // 2. 서비스 호출하여 데이터 가져오기
-	    // (1) 주문 기본 정보
-	    OrderedVO order = oservice.selectOrderedByOrderIdx(orderIdx);
-	    
-	    // (2) 해당 주문의 상세 상품 리스트
-	    List<OrderItemedVO> detailList = oservice.selectOrderedItems(orderIdx);
-
-	    // [추가 로직] (3) 로그인한 사용자가 쓴 모든 후기 리스트 가져오기
-	    // 이 리스트를 JSP에 보내서 현재 상품 리스트와 비교할 예정입니다.
-	    List<ReviewVO> myReviews = rservice.getReviewListByUserIdx(login.getUserIdx());
-
-	    // 3. 보안 체크 (주문한 본인인지 확인)
-	    if (order != null && order.getUserIdx() != login.getUserIdx()) {
-	        return "redirect:/user/orderList.do"; 
-	    }
-
-	    // 4. JSP로 데이터 전달
-	    model.addAttribute("order", order);      
-	    model.addAttribute("detailList", detailList); 
-	    model.addAttribute("myReviews", myReviews); // <-- 추가된 부분
-	    
-	    // 콘솔 로그 확인
-	    System.out.println("조회된 상품 수: " + (detailList != null ? detailList.size() : 0));
-	    System.out.println("내가 쓴 총 후기 수: " + (myReviews != null ? myReviews.size() : 0));
-	    
-	    return "user/orderDetailList"; 
-	}
+        model.addAttribute("order", order);
+        model.addAttribute("detailList", detailList);
+        model.addAttribute("myReviews", myReviews);
+        return "user/orderDetailList";
+    }
 	
 	// 로그인 페이지 이동
     @GetMapping("/login.do")
@@ -285,47 +261,34 @@ public class UserController {
     }
     
    
-    
-     //// 마이페이지에서 orderList로이동 및 페이징 처리 이따가 디비 받아서 서비스 주입하고 받아오기
+ // 4. 주문 내역 (페이징)
     @GetMapping("/orderList.do")
     public String orderList(
             @RequestParam(value="page", defaultValue="1") int page,
             @RequestParam(value="startDate", required=false) String startDate,
             @RequestParam(value="endDate", required=false) String endDate,
-            HttpSession session,
             Model model) {
 
-        // 1. 로그인 체크
-        UserVO login = (UserVO) session.getAttribute("loginMember");
+        UserVO login = getLoginUser();
         if (login == null) return "redirect:/user/login.do";
 
-        // 2. 페이징 설정
         int pageSize = 10;
         int offset = (page - 1) * pageSize;
-        long userIdx = login.getUserIdx(); // long 타입 그대로 유지
-
-        // 3. 서비스 호출
-        List<OrderedVO> orderli = oservice.selectOrderedList(userIdx, startDate, endDate, offset, pageSize);
-        int totalCount = oservice.countOrderedList(userIdx, startDate, endDate);
-
-        // 4. 페이징 로직 처리
-        int totalPage = (int) Math.ceil((double) totalCount / pageSize);
-        int blockSize = 5;
-        int startPage = ((page - 1) / blockSize) * blockSize + 1;
-        int endPage = Math.min(startPage + blockSize - 1, totalPage);
         
-        // 만약 데이터가 하나도 없을 경우 endPage가 0이 되는 것 방지
+        List<OrderedVO> orderli = oservice.selectOrderedList(login.getUserIdx(), startDate, endDate, offset, pageSize);
+        int totalCount = oservice.countOrderedList(login.getUserIdx(), startDate, endDate);
+
+        // 페이징 계산 로직 (기존과 동일)
+        int totalPage = (int) Math.ceil((double) totalCount / pageSize);
+        int startPage = ((page - 1) / 5) * 5 + 1;
+        int endPage = Math.min(startPage + 4, totalPage);
         if (endPage == 0) endPage = 1;
 
-        // 5. JSP 데이터 전달
         model.addAttribute("orderli", orderli);
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPage", totalPage);
         model.addAttribute("startPage", startPage);
         model.addAttribute("endPage", endPage);
-        model.addAttribute("startDate", startDate);
-        model.addAttribute("endDate", endDate);
-
         return "user/orderList";
     }
   //후기 페이지로 이동을 위한컨트롤러 
@@ -337,64 +300,44 @@ public class UserController {
 		return "user/review";
 	}
     
-   //후기입력을 위한 컨트롤러 
-	@PostMapping("/reviewInsert.do")
-	public String reviewInsert(ReviewVO vo, 
-	        @RequestParam(value="reviewFiles", required=false) MultipartFile[] files, 
-	        @RequestParam("orderIdx") int orderIdx, 
-	        HttpSession session, 
-	        HttpServletRequest request) throws Exception {
+	// 5. 리뷰 등록 처리
+    @PostMapping("/reviewInsert.do")
+    public String reviewInsert(ReviewVO vo, 
+            @RequestParam(value="reviewFiles", required=false) MultipartFile[] files, 
+            @RequestParam("orderIdx") int orderIdx, 
+            HttpServletRequest request) throws Exception {
 
-	    // 1. 세션 체크
-	    UserVO loginMember = (UserVO) session.getAttribute("loginMember");
-	    if (loginMember == null) {
-	        return "redirect:/user/login.do";
-	    }
+        UserVO loginMember = getLoginUser();
+        if (loginMember == null) return "redirect:/user/login.do";
 
-	    // 2. VO 데이터 보완 (작성자 정보)
-	    vo.setUserIdx(loginMember.getUserIdx());
-	    vo.setUserName(loginMember.getUserName());
+        vo.setUserIdx(loginMember.getUserIdx());
+        vo.setUserName(loginMember.getUserName());
 
-	    // 3. 리뷰 본문 저장 
-	    // Mapper에서 useGeneratedKeys="true"에 의해 vo.reviewIdx에 자동 생성된 PK가 채워짐
-	    int result = rservice.insertReview(vo);
+        int result = rservice.insertReview(vo);
 
-	    // 4. 파일 처리 (본문 저장 성공 시에만 실행)
-	    if(result > 0 && files != null) {
-	        // 실제 저장 경로 설정 (resources/upload/reviews)
-	        String uploadPath = request.getSession().getServletContext().getRealPath("/resources/images/");
-	        System.out.println("데이터 확인: 1" );
-	        File dir = new File(uploadPath);
-	        if (!dir.exists()) {
-	            dir.mkdirs(); 
-	        }
+        if(result > 0 && files != null) {
+            String uploadPath = request.getSession().getServletContext().getRealPath("/resources/images/");
+            File dir = new File(uploadPath);
+            if (!dir.exists()) dir.mkdirs();
 
-	        int saveCount = 0;
-	        for (MultipartFile file : files) {
-	            // 비어있지 않은 파일만 처리하며 최대 3장 제한
-	            if (!file.isEmpty() && saveCount < 3) {
-	                // 고유 파일명 생성
-	                String originalName = file.getOriginalFilename();
-	                String ext = originalName.substring(originalName.lastIndexOf("."));
-	                String saveName = UUID.randomUUID().toString() + ext;
-	                
-	                // 실제 물리적 저장
-	                file.transferTo(new File(uploadPath + File.separator + saveName));
-	                
-	                // 5. 리뷰 이미지 DB 저장 (ReviewImageVO)
-	                ReviewImageVO imgVO = new ReviewImageVO();
-	                imgVO.setReviewIdx(vo.getReviewIdx()); // 방금 생성된 review_Idx 사용
-	                imgVO.setReviewImg(saveName); 
-	                
-	                rservice.insertReviewImg(imgVO);
-	                saveCount++;
-	            } System.out.println("데이터 확인: 2" );
-	        }
-	    }
-	    System.out.println("데이터 확인: 3" );
-	    // 6. 작성 완료 후 원래 보고 있던 주문 상세 페이지로 리다이렉트
-	    return "redirect:/user/orderDetailList.do?orderIdx=" + orderIdx; 
-	}
+            int saveCount = 0;
+            for (MultipartFile file : files) {
+                if (!file.isEmpty() && saveCount < 3) {
+                    String originalName = file.getOriginalFilename();
+                    String ext = originalName.substring(originalName.lastIndexOf("."));
+                    String saveName = UUID.randomUUID().toString() + ext;
+                    file.transferTo(new File(uploadPath + File.separator + saveName));
+
+                    ReviewImageVO imgVO = new ReviewImageVO();
+                    imgVO.setReviewIdx(vo.getReviewIdx());
+                    imgVO.setReviewImg(saveName); 
+                    rservice.insertReviewImg(imgVO);
+                    saveCount++;
+                }
+            }
+        }
+        return "redirect:/user/orderDetailList.do?orderIdx=" + orderIdx;
+    }
 	
 	@GetMapping(value = "/reviewEdit.do")
 	public String reviewEdit() {

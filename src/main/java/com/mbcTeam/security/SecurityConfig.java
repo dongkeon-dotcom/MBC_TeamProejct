@@ -69,7 +69,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
         
         http.authorizeRequests()
             // 1. 누구나 접근 가능한 경로 (로그인, 회원가입, 정적 리소스 등)
-            .antMatchers("/user/login.do", "/user/memberJoin.do", "/user/memberOK.do", "/main.do", "/index.do", "/resources/**").permitAll()
+            .antMatchers("/**").permitAll()
             
             // 2. /user/** 전체를 permitAll 하셨으므로, 사실 위 설정들이 여기에 포함됩니다.
             // 만약 마이페이지처럼 '로그인한 사람만' 가야 하는 곳이 있다면 나중에 .authenticated()로 세밀하게 조정하세요.
