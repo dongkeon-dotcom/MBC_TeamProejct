@@ -44,9 +44,9 @@ public class UserServiceImpl implements UserService  {
 	}
 
 	@Override
-	public UserVO getByEmail(String userID) {
+	public UserVO getByEmail(String id) {
 		// TODO Auto-generated method stub
-		return dao.getByEmail(userID);
+		return dao.getByEmail(id);
 	}
 
 	@Override

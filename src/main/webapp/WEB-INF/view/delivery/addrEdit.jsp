@@ -112,6 +112,15 @@ function execDaumPostcode() {
         }
     }).open();
 }
+
+
+function window.close(){
+	
+	alert("취소하시겠습니까?  ")
+	location.href = "${path}/delivery/addressList.do";
+	
+}
+
 </script>
 </html>
 

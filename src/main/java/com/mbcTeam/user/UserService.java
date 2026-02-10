@@ -18,7 +18,7 @@ public interface UserService {
   // 이메일 중복 체크
   boolean existsByEmail(String userID);
   
-  UserVO getByEmail(String userID);
+  UserVO getByEmail(String Id);
 
   List<ProductVO> selectOrderList(ProductVO vo); 
   

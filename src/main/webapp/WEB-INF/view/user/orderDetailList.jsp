@@ -25,6 +25,8 @@
         <tr><td>수령인 :${order.recevier}</td> </tr>
         <tr><td>연락처 :${order.deliveryPhone}</td> </tr>
         <tr><td>배송지 주소:${order.address} ${order.extraAddress}</td> </tr>
+        
+        <tr><td>주문상태 :${order.status} </td> </tr>
          </table>
    
    
@@ -47,7 +49,7 @@
     <tr>
         <%-- 1. 상품 이미지 --%>
         <td class="text-center">
-            <img src="${path}/resources/images/${item.productMainImg}" class="product-img" style="width:80px; height:80px; object-fit:cover;">
+            <img src="${path}/resources/images/ProductMainImg/${item.productMainImg}" class="product-img" style="width:80px; height:80px; object-fit:cover;">
         </td>
         
         <%-- 2. 상품명 및 옵션 정보 --%>

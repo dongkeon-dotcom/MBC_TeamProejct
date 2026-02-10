@@ -20,7 +20,7 @@ public interface UserDao {
   boolean existsByEmail(String userID);
 	
 
-  UserVO getByEmail(String userID);
+  UserVO getByEmail(String id);
   List<ProductVO> selectOrderList(ProductVO vo); 
   
 //후기 저장을 위한 컨트롤러에 사용 

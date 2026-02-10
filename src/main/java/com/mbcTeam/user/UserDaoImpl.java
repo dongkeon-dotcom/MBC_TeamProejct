@@ -49,10 +49,10 @@ public class UserDaoImpl implements UserDao {
 	}
 
 	@Override
-	public UserVO getByEmail(String userID) {
+	public UserVO getByEmail(String id) {
 		// TODO Auto-generated method stub
 
-		 return mybatis.selectOne("USER.getByEmail", userID);
+		 return mybatis.selectOne("USER.getByEmail", id);
 	}
 
 	@Override

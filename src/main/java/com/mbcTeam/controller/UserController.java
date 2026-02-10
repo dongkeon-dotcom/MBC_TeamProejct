@@ -3,6 +3,7 @@ package com.mbcTeam.controller;
 
 import java.io.File;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -15,6 +16,12 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -52,7 +59,10 @@ public class UserController {
 	private ReviewService rservice;
 	@Autowired
     private DeliveryService dservice;
-
+	
+	
+	@Autowired
+	PasswordEncoder  passwordEncoder;
 	@GetMapping(value = "/list.do")
 	public String list(UserVO vo, Model model) {
 		System.out.println("/LIST.DO");
@@ -93,6 +103,9 @@ public class UserController {
 	    System.out.println("마이페이지 접속: " + login.getId());
 	    return "user/mypage";
 	}
+	
+	
+	
 	@GetMapping("/memberEdit.do")
 	public String edit(HttpSession session, Model model) {
 	    System.out.println("개인정보수정페이지 /memberEdit.do");
@@ -133,7 +146,19 @@ public class UserController {
 
 	    // 3. 이제 수정된 값이 담긴 vo를 던집니다.
 	    service.updateUser(vo);
-
+	
+	    // 사용자가 비밀번호를 입력했다면 암호화 진행
+	    if (vo.getPassword() != null && !vo.getPassword().trim().isEmpty()) {
+	        String encodedPassword = passwordEncoder.encode(vo.getPassword());
+	        vo.setPassword(encodedPassword);
+	        System.out.println("비밀번호 암호화 완료: " + encodedPassword);
+	    } else {
+	        // 만약 사용자가 비밀번호를 입력하지 않았다면, 
+	        // 기존 비밀번호가 바뀌지 않도록 세션에 있는 기존 암호화된 비번을 그대로 유지
+	        vo.setPassword(loginMember.getPassword());
+	    }
+	    
+	    
 	    // 4. DB가 바뀌었으니 세션도 새 정보로 교체
 	    UserVO updated = service.getUserById(loginMember.getId());
 	    session.setAttribute("loginMember", updated);
@@ -183,11 +208,16 @@ public class UserController {
     @GetMapping("/login.do")
     public String login() {
     	//메인등에서 로그인하기 클릭시로그인페이지로이동하기위한루트 
-    	System.out.println("/LOGINLOGIN.DO");
+    	System.out.println("/LOGINLOGIN.DO 통과함 ");
         return "user/login"; // views/member/login.jsp
     }
 
-    
+    @GetMapping("/loginOK.do")
+    public String loginOK() {
+    	//메인등에서 로그인하기 클릭시로그인페이지로이동하기위한루트 
+    	System.out.println("/loginOK.DO");
+        return "redirect:/"; // 메인으로 리다이렉트
+    }
     @GetMapping("/member.do")
     public String member() {
     	//로그인페이지에 회원가입으로 이동을 위한 컨트롤  
@@ -195,47 +225,14 @@ public class UserController {
         return "user/memberJoin"; // views/member/login.jsp
     }
     
-    //로그인
-    @PostMapping("/loginOK.do")
-    public String loginOK(UserVO vo, HttpServletRequest request, HttpSession session) {
+    
 
-        // 0) 입력 검증
-        if (vo.getId() == null || vo.getId().trim().isEmpty()) {
-            request.setAttribute("emailError", "이메일을 입력하세요.");
-            return "user/login";
-        }
-        if (vo.getPassword() == null || vo.getPassword().trim().isEmpty()) {
-            request.setAttribute("pwError", "비밀번호를 입력하세요.");
-            request.setAttribute("prevEmail", vo.getId());
-            return "user/login";
-        }
-
-        // 1) 이메일 존재 여부 확인 (탈퇴 제외하도록 mapper도 수정 권장)
-        if (!service.existsByEmail(vo.getId())) {
-            request.setAttribute("emailError", "가입되지 않은 이메일입니다.");
-            request.setAttribute("prevEmail", vo.getId());
-            return "user/login";
-        }
-
-        // 2) 로그인 시도
-        UserVO loginMember = service.Login(vo);
-        if (loginMember == null) {
-            request.setAttribute("pwError", "틀린 비밀번호입니다.");
-            request.setAttribute("prevEmail", vo.getId());
-            return "user/login";
-        }
-
-        // 3) 성공
-        session.setAttribute("loginMember", loginMember);
-        return "redirect:/";
-    }
-
-    @RequestMapping("/logout.do")
+   /* @RequestMapping("/logout.do")
     public String logout(HttpSession session) {
         session.invalidate(); // 세션 전체 무효화 (모든 데이터 삭제)
         return "redirect:/";  // 메인 페이지로 이동
     }
-	
+	*/
 	// 회원가입 처리
     @RequestMapping(value = "/memberOK.do", method = RequestMethod.POST)
     public String memberOK(HttpServletRequest request) {
@@ -259,7 +256,9 @@ public class UserController {
         // VO 세팅
         UserVO vo = new UserVO();
         vo.setId(id);
-        vo.setPassword(password);
+        String encodedPassword = passwordEncoder.encode(password); 
+        vo.setPassword(encodedPassword);
+        
         vo.setUserName(userName);
         vo.setUserPhone(userPhone);
         vo.setUserRole("USER");

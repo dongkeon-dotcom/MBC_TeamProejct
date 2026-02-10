@@ -3,6 +3,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>  
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <c:set var="path" scope="request" value="${pageContext.request.contextPath }"/>    
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -92,28 +93,34 @@
     </form>
     
     <div class="user-menu">
-        <c:choose>
-            <%-- 1. 로그아웃 상태일 때 --%>
-            <c:when test="${empty sessionScope.loginMember}">
-                <a href="${path}/user/login.do">로그인</a>
-                <a href="${path}/user/member.do">회원가입</a>
-                   <a href="${path}/user/mypage.do">마이페이지</a>
-        <a href="/cart">장바구니</a>
-            </c:when>
+     <%-- 1. 로그아웃 상태일 때 (익명 사용자) --%>
+        <sec:authorize access="isAnonymous()">
+            <a href="${path}/user/login.do">로그인</a>
+            <a href="${path}/user/member.do">회원가입</a>
+            <%-- 로그인 안했을 때 마이페이지/장바구니는 로그인 페이지로 유도하는 것이 보통입니다 --%>
+            <a href="${path}/user/login.do">마이페이지</a>
+            <a href="${path}/user/login.do">장바구니</a>
+        </sec:authorize>
+
+        <%-- 2. 로그인 상태일 때 --%>
+        <sec:authorize access="isAuthenticated()">
+            <span style="margin-right: 15px;">
+                <strong><sec:authentication property="principal.username"/></strong>님 
+                <small style="color: gray;">(권한: <sec:authentication property="principal.authorities"/>)</small>
+            </span>
             
-            <%-- 2. 로그인 상태일 때 --%>
-            <c:otherwise>
-                <span>
-                    <strong>${sessionScope.loginMember.userName}</strong>님 
-                    (권한: ${sessionScope.loginMember.userRole})
-                    <%--116line 추후 삭제필요  테스트확인을 위한 role확인--%>
-                </span>
-              
-              <a href="${path}/user/mypage.do">마이페이지</a>
-        <a href="${path}/cart">장바구니</a>
-          <a href="${path}/user/logout.do" style="margin-left:10px;">로그아웃</a>
-            </c:otherwise>
-        </c:choose>
+            <a href="${path}/user/mypage.do">마이페이지</a>
+            <a href="${path}/cart">장바구니</a>
+            
+            <%-- 로그아웃을 POST 방식으로 안전하게 처리하는 방법 --%>
+            <form action="${path}/user/logout.do" method="post" style="display:inline; margin-left:10px;">
+                <%-- CSRF가 활성화 되어있다면 아래 토큰이 반드시 필요합니다 (disable 하셨으면 생략 가능) --%>
+                <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+                <button type="submit" style="background:none; border:none; color:inherit; cursor:pointer; font:inherit; padding:0; text-decoration:underline;">
+                    로그아웃
+                </button>
+            </form>
+        </sec:authorize>
 
         <%-- 공통 메뉴 (상황에 따라 위치 조정 가능) --%>
      

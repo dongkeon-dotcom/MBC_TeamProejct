@@ -19,7 +19,7 @@
 
 <h3>새 배송지 등록</h3>
 
-<form action="${pageContext.request.contextPath}/delivery/addressInsertProcess.do" method="post">
+<form action="${path}/delivery/addressInsertProcess.do" method="post">
     <div class="form-group">
         <label>배송지 이름 (예: 집, 회사)</label>
         <input type="text" name="deliveryName" placeholder="배송지 이름을 입력하세요" required>

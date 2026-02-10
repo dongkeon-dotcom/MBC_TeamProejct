@@ -23,7 +23,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <select id="getById" parameterType="com.mbcTeam.user.UserVO" resultType="com.mbcTeam.user.UserVO">
         SELECT
        user_idx       AS userIdx,
-            user_email     AS id,
+            id     AS id,
             user_pw        AS password,
             user_name      AS userName,
             user_phone     AS userPhone,
@@ -52,12 +52,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             user_Idx        AS userIdx,
             id     AS id,
             password        AS password,
-            userName      AS userName,
-            userPhone     AS userPhone,
-            userRole      AS userRole,
-            isEasyLogin     AS easyLogin,
-            isDeleted        AS deleted,
-            regDate  AS regDate
+            user_name      AS userName,
+            user_phone     AS userPhone,
+            user_role      AS userRole,
+            is_easy_login     AS easyLogin,
+            is_deleted        AS deleted,
+            reg_date  AS regDate
         FROM users
         WHERE id = #{id}
     </select>
