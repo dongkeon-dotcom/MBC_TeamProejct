@@ -12,7 +12,7 @@ import com.mbcTeam.user.UserVO;
 
 @RequestMapping("/order")
 @Controller
-public class CartCOntroller {
+public class CartController {
 	
 	@Autowired
 	private CartService cservice;
