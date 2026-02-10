@@ -27,14 +27,14 @@
                 <li><a href="${path}/userproduct/userproductlist.do"> 리스트</a></li>
                 
            
-                
-                <li><a href="${path}/product/productAddForm.do">상품등록(관리자_동건)</a></li>
-                <li><a href="${path}/product/adminProductList.do">상품목록(관리자_동건) </a></li>
-                <li><a href="${path}/admin/salesChart.do">매출통계 </a></li>
-                <li><a href="${path}/admin/userManagement.do">회원관리(관리자_동건) </a></li>
-                <li><a href="${path}/admin/orderManagement.do">주문관리(관리자_동건) </a></li>
-                <li><a href="${path}/product/list.do">상품목록(관리자) </a></li>                
-                
+                <li class="has-submenu"><a href="#">관리자</a>
+                	<ul class="submenu">
+                		<li><a href="${path}/product/productAddForm.do">상품등록(관리자_동건)</a></li>
+                		<li><a href="${path}/product/adminProductList.do">상품목록(관리자_동건) </a></li>
+                		<li><a href="${path}/admin/salesChart.do">매출통계 </a></li>
+                		<li><a href="${path}/admin/userManagement.do">회원관리(관리자_동건) </a></li>
+                		<li><a href="${path}/admin/orderManagement.do">주문관리(관리자_동건) </a></li>
+                	</ul>                
                 <li class="has-submenu"><a href="#">아우터</a>
                     <ul class="submenu">
                         <li><a href="${path}/product/list.do">자켓</a></li>

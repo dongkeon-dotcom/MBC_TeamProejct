@@ -11,9 +11,11 @@
 	<div class="container my-5" style="max-width: 800px;">
 		<h2 class="text-center mb-5 fw-bold">상품 정보 수정 페이지</h2>
 
-		<form action="${path}/product/productEditOK.do" method="post"
+		<form action="${path}/product/adminProductEditOK.do" method="post"
 			enctype="multipart/form-data" onsubmit="return handleFormSubmit(event)">
-			<input type="hidden" name="orudctIdx" value = "${m.productIdx }"/>
+			<input type="hidden" name="productIdx" value = "${m.productIdx }"/>
+			<!-- OldImgDelete, OldOptionDelete 값 담아두는용 -->
+			<div id = "delete-container"></div>
 			<div class="card p-4 mb-4 shadow-sm mx-auto" style="max-width: 80%;">
 				<div class="row px-md-5">
 					<div class="col-12 mb-4">
@@ -101,8 +103,8 @@
 				                             style="width: 40px; height: 40px; object-fit: cover; border-radius: 4px;">
 				                    </span>
 				                    <input type="text" class="form-control bg-white name-display" value="${img.productImg} (기존)" readonly style="pointer-events: none; font-size: 0.9rem;">
-				                    <input type="hidden" name="existingProductDetailImgList" value="${img.productImg}">
-				                    <button type="button" class="btn btn-danger btn-sm px-3" style="height: 48px;" onclick="removeFileItem(this, true)">삭제</button>
+				                    <input type="hidden" name="existingImgIdx" value="${img.productImgIdx}">
+				                    <button type="button" class="btn btn-danger btn-sm px-3" style="height: 48px;" onclick="OldImgDelete(this, '${img.productImgIdx}', 'Img')">삭제</button>
 				                </div>
 				            </c:forEach>
 						</div>
@@ -123,8 +125,8 @@
 				                             style="width: 40px; height: 40px; object-fit: cover; border-radius: 4px;">
 				                    </span>
 				                    <input type="text" class="form-control bg-white name-display" value="${descImg.productDescImg} (기존)" readonly style="pointer-events: none; font-size: 0.9rem;">
-				                    <input type="hidden" name="existingProductDescImgList" value="${descImg.productDescImg}">
-				                    <button type="button" class="btn btn-danger btn-sm px-3" style="height: 48px;" onclick="removeFileItem(this, true)">삭제</button>
+				                    <input type="hidden" name="existingDescImgIdx" value="${descImg.productDescImgIdx}">
+				                    <button type="button" class="btn btn-danger btn-sm px-3" style="height: 48px;" onclick="OldImgDelete(this, '${descImg.productDescImgIdx}','desc')">삭제</button>
 				                </div>
 				            </c:forEach>						
 						
@@ -176,6 +178,7 @@
 					<tbody id="optionBody" name="optionBody">
 						<c:forEach var="opt" items = "${optionList}" varStatus="status">
 							<tr class="option-row">
+								<input type="hidden" name="productOptionList[${status.index}].optionIdx" value="${opt.optionIdx}"/>
 								<td>
 									<select name="productOptionList[${status.index}].color" class="form-select">
 				                    	<c:set var="colors" value="White,Black,Gray,Red,Blue,Green,Brown" />
@@ -196,7 +199,7 @@
 					                       class="form-control" value="${opt.stock}" min="0">
 					            </td>
 					            <td>
-					                <button type="button" class="btn btn-outline-danger btn-sm" onclick="removeRow(this)">삭제</button>
+					                <button type="button" class="btn btn-outline-danger btn-sm" onclick="removeOldOption(this, '${opt.optionIdx}')">삭제</button>
 					            </td>
 							</tr>								
 						</c:forEach>
@@ -214,8 +217,53 @@
 		</form>
 	</div>
 
-	<script>
-	
+<script src="https://code.jquery.com/jquery-1.10.2.js"></script>
+<script>
+$(document).ready(function() {
+    $('.ai-gen-btn').on('click', function() {
+        // 1. 필요한 입력값 가져오기 (input 태그의 id를 확인하세요!)
+        var pName = $('#productName').val(); // 상품명 입력란 id
+        var pFeature = $('#subCategory').val(); // 특징 입력란 id
+
+        if(!pName) {
+            alert("상품명을 입력해주세요.");
+            return;
+        }
+        if(!pFeature){
+        	alert("하위카테고리를 선택해주세요.");
+        	return;
+        }
+
+        // 2. 버튼 상태 변경 (중복 클릭 방지)
+        var $btn = $(this);
+        $btn.prop('disabled', true).text('생성 중...');
+
+        
+        // 3. Ajax 호출
+        
+        const path = '${path}';
+        $.ajax({
+            url: path + '/admin/geminiAjax.do',
+            type: 'GET',
+            data: {
+                name: pName,
+                feature: pFeature
+            },
+            success: function(response) {
+                // 4. 결과값을 textarea에 넣기
+                $('#productDesc').val(response);
+            },
+            error: function(xhr, status, error) {
+                console.error(error);
+                alert("AI 설명 생성에 실패했습니다. 다시 시도해주세요.");
+            },
+            complete: function() {
+                // 5. 버튼 복구
+                $btn.prop('disabled', false).text('ai 생성');
+            }
+        });
+    });
+});	
 	
 //카테고리쪽
 
@@ -259,7 +307,7 @@ function updateSubCategories() {
 
 
 //옵션쪽
-function addRow() {
+	function addRow() {
         const tbody = document.getElementById("optionBody");        
      	// 현재 몇 번째 행인지 인덱스 파악
         const index = tbody.querySelectorAll('.option-row').length;
@@ -303,6 +351,23 @@ function addRow() {
         row.remove(); // 행 삭제
         
         reorderIndices(tbody); // 삭제 후 인덱스 재정렬 실행
+    }
+    
+    function removeOldOption(button, optionIdx){
+    	const deleteContainer = document.getElementById('delete-container');
+   	 	const input = document.createElement('input');
+   	 
+   	 	input.type = 'hidden';
+   	 	input.name = 'deleteOptionIdx';
+   	 	input.value = optionIdx;
+   	 
+   	 	deleteContainer.appendChild(input);
+    	
+    	const row = button.closest('tr');
+    	const tbody = row.parentElement;
+    	row.remove();
+    	
+    	reorderIndices(tbody);
     }
 
     
@@ -387,6 +452,22 @@ const container = document.getElementById(containerId);
     };
     input.click();
 }
+ //이미지 제거용
+ function OldImgDelete(button, imgIdx, type){
+	 const deleteContainer = document.getElementById('delete-container');
+	 const input = document.createElement('input');
+	 
+	 input.type = 'hidden';
+	 input.name = (type === 'desc') ? 'deleteDescImgIdx' : 'deleteImgIdx';
+	 input.value = imgIdx;
+	 
+	 deleteContainer.appendChild(input);
+	 
+	 const item = button.closest('.input-group');
+	 item.remove();	 
+ }
+ 
+ 
 
 // 삭제 버튼 클릭 시 해당 아이템 전체 삭제 함수
 function removeFileItem(button) {

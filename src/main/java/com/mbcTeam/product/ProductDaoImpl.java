@@ -112,4 +112,64 @@ public class ProductDaoImpl implements ProductDao {
 	public List<ProductOptionVO> adminProductEditOption(int productIdx) {
 		return mybatis.selectList("PRODUCT.EDIT_PRODUCT_OPTION", productIdx);
 	}
+
+	@Override
+	public ProductImgVO adminOneImg(int productImgIdx) {
+		return mybatis.selectOne("PRODUCT.SELECT_ONE_IMG", productImgIdx);
+	}
+
+	@Override
+	public ProductDescImgVO adminOneDescImg(int productDescImgIdx) {
+		return mybatis.selectOne("PRODUCT.SELECT_ONE_DESC_IMG", productDescImgIdx);
+	}
+
+	@Override
+	public void deleteImg(int productImgIdx) {
+		mybatis.delete("PRODUCT.DELETE_IMG",productImgIdx);
+		
+	}
+
+	@Override
+	public void deleteDescImg(int productDescImgIdx) {
+		mybatis.delete("PRODUCT.DELETE_DESC_IMG",productDescImgIdx);
+		
+	}
+	
+	@Override
+	public void deleteOption(int optionIdx) {
+		mybatis.delete("PRODUCT.DELETE_PRODUCT_OPTION", optionIdx);
+		
+	}
+
+	@Override
+	public void updateImgOrder(ProductImgVO vo) {
+		mybatis.update("PRODUCT.UPDATE_IMG_ORDER", vo);
+		
+	}
+
+	@Override
+	public void updateDescImgOrder(ProductDescImgVO vo) {
+		mybatis.update("PRODUCT.UPDATE_DESC_IMG_ORDER",vo);
+		
+	}
+	
+	@Override
+	public void updateOption(ProductOptionVO vo) {
+		mybatis.update("PRODUCT.UPDATE_PRODUCT_OPTION", vo);
+		
+	}
+
+	@Override
+	public int imgCount(int productIdx) {
+		return mybatis.selectOne("PRODUCT.IMG_COUNT", productIdx);
+	}
+
+	@Override
+	public int descImgCount(int productIdx) {
+		return mybatis.selectOne("PRODUCT.DESC_IMG_COUNT", productIdx);
+	}
+
+
+
+
 }

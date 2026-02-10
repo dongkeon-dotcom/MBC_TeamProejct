@@ -21,6 +21,18 @@ public interface ProductService {
     List<ProductImgVO> adminProductEditImg(int productIdx); //이미지 DB
     List<ProductDescImgVO> adminProductEditDescImg(int productIdx); //설명 이미지 DB
     List<ProductOptionVO> adminProductEditOption(int productIdx);	//옵션 DB
+    ProductImgVO adminOneImg(int productImgIdx);
+    ProductDescImgVO adminOneDescImg(int productDescImgIdx);
+    void updateImgOrder(ProductImgVO vo);
+    void updateDescImgOrder(ProductDescImgVO vo);
+    void updateOption(ProductOptionVO vo);
+    
+    int imgCount(int productIdx);
+    int descImgCount(int productIdx);
+    
+    void deleteImg(int productImgIdx);
+    void deleteDescImg(int productDescImgIdx);    
+    void deleteOption(int optionIdx);
     
     void update(ProductVO vo); // 상품 수정
     void delete(ProductVO vo); // 상품 삭제
@@ -34,4 +46,5 @@ public interface ProductService {
 
     List<ProductVO> selectAll(); // 전체 상품 조회
     List<ProductVO> selectByCategory(String category); // 카테고리별 조회
+	List<ProductVO> getRecentProducts(int i);
 }
