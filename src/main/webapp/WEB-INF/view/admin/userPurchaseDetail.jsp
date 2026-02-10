@@ -48,7 +48,7 @@
 					                    <td colspan="5">
 					                        <div class="p-4 shadow-inner" style="background-color: #f8f9fa;">
 					                        	<div style="max-width: 850px; margin: 0 auto;">
-					                        	<table class="table table-sm table-bordered bg-white mb-0">
+					                        	<table class="table table-sm table-bordered text-center bg-white mb-0">
 					                        		<thead class="table-dark">
 					                        		<tr>
 					                        			<th>상품명</th>
@@ -56,12 +56,14 @@
 					                        			<th>사이즈</th>
 					                        			<th>수량</th>
 					                        			<th>가격(할인포함)</th>
+					                        			<th>리뷰</th>
+					                        			<th>별점</th>
 					                        		</tr>
 					                        		</thead>
 					                        		<tbody id="content-${m.orderIdx}">
-					                        			</tbody>
+					                        		</tbody>
 					                        	</table>
-					                        </div>
+					                        	</div>
 					                        </div>
 					                    </td>
 					                </tr>
@@ -108,7 +110,9 @@ function toggleDetail(orderIdx){
 			let html = "";
 			if(data.length > 0){
 				data.forEach(item =>{
-					let formattedPrice = new Intl.NumberFormat().format(item.price) + "원";
+					let formattedPrice = new Intl.NumberFormat().format(item.finalPrice) + "원";
+					let reviewText = (item.review === null || item.review === undefined || item.review === "" ) ? "리뷰 없음" : item.review;
+					let ratingText = (item.rating === null || item.rating === 0) ? "-" : item.rating;
 					
 					html += "<tr>";
 					html += "	<td>" + item.productName + "</td>";
@@ -116,6 +120,8 @@ function toggleDetail(orderIdx){
 					html += "	<td>" + item.size + "</td>";
 					html += "	<td>" + item.quantity + "</td>";
 					html += "	<td>" + formattedPrice + "</td>";
+					html += "	<td>" + reviewText + "</td>"
+					html += "	<td>" + ratingText + "</td>"
 					html += "</tr>";
 				});
 			} else{
