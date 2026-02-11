@@ -127,13 +127,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 
             // 5. 로그아웃 설정
             .logout()
-                .logoutUrl("/user/logout.do")
-                .logoutSuccessUrl("/index.do")
-                .invalidateHttpSession(true)
-                .deleteCookies("JSESSIONID")
-                .logoutRequestMatcher(new AntPathRequestMatcher("/user/logout.do"))
-                .permitAll()
-                .and()
+            .logoutRequestMatcher(new AntPathRequestMatcher("/user/logout.do")) // 이 주소가 호출되면 로그아웃
+            .logoutSuccessUrl("/index.do")
+            .invalidateHttpSession(true) // 세션 무효화
+            .deleteCookies("JSESSIONID") // 쿠키 삭제
+            .permitAll()
+            .and()
 
             // 6. 세션 관리 (데이터 유실 방지)
             .sessionManagement()

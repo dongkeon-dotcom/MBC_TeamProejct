@@ -107,13 +107,11 @@
                     <a href="${path}/user/mypage.do" class="me-2">마이페이지</a>
                     <a href="${path}/cart" class="me-2">장바구니</a>
 
-                    <%-- 로그아웃 버튼 (Security CSRF 적용) --%>
-                    <form action="${path}/user/logout.do" method="post" style="display:inline;">
-                        <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
-                        <button type="submit" style="background:none; border:none; color:blue; text-decoration:underline; cursor:pointer; padding:0;">
-                            로그아웃
-                        </button>
-                    </form>
+   <%-- 로그아웃 버튼을 단순 링크로 변경 (가장 추천) --%>
+<a href="${path}/user/logout.do" class="me-2" style="color:blue; text-decoration:underline;">
+    로그아웃
+</a>
+              
                 </sec:authorize>
             </div>
         </div>
