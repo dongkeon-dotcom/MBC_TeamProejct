@@ -27,5 +27,29 @@ public class ReviewServiceImpl implements ReviewService {
 		// TODO Auto-generated method stub
 		return rdao.getReviewListByUserIdx(userIdx);
 	}
+
+	@Override
+	public ReviewVO getReviewOne(long reviewIdx) {
+		// TODO Auto-generated method stub
+		return rdao.getReviewOne(reviewIdx);
+	}
+
+	@Override
+	public int updateReview(ReviewVO vo) {
+		// TODO Auto-generated method stub
+		return rdao.updateReview(vo);
+	}
+
+	@Override
+	public int deleteReviewImgs(long reviewIdx) {
+		// TODO Auto-generated method stub
+		return rdao.deleteReviewImgs(reviewIdx);
+	}
+
+	@Override
+	public List<ReviewImageVO> getReviewImages(long reviewIdx) {
+		// TODO Auto-generated method stub
+		return rdao.getReviewImages(reviewIdx);
+	}
 	
 }

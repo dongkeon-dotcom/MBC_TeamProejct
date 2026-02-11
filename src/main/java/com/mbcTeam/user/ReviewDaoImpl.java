@@ -30,4 +30,28 @@ public class ReviewDaoImpl implements ReviewDao {
 		return mybatis.selectList("REVIEW.REVIEWLIST",userIdx);
 	}
 
+	@Override
+	public ReviewVO getReviewOne(long reviewIdx) {
+		// TODO Auto-generated method stub
+		return mybatis.selectOne("REVIEW.getReviewOne", reviewIdx);
+	}
+
+	@Override
+	public int updateReview(ReviewVO vo) {
+		// TODO Auto-generated method stub
+		return mybatis.update("REVIEW.updateReview", vo);
+	}
+
+	@Override
+	public int deleteReviewImgs(long reviewIdx) {
+		// TODO Auto-generated method stub
+		return mybatis.delete("REVIEW.deleteReviewImgs", reviewIdx);
+	}
+
+	@Override
+	public List<ReviewImageVO> getReviewImages(long reviewIdx) {
+		// TODO Auto-generated method stub
+		return mybatis.selectList("REVIEW.getReviewImages", reviewIdx);
+	}
+
 }

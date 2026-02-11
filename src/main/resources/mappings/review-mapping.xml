@@ -8,8 +8,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 <mapper namespace="REVIEW">
 
     <insert id="REVIEWINSERT" parameterType="ReviewVO" useGeneratedKeys="true" keyProperty="reviewIdx">
-    INSERT INTO Reviews (PRODUCT_IDX,   USER_IDX,  USER_NAME,  REVIEW,RATING, IS_HIDE,REG_DATE)
-                 VALUES (#{productIdx}, #{userIdx},  #{userName},  #{review},  #{rating}, #{isHide}, NOW())
+    INSERT INTO Reviews (PRODUCT_IDX,   USER_IDX,  USER_NAME,  REVIEW,RATING, IS_HIDE,REG_DATE,Item_Idx)
+                 VALUES (#{productIdx}, #{userIdx},  #{userName},  #{review},  #{rating}, #{isHide}, NOW(), #{itemIdx})
     </insert>
 
  
@@ -18,18 +18,53 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
      				   VALUES (#{reviewIdx}, #{reviewImg} )
     </insert>
     
-   <select id="REVIEWLIST" parameterType="long" resultType="com.mbcTeam.user.ReviewVO">
-    SELECT DISTINCT
-        r.review_Idx   AS reviewIdx,
-        r.product_Idx  AS productIdx,
-        r.user_Idx     AS userIdx,
-        r.user_Name    AS userName,  r.review       AS review,
-        r.Rating       AS rating,    r.is_Hide      AS isHide,    r.Reg_Date     AS regDate,   items.color    AS color, 
-        items.size     AS size   
-    FROM Reviews r
-    INNER JOIN OrderItems items ON r.product_Idx = items.product_Idx
+ <select id="REVIEWLIST" parameterType="long" resultType="com.mbcTeam.user.ReviewVO">
+    SELECT 
+        r.review_Idx       AS reviewIdx,
+        r.product_Idx      AS productIdx,
+        r.user_Idx         AS userIdx,
+        r.user_Name        AS userName,
+        r.review           AS review,
+        r.Rating           AS rating,
+        r.is_Hide          AS isHide,
+        r.Reg_Date         AS regDate,
+        r.item_Idx         AS itemIdx,  items.color        AS color,    items.size         AS size      FROM Reviews r
+    INNER JOIN OrderItems items ON r.item_Idx = items.item_Idx
     WHERE r.user_Idx = #{userIdx}
+    ORDER BY r.Reg_Date DESC
+</select>
+<select id="getReviewOne" parameterType="long" resultType="com.mbcTeam.user.ReviewVO">
+    SELECT 
+        review_Idx AS reviewIdx,
+        product_Idx AS productIdx,
+        item_Idx AS itemIdx,
+        review,
+        Rating AS rating
+    FROM Reviews 
+    WHERE review_Idx = #{reviewIdx}
 </select>
 
+
+<update id="updateReview" parameterType="com.mbcTeam.user.ReviewVO">
+    UPDATE Reviews 
+    SET 
+        review = #{review},
+        Rating = #{rating},
+        Reg_Date = NOW()  WHERE review_Idx = #{reviewIdx}
+</update>
+
+<delete id="deleteReviewImgs" parameterType="long">
+    DELETE FROM ReviewImage
+    WHERE review_Idx = #{reviewIdx}
+</delete>
+
+<select id="getReviewImages" parameterType="long" resultType="com.mbcTeam.user.ReviewImageVO">
+    SELECT 
+        review_Img_Idx AS reviewImgIdx,
+        review_Idx AS reviewIdx,
+        review_Img AS reviewImg
+    FROM ReviewImage 
+    WHERE review_Idx = #{reviewIdx}
+</select>
 </mapper>
 
