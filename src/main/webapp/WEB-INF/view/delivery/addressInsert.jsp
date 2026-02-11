@@ -58,16 +58,31 @@
 <script>
 function execDaumPostcode() {
     new daum.Postcode({
+        // 팝업창 디자인 테마 (필요 없으면 theme 블록 전체 삭제 가능)
+        theme: {
+            searchBgColor: "#0B65C8", // 검색창 배경색
+            queryTextColor: "#FFFFFF" // 검색창 글자색
+        },
         oncomplete: function(data) {
-            var addr = ''; 
-            if (data.userSelectedType === 'R') { addr = data.roadAddress; } 
-            else { addr = data.jibunAddress; } 
+            // 팝업에서 검색결과 항목을 클릭했을 때 실행할 코드를 작성하는 부분입니다.
 
+            var addr = ''; // 주소 변수
+
+            // 사용자가 선택한 주소 타입에 따라 해당 주소 값을 가져온다.
+            if (data.userSelectedType === 'R') { // 사용자가 도로명 주소를 선택했을 경우
+                addr = data.roadAddress;
+            } else { // 사용자가 지번 주소를 선택했을 경우(J)
+                addr = data.jibunAddress;
+            }
+
+            // 우편번호와 주소 정보를 해당 필드(input)에 넣는다.
             document.getElementById('zipcode').value = data.zonecode;
             document.getElementById("address").value = addr;
+            
+            // 상세주소 입력 필드로 포커스를 이동한다.
             document.getElementById("extraAddress").focus();
         }
-    }).open();
+    }).open(); // .embed() 대신 .open()을 사용하면 새 창이 뜹니다.
 }
 </script>
 

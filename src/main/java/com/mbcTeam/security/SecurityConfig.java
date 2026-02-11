@@ -12,12 +12,14 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.security.oauth2.client.registration.ClientRegistration;
 import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
 import org.springframework.security.oauth2.client.registration.InMemoryClientRegistrationRepository;
 import org.springframework.security.oauth2.core.AuthorizationGrantType;
+import org.springframework.security.oauth2.core.ClientAuthenticationMethod;
 import org.springframework.security.oauth2.core.oidc.IdTokenClaimNames;
 import java.util.ArrayList;
 import java.util.List;
@@ -28,14 +30,12 @@ import java.util.List;
 public class SecurityConfig extends WebSecurityConfigurerAdapter{
 
 	
-	SecurityConfig(){
-		System.out.println("==>SecurityConfig들어옴 ");
-	}
-	
 	
 	@Autowired
-	private CustomUserDetailsService userDetailsService;
-	
+    private CustomUserDetailsService userDetailsService;
+
+    @Autowired
+    private CustomOAuth2UserService customOAuth2UserService; // 소셜 로그인 처리 서비스
 
     @Value("${spring.security.oauth2.client.registration.google.client-id}")
     private String googleClientId;
@@ -47,11 +47,16 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
     @Value("${spring.security.oauth2.client.registration.naver.client-secret}")
     private String naverClientSecret;
 
-    @Value("${spring.security.oauth2.client.registration.kakao.client-id}")
-    private String kakaoClientId;
-    @Value("${spring.security.oauth2.client.registration.kakao.client-secret}")
-    private String kakaoClientSecret;
+   // @Value("${spring.security.oauth2.client.registration.kakao.client-id}")
+    private String kakaoClientId="d894dc2c77f2e85f0790ded3bfdcfa68";
+   // @Value("${spring.security.oauth2.client.registration.kakao.client-secret}")
+    private String kakaoClientSecret="Ec4CvEJDZsyS7zh6vWCdTWiMPSLvf6et";
 
+    
+
+	SecurityConfig(){
+		System.out.println("==>SecurityConfig들어옴   " + kakaoClientSecret+""+kakaoClientId);
+	}
     @Bean
     public static PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer() {
         return new PropertySourcesPlaceholderConfigurer();
@@ -61,42 +66,140 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 	    auth.userDetailsService(userDetailsService)
 	   .passwordEncoder(passwordEncoder());
 	}
+   
     
-    
-    @Override
-    protected void configure(HttpSecurity http) throws Exception {
-        http.csrf().disable(); // CSRF 비활성화
-        
-        http.authorizeRequests()
-            // 1. 누구나 접근 가능한 경로 (로그인, 회원가입, 정적 리소스 등)
-            .antMatchers("/**").permitAll()
-            
-            // 2. /user/** 전체를 permitAll 하셨으므로, 사실 위 설정들이 여기에 포함됩니다.
-            // 만약 마이페이지처럼 '로그인한 사람만' 가야 하는 곳이 있다면 나중에 .authenticated()로 세밀하게 조정하세요.
-            .antMatchers("/user/**").permitAll() 
-            
-            .anyRequest().authenticated() // 그 외 모든 요청은 로그인 필요
-            .and()
-            
-        .formLogin()
-            .loginPage("/user/login.do")             // 커스텀 로그인 페이지
-            .loginProcessingUrl("/user/loginOK.do")   // 실제 로그인 처리 (이건 컨트롤러 안 만들어도 됨)
-            .defaultSuccessUrl("/index.do", true)      // 성공 시 메인으로 (index.do와 main.do 중 사용하는 걸로 맞추세요)
-            .usernameParameter("id")
-            .passwordParameter("password")
-            .permitAll()
-            .and()
-            
-        .logout()
-            .logoutUrl("/user/logout.do")             // 로그아웃 요청 경로
-            .logoutSuccessUrl("/index.do")            // 성공 후 메인으로
-            .invalidateHttpSession(true)
-            .deleteCookies("JSESSIONID")
-            // 아래 설정 덕분에 <a> 태그 클릭으로 로그아웃이 가능해집니다!
-            .logoutRequestMatcher(new AntPathRequestMatcher("/user/logout.do")) 
-            .permitAll();
+    @Bean
+    public AuthenticationEntryPoint customAuthenticationEntryPoint() {
+        return (request, response, authException) -> {
+            // 컨트롤러 경로인 /user/member.do 로 이동 (컨텍스트 패스 포함)
+            // 만약 컨트롤러가 @RequestMapping("/user")를 가지고 있다면 "/user/member.do"로 적으세요.
+            response.sendRedirect(request.getContextPath() + "/user/member.do");
+        };
     }
-	  
+   
+        @Override
+        protected void configure(HttpSecurity http) throws Exception {
+            // 1. CSRF 비활성화
+            http.csrf().disable(); 
+
+            // 2. 권한 설정
+            http.authorizeRequests()
+                .antMatchers("/**", "/index.do", "/user/login.do", "/user/member.do", "/resources/**").permitAll()
+                .antMatchers("/login/oauth2/code/**", "/oauth2/authorization/**").permitAll()
+                .antMatchers("/delivery/**", "/mypage/**").authenticated()
+                .anyRequest().permitAll()
+                .and()
+
+            // 3. 일반 폼 로그인 설정
+            .formLogin()
+                .loginPage("/user/login.do")
+                .loginProcessingUrl("/user/loginOK.do")
+                .defaultSuccessUrl("/index.do", true)
+                .usernameParameter("id")
+                .passwordParameter("password")
+                .permitAll()
+                .and()
+
+            // 4. 소셜 로그인 설정 (핵심 수정본)
+            .oauth2Login()
+                .loginPage("/user/login.do")
+                .redirectionEndpoint()
+                    // 시큐리티가 카카오 응답을 가로채는 통로
+                    .baseUri("/login/oauth2/code/**") 
+                    .and()
+                .userInfoEndpoint()
+                    // 정상 인증 시 사용자 정보를 가져오는 서비스
+                    .userService(customOAuth2UserService) 
+                    .and()
+                .defaultSuccessUrl("/index.do", true)
+                // [수정] 단순 failureUrl 대신 핸들러를 달아 원인을 분석합니다.
+                .failureHandler((request, response, exception) -> {
+                    System.out.println("========================================");
+                    System.out.println("===> OAuth2 로그인 실패 이유: " + exception.getMessage());
+                    // 에러의 상세 원인(Stacktrace)을 보고 싶다면 아래 주석을 해제하세요.
+                    // exception.printStackTrace(); 
+                    System.out.println("========================================");
+                    
+                    // 에러 확인 후 원래 가려던 회원가입 페이지로 리다이렉트
+                    response.sendRedirect(request.getContextPath() + "/user/member.do");
+                })
+                .and()
+
+            // 5. 로그아웃 설정
+            .logout()
+                .logoutUrl("/user/logout.do")
+                .logoutSuccessUrl("/index.do")
+                .invalidateHttpSession(true)
+                .deleteCookies("JSESSIONID")
+                .logoutRequestMatcher(new AntPathRequestMatcher("/user/logout.do"))
+                .permitAll()
+                .and()
+
+            // 6. 세션 관리 (데이터 유실 방지)
+            .sessionManagement()
+                .sessionFixation().none(); 
+        }
+    
+ // 3. 소셜 클라이언트 등록 정보 설정 (ClientRegistrationRepository)
+    @Bean
+    public ClientRegistrationRepository clientRegistrationRepository() {
+        List<ClientRegistration> registrations = new ArrayList<>();
+        registrations.add(googleClientRegistration());
+        registrations.add(naverClientRegistration());
+        registrations.add(kakaoClientRegistration());
+        return new InMemoryClientRegistrationRepository(registrations);
+    }
+
+    // 구글 설정
+    private ClientRegistration googleClientRegistration() {
+        return ClientRegistration.withRegistrationId("google")
+                .clientId(googleClientId)
+                .clientSecret(googleClientSecret)
+                .scope("profile", "email")
+                .authorizationUri("https://accounts.google.com/o/oauth2/v2/auth")
+                .tokenUri("https://www.googleapis.com/oauth2/v4/token")
+                .userInfoUri("https://www.googleapis.com/oauth2/v3/userinfo")
+                .userNameAttributeName(IdTokenClaimNames.SUB)
+                .clientName("Google")
+                .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
+                .redirectUri("{baseUrl}/login/oauth2/code/google")
+                .build();
+    }
+
+    // 네이버 설정
+    private ClientRegistration naverClientRegistration() {
+        return ClientRegistration.withRegistrationId("naver")
+                .clientId(naverClientId)
+                .clientSecret(naverClientSecret)
+                .clientAuthenticationMethod(ClientAuthenticationMethod.POST)
+                .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
+                .redirectUri("{baseUrl}/login/oauth2/code/naver")
+                .scope("name", "email", "profile_image")
+                .authorizationUri("https://nid.naver.com/oauth2.0/authorize")
+                .tokenUri("https://nid.naver.com/oauth2.0/token")
+                .userInfoUri("https://openapi.naver.com/v1/nid/me")
+                .userNameAttributeName("response") // 네이버 응답 JSON의 키값
+                .clientName("Naver")
+                .build();
+    }
+
+    private ClientRegistration kakaoClientRegistration() {
+        return ClientRegistration.withRegistrationId("kakao")
+            .clientId(kakaoClientId)             // REST API 키
+            .clientSecret(kakaoClientSecret)     // 보안 메뉴의 Client Secret 코드
+            // ★ [핵심] 카카오는 인증 정보를 POST 본문에 담아 보내는 방식을 주로 사용합니다.
+            .clientAuthenticationMethod(ClientAuthenticationMethod.POST) 
+            .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
+            .redirectUri("{baseUrl}/login/oauth2/code/kakao")
+            .scope("profile_nickname", "account_email")
+            .authorizationUri("https://kauth.kakao.com/oauth/authorize")
+            .tokenUri("https://kauth.kakao.com/oauth/token")
+            .userInfoUri("https://kapi.kakao.com/v2/user/me")
+            .userNameAttributeName("id")
+            .clientName("Kakao")
+            .build();
+    }
+    
    /*
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
