@@ -1,6 +1,6 @@
 package com.mbcTeam.controller;
 
-import java.util.List; 
+import java.util.List;  
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -23,20 +23,29 @@ public class UserProductController {
     
     // 유저 상품 리스트
     @GetMapping("/userproductlist.do")
-    public String userProductList(@RequestParam(value="category", required=false) String category, Model model) {
-        List<ProductVO> productList;
+    public String userProductList(@RequestParam(value="category", required=false) String category,
+                                  @RequestParam(value="subCategory", required=false) String subCategory,
+                                  Model model) {
+        List<ProductVO> userProductList;
         if (category != null && !category.isEmpty()) {
-            productList = service.selectByCategory(category);
+            if (subCategory != null && !subCategory.isEmpty()) {
+                userProductList = service.selectByCategoryAndSub(category, subCategory);
+            } else {
+                userProductList = service.selectByCategory(category);
+            }
         } else {
-            productList = service.selectAll();
+            userProductList = service.selectAll();
         }
-        model.addAttribute("li", productList);
+
+        model.addAttribute("userProductList", userProductList); 
         model.addAttribute("selectedCategory", category);
+        model.addAttribute("selectedSubCategory", subCategory);
+
         return "userproduct/userproductlist";
     }
 
-    
-    
+
+
     @GetMapping("/userproductdetail.do")
     public String userproductdetail(@RequestParam("productIdx") int productIdx, Model model) {
     	System.out.println("/userproductdetail.DO");
@@ -53,6 +62,19 @@ public class UserProductController {
         model.addAttribute("reviewList", reviewList);
 
         return "userproduct/userproductdetail"; 
+    }
+
+    
+    
+    // 검색기능 
+    @GetMapping("/search.do")
+    public String search(@RequestParam("keyword") String keyword, Model model) {
+        List<ProductVO> results = service.searchProducts(keyword);
+        model.addAttribute("userProductList", results);
+        model.addAttribute("searchKeyword", keyword);
+        model.addAttribute("resultCount", results.size()); // 결과 개수 추가
+        
+        return "userproduct/userproductlist";
     }
 
     

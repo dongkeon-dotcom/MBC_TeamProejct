@@ -79,6 +79,13 @@ public class ProductServiceImpl implements ProductService {
         return dao.selectByCategory(category);
     }
 
+    @Override
+    public List<ProductVO> selectByCategoryAndSub(String category, String subCategory) {
+        return dao.selectByCategoryAndSub(category, subCategory);
+    }
+
+
+
 	@Override
 	public int totalCount(ProductVO vo) {
 		return dao.totalCount(vo);
@@ -170,22 +177,20 @@ public class ProductServiceImpl implements ProductService {
 		return dao.descImgCount(productIdx);
 	}
 
+	
 	@Override
 	public List<ProductVO> getRecommendedProducts() {
-		// TODO Auto-generated method stub
-		return null;
+	    return dao.getRecommendedProducts();
 	}
 
 	@Override
 	public List<ProductVO> getSaleProducts() {
-		// TODO Auto-generated method stub
-		return null;
+	    return dao.getSaleProducts();
 	}
 
 	@Override
-	public List<ProductVO> getProductsByCategory(String category) {
-		// TODO Auto-generated method stub
-		return null;
+	public List<ProductVO> searchProducts(String keyword) {
+	    return dao.searchProducts(keyword);
 	}
 
 

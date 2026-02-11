@@ -1,0 +1,83 @@
+@charset "UTF-8";
+
+.checkout-container {
+    max-width: 800px;
+    margin: 30px auto;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background: #fff;
+    font-family: Arial, sans-serif;
+}
+
+.checkout-title {
+    text-align: center;
+    margin-bottom: 30px;
+    font-size: 24px;
+    font-weight: bold;
+}
+
+/* 공통 박스 스타일 */
+.checkout-box {
+    border: 1px solid #eee;
+    border-radius: 6px;
+    padding: 15px;
+    margin-bottom: 20px;
+    background-color: #fafafa;
+}
+
+/* 배송지 정보 */
+.checkout-shipping h3,
+.checkout-items h3,
+.checkout-summary h3 {
+    margin-bottom: 10px;
+    font-size: 18px;
+    font-weight: bold;
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 5px;
+}
+
+/* 상품 정보 */
+.checkout-item {
+    border-bottom: 1px dashed #ccc;
+    padding: 10px 0;
+}
+
+.checkout-item:last-child {
+    border-bottom: none;
+}
+
+.checkout-item p {
+    margin: 4px 0;
+    font-size: 14px;
+}
+
+.item-name {
+    font-weight: bold;
+    font-size: 16px;
+}
+
+/* 결제 요약 */
+.checkout-summary {
+    text-align: right;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+/* 버튼 */
+.checkout-btn {
+    display: block;
+    width: 100%;
+    background-color: #4CAF50;
+    color: #fff;
+    padding: 12px;
+    border: none;
+    border-radius: 5px;
+    font-size: 18px;
+    cursor: pointer;
+    margin-top: 20px;
+}
+
+.checkout-btn:hover {
+    background-color: #45a049;
+}

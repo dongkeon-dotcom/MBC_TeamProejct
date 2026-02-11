@@ -1,7 +1,6 @@
 package com.mbcTeam.order;
 
-import java.util.List;
-import java.util.Map;
+import java.util.List; 
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -46,5 +45,19 @@ public class OrderServiceImpl implements OrderService {
 		return dao.selectOrderByOrderIdx(orderIdx);
 	}
 
+	
+	@Override
+	public void insertOrder(OrderVO order, List<OrderItemVO> items) {
+	    // 주문 저장
+	    dao.insert(order);
 
+	    // 주문 상세 반복 저장
+	    for (OrderItemVO item : items) {
+	        item.setOrderIdx(order.getOrderIdx()); // FK 연결
+	        dao.insertOrderItem(item); // ✅ 새로 추가된 메서드 사용
+	    }
+	}
+
+
+	
 }
