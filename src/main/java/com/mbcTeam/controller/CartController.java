@@ -1,6 +1,6 @@
 package com.mbcTeam.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Autowired; 
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -35,6 +35,7 @@ public class CartController {
         // 시큐리티의 username(여기서는 id/email)으로 DB 조회
         return service.getByEmail(auth.getName());
     }
+    
     
     
     @PostMapping("/add.do")
@@ -75,7 +76,9 @@ public class CartController {
         model.addAttribute("cartList", cartList);
         
         return "cart/cartlist";
-    }
+    } 
+    
+    
 
     @PostMapping("/delete.do")
     public String deleteCart(@RequestParam long cartIdx, HttpSession session) {

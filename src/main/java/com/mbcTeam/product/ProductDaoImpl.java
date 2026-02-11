@@ -1,6 +1,11 @@
 package com.mbcTeam.product;
 
+import java.util.HashMap; 
 import java.util.List;
+import java.util.Map;
+import java.util.Collections;
+
+
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -24,7 +29,8 @@ public class ProductDaoImpl implements ProductDao {
 
 	@Override
 	public void insertDescImg(ProductDescImgVO divo) {
-		mybatis.insert("INSERT_PRODUCT_DESC_IMG", divo);
+		mybatis.insert("PRODUCT.INSERT_PRODUCT_DESC_IMG", divo);
+
 	}
 
 	@Override
@@ -72,10 +78,25 @@ public class ProductDaoImpl implements ProductDao {
 		return mybatis.selectList("PRODUCT.SELECT_ALL_PRODUCTS");
 	}
 
+
+	
 	@Override
 	public List<ProductVO> selectByCategory(String category) {
-		return mybatis.selectList("PRODUCT.SELECT_BY_CATEGORY", category);
+	    return mybatis.selectList("PRODUCT.SELECT_BY_CATEGORY", 
+	                              Collections.singletonMap("category", category));
 	}
+
+	
+	
+	@Override
+	public List<ProductVO> selectByCategoryAndSub(String category, String subCategory) {
+	    Map<String, Object> params = new HashMap<>();
+	    params.put("category", category);
+	    params.put("subCategory", subCategory);
+	    return mybatis.selectList("PRODUCT.SELECT_BY_CATEGORY", params);
+	}
+
+	
 
 	@Override
 	public int totalCount(ProductVO vo) {
@@ -171,17 +192,18 @@ public class ProductDaoImpl implements ProductDao {
 
 	@Override
 	public List<ProductVO> getRecommendedProducts() {
-		// TODO Auto-generated method stub
-		return null;
+	    return mybatis.selectList("PRODUCT.GET_RECOMMENDED_PRODUCTS");
 	}
 
 	@Override
 	public List<ProductVO> getSaleProducts() {
-		// TODO Auto-generated method stub
-		return null;
+	    return mybatis.selectList("PRODUCT.GET_SALE_PRODUCTS");
 	}
-
-
+	
+	@Override
+	public List<ProductVO> searchProducts(String keyword) {
+	    return mybatis.selectList("PRODUCT.SEARCH_PRODUCTS", keyword);
+	}
 
 
 }

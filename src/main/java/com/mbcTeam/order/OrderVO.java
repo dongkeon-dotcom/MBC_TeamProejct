@@ -17,4 +17,5 @@ public class OrderVO {
     private int status;					// 상태(0=주문확인대기, 1=주문확인완료)
     
     
+    
 }

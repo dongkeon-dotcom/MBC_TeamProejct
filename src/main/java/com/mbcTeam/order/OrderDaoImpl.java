@@ -1,7 +1,7 @@
 package com.mbcTeam.order;
 
-import java.util.List;
-import java.util.Map;
+import java.util.List; 
+
 
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,17 +15,19 @@ public class OrderDaoImpl implements OrderDao {
 
     @Override
     public void insert(OrderVO vo) {
-        mybatis.insert("ORDERS.insertOrder", vo);
+        mybatis.insert("ORDER.insertOrder", vo);
     }
 
     @Override
     public void insertOrder(OrderVO order, OrderItemVO item) {
-        // 1. 주문 저장
-        mybatis.insert("ORDERS.insertOrder", order);
-
-        // 2. 주문 상세 저장 (orderIdx를 PK로 받아서 연결)
+        mybatis.insert("ORDER.insertOrder", order);
         item.setOrderIdx(order.getOrderIdx());
-        mybatis.insert("ORDERS.insertOrderItem", item);
+        mybatis.insert("ORDER.insertOrderItem", item);
+    }
+
+    @Override
+    public void insertOrderItem(OrderItemVO item) { // ✅ 새로 추가
+        mybatis.insert("ORDER.insertOrderItem", item);
     }
 
     @Override
@@ -48,6 +50,8 @@ public class OrderDaoImpl implements OrderDao {
 		// orderdetailList에서 표시하기 위한매소드 
 		return mybatis.selectOne("ORDER.DETAILLIST",orderIdx);
 	}
+
+
 
 
 
