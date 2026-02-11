@@ -19,8 +19,11 @@
 
 <h3>새 배송지 등록</h3>
 
-<form action="${path}/delivery/addressInsertProcess.do" method="post">
-    <div class="form-group">
+<form action="${pageContext.request.contextPath}/delivery/addressInsertProcess.do" method="post">
+    
+    <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
+
+<div class="form-group">
         <label>배송지 이름 (예: 집, 회사)</label>
         <input type="text" name="deliveryName" placeholder="배송지 이름을 입력하세요" required>
     </div>
@@ -45,7 +48,7 @@
     
     <div class="form-group">
         <label>
-            <input type="checkbox" name="isDefaultAddress" value="1"> 기본 배송지로 설정
+          <input type="checkbox" name="defaultAddress" value="true">기본 배송지로 설정
         </label>
     </div>
 
