@@ -194,60 +194,86 @@ MemberMapper memberMapper;
     	System.out.println("/loginOK.DO");
         return "redirect:/"; // 메인으로 리다이렉트
     }
-    @GetMapping("/member.do")
-    public String member() {
-    	//로그인페이지에 회원가입으로 이동을 위한 컨트롤  
-    System.out.println("memberJoin  확인 용 ");
-        return "user/memberJoin"; // views/member/login.jsp
-    }
+
+ // 1. 회원가입 페이지 이동
+ @GetMapping("/member.do")
+ public String member(HttpSession session, Model model) {
     
-    
+	 System.out.println("===> [Controller] 세션 ID: " + session.getId());
+	// 서비스에서 저장한 키값인 "socialId"로 꺼냄
+	    String socialId = (String) session.getAttribute("socialId");
+	    String socialName = (String) session.getAttribute("socialName");
+	    Boolean isSocial = (Boolean) session.getAttribute("isSocial");
 
-   /* @RequestMapping("/logout.do")
-    public String logout(HttpSession session) {
-        session.invalidate(); // 세션 전체 무효화 (모든 데이터 삭제)
-        return "redirect:/";  // 메인 페이지로 이동
-    }
-	*/
-	// 회원가입 처리
-    @RequestMapping(value = "/memberOK.do", method = RequestMethod.POST)
-    public String memberOK(HttpServletRequest request) {
-    	String id = request.getParameter("id");
-        String password  = request.getParameter("password");
-        String userName  = request.getParameter("userName");
-        String userPhone = request.getParameter("userPhone");
+	    if (Boolean.TRUE.equals(isSocial) && socialId != null) {
+	        model.addAttribute("id", socialId); // JSP의 ${id}로 전달
+	        model.addAttribute("userName", socialName);
+	        model.addAttribute("isSocial", true);
+	        System.out.println("===> 성공: 소셜 가입 모드 진입 (ID: " + socialId + ")");
+	    } else {
+	        model.addAttribute("isSocial", false);
+	        System.out.println("===> 실패: 일반 가입 모드 진입");
+	    }
+	    return "user/memberJoin";
+	}
 
-        // 서버단 필수 검증
-        if (id == null || id.trim().isEmpty()) {
-            request.setAttribute("msg", "이메일이 없습니다.");
-            return "user/memberJoin";
-        }
+  
+ @RequestMapping(value = "/memberOK.do", method = RequestMethod.POST)
+ public String memberOK(HttpServletRequest request, HttpSession session) {
+     String id = request.getParameter("id");
+     String password = request.getParameter("password");
+     String userName = request.getParameter("userName");
+     String userPhone = request.getParameter("userPhone");
+     
+     // JSP에서 <input type="hidden" name="isSocialUser" value="${isSocial ? 'Y' : 'N'}"> 으로 보낸다고 가정
+     String isSocialUser = request.getParameter("isSocialUser");
 
-        // 이메일 중복 체크 (서버에서도 반드시)
-        if (service.existsByEmail(id)) {   // ✅ 수정
-            request.setAttribute("msg", "이미 사용 중인 이메일입니다.");
-            return "user/memberJoin";
-        }
+     // 1. 서버단 필수 검증
+     if (id == null || id.trim().isEmpty()) {
+         request.setAttribute("msg", "이메일 정보가 없습니다.");
+         return "user/memberJoin";
+     }
 
-        // VO 세팅
-        UserVO vo = new UserVO();
-        vo.setId(id);
-        String encodedPassword = passwordEncoder.encode(password); 
-        vo.setPassword(encodedPassword);
-        
-        vo.setUserName(userName);
-        vo.setUserPhone(userPhone);
-        vo.setUserRole("USER");
-        vo.setEasyLogin(false);
-        vo.setDeleted(false);
-//Java Bean 규격에 따라 변수명이 isEasyLogin (소문자 is로 시작)인 경우,
- //Lombok은 setIsEasyLogin()이 아니라 **setEasyLogin()**이라는 이름으로 메서드를 생성합니다.
-        service.insert(vo);  // ✅ 수정 (void)
+     // 2. 이메일 중복 체크 (id 필드에 이메일이 들어있으므로)
+     if (service.existsByEmail(id)) {
+         request.setAttribute("msg", "이미 가입된 계정입니다.");
+         return "user/memberJoin";
+     }
 
-        return "redirect:/user/login.do";
-    }
+     // 3. VO 세팅
+     UserVO vo = new UserVO();
+     vo.setId(id); // VO의 id 필드에 이메일 저장
+     vo.setUserName(userName);
+     vo.setUserPhone(userPhone);
+     vo.setUserRole("USER");
+     vo.setDeleted(false);
 
-    
+     // 4. 소셜 유저 여부에 따른 분기 처리
+     if ("Y".equals(isSocialUser)) {
+         vo.setEasyLogin(true); 
+         // 소셜 유저는 임의의 고정 비밀번호를 암호화하여 저장 (로그인 시 사용되지는 않지만 DB 제약조건 대비)
+         vo.setPassword(passwordEncoder.encode("SOCIAL_AUTH_TEMP_PW")); 
+     } else {
+         vo.setEasyLogin(false);
+         // 일반 유저는 입력받은 비밀번호 암호화
+         if (password != null && !password.isEmpty()) {
+             vo.setPassword(passwordEncoder.encode(password));
+         }
+     }
+
+     // 5. DB 인서트
+     service.insert(vo);
+
+     // 6. [수정] 가입 성공 후 소셜 관련 세션 확실히 제거 (키값 맞춤)
+     if ("Y".equals(isSocialUser)) {
+         session.removeAttribute("socialId"); // socialEmail 아님!
+         session.removeAttribute("socialName");
+         session.removeAttribute("isSocial");
+     }
+
+     System.out.println("===> 회원가입 완료: " + id + " (소셜여부: " + isSocialUser + ")");
+     return "redirect:/user/login.do";
+ }    
     @ResponseBody
     @RequestMapping(value="/checkEmail.do", method=RequestMethod.GET, produces="application/json; charset=UTF-8")
     public Map<String, Object> checkEmail(@RequestParam("id") String id) {

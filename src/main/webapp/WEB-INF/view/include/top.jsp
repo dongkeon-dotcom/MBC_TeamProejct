@@ -61,7 +61,7 @@
                 <button type="submit" class="btn btn-sm btn-outline-dark">검색</button>
             </form>
 
-            <div class="user-menu">
+         <div class="user-menu">
                 <%-- 로그아웃 상태일 때 --%>
                 <sec:authorize access="isAnonymous()">
                     <a href="${path}/user/login.do" class="me-2">로그인</a>
@@ -70,14 +70,44 @@
                     <a href="${path}/user/login.do">장바구니</a>
                 </sec:authorize>
 
-                <%-- 로그인 상태일 때 --%>
-                <sec:authorize access="isAuthenticated()">
-                    <span class="me-3">
-                        <strong><sec:authentication property="principal.username"/></strong>님 
-                    </span>
+               <%-- 로그인 상태일 때 --%>
+<sec:authorize access="isAuthenticated()">
+    <sec:authentication property="principal" var="principal" />
+    <span class="me-3">
+        <strong>
+            <c:choose>
+                <%-- 소셜 로그인인지 확인하는 안전한 방법: principal 클래스명 확인 --%>
+                <c:when test="${fn:contains(principal, 'DefaultOAuth2User') or fn:contains(principal, 'OAuth2User')}">
+                    <c:choose>
+                        <%-- 네이버 --%>
+                        <c:when test="${not empty principal.attributes.response}">
+                            ${principal.attributes.response.name}
+                        </c:when>
+                        <%-- 카카오 --%>
+                        <c:when test="${not empty principal.attributes.kakao_account}">
+                            ${principal.attributes.kakao_account.profile.nickname}
+                        </c:when>
+                        <%-- 구글 --%>
+                        <c:when test="${not empty principal.attributes.name}">
+                            ${principal.attributes.name}
+                        </c:when>
+                        <c:otherwise>소셜회원</c:otherwise>
+                    </c:choose>
+                </c:when>
+
+                <%-- 일반 로그인 유저 (attributes 속성이 없는 일반 User 객체) --%>
+                <c:otherwise>
+                    <%-- 일반 로그인은 principal.username 또는 직접 커스텀한 필드(userName) 사용 --%>
+                    ${principal.username} 
+                </c:otherwise>
+            </c:choose>
+        </strong>님 환영합니다.
+    </span>
+
                     <a href="${path}/user/mypage.do" class="me-2">마이페이지</a>
                     <a href="${path}/cart" class="me-2">장바구니</a>
-                    
+
+                    <%-- 로그아웃 버튼 (Security CSRF 적용) --%>
                     <form action="${path}/user/logout.do" method="post" style="display:inline;">
                         <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
                         <button type="submit" style="background:none; border:none; color:blue; text-decoration:underline; cursor:pointer; padding:0;">

@@ -60,6 +60,7 @@
                 </c:if>
             </tbody>
         </table>
+        <button type="button" onclick="setDefaultAddr()">기본배송지로 설정</button>
    <button type="button" onclick="addrDel()">선택사항 삭제</button> 
    <button type="button" onclick="AddADDR()">주소 추가 </button>
     
@@ -71,6 +72,28 @@
 
 
 <script>
+
+function setDefaultAddr() {
+    const checkedBoxes = document.querySelectorAll('.chk:checked');
+    
+    // 1. 유효성 검사
+    if(checkedBoxes.length === 0) {
+        alert("기본 배송지로 설정할 주소를 선택해주세요.");
+        return;
+    }
+    if(checkedBoxes.length > 1) {
+        alert("기본 배송지는 하나만 선택 가능합니다.");
+        return;
+    }
+    
+    const deliveryIdx = checkedBoxes[0].value;
+    
+    if(confirm("이 주소를 기본 배송지로 설정하시겠습니까?")) {
+        // 컨트롤러로 이동
+        location.href = "${path}/delivery/setDefaultAddress.do?deliveryIdx=" + deliveryIdx;
+    }
+}
+
 
 function AddADDR() {
      // 팝업창의 가로, 세로 크기 및 위치 설정
