@@ -1,8 +1,6 @@
 package com.mbcTeam.order;
 
-import java.util.List;
-import java.util.Map;
-
+import java.util.List; 
 
 
 
@@ -18,6 +16,12 @@ public interface OrderService {
 	    List<OrderVO> select(OrderVO vo); 
 	    OrderVO selectOrderByOrderIdx(long orderIdx);
 	    
+	 // OrderService.java
+	    
+	    void insertOrder(OrderVO order, List<OrderItemVO> items);
+	    
+	  
+
 
 	  
 

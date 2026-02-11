@@ -1,12 +1,15 @@
 package com.mbcTeam.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Autowired; 
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import com.mbcTeam.cart.CartService;
 import com.mbcTeam.cart.CartVO;
+import com.mbcTeam.user.UserService;
 import com.mbcTeam.user.UserVO;
 
 import java.util.List;
@@ -21,6 +24,21 @@ public class CartController {
     @Autowired
     private CartService cartService;
 
+    
+    @Autowired
+	private UserService service;
+    
+    private UserVO getLoginUser() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth == null || !auth.isAuthenticated() || "anonymousUser".equals(auth.getPrincipal())) {
+            return null;
+        }
+        // 시큐리티의 username(여기서는 id/email)으로 DB 조회
+        return service.getByEmail(auth.getName());
+    }
+    
+    
+    
     @PostMapping("/add.do")
     public String addCart(@RequestParam long productIdx,
                           @RequestParam long optionIdx,
@@ -42,15 +60,26 @@ public class CartController {
     }
 
     @GetMapping("/cartlist.do")
-    public String listCart(HttpSession session, Model model) {
-        UserVO loginUser = (UserVO) session.getAttribute("loginMember");
+    public String listCart(Model model) {
+        // 1. 시큐리티 컨텍스트에서 로그인 유저 정보 가져오기
+        // (컨트롤러 내부에 getLoginUser() 메서드가 정의되어 있다고 가정합니다)
+        UserVO loginUser = getLoginUser(); 
+
+        // 2. 로그인 체크
         if (loginUser == null) {
             return "redirect:/user/login.do";
         }
+
+        // 3. 로그인된 유저의 idx를 사용하여 장바구니 조회
         List<CartVO> cartList = cartService.selectCart(loginUser.getUserIdx());
+        
+        // 4. JSP로 데이터 전달
         model.addAttribute("cartList", cartList);
+        
         return "cart/cartlist";
-    }
+    } 
+    
+    
 
 
     @PostMapping("/delete.do")

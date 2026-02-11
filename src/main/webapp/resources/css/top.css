@@ -1,35 +1,92 @@
 @charset "UTF-8";
 
-
 /* ===== 기본 설정 ===== */
-body {
+
+html, body {
+  height: 100%;          /* 전체 높이 */
   margin: 0;
-  /* 스크립트로 padding-top이 자동 조절되므로 최소값만 설정 */
+  display: flex;         /* flex 컨테이너 */
+  flex-direction: column;
+}
+
+
+body {
   min-height: 100vh;
 }
 
+/* 본문 영역 */
+.main-content {
+  flex: 1; /* 남는 공간을 채움 */
+}
+
+/* footer */
+footer {
+  background: #c7c0b8;
+  color: #fff;
+  text-align: center;    /* 글씨 중앙 정렬 */
+  padding: 15px 0;
+  font-size: 13px;
+  width: 100%;
+  margin-top: auto;      /* 본문이 짧을 때는 하단에 붙음 */
+}
+
+
+
+/* 모든 링크 기본 밑줄 제거 */
+a {
+  text-decoration: none !important;
+   /* 글자색은 부모 요소 따라가게 */
+}
+
+/* hover 시에도 밑줄 제거 */
+a:hover {
+  text-decoration: none !important;
+  color: #4a4a4a;
+  
+}
+
+
+
 /* ===== 상단바 (Header) ===== */
 .top-header {
-  background: #c7c0b8; /* 기존 색상 유지 */
+  background: #c7c0b8;
   color: #fff;
   position: fixed;
-  top: 0;
-  left: 0;
+  top: 0; left: 0;
   width: 100%;
   z-index: 1000;
   box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-  padding: 10px 0; /* 상하 여백 */
+  padding: 10px 0;
 }
 
-/* 내부 컨테이너 정렬 */
-.top-header .container-fluid {
+
+.top-header .container {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  max-width: 1400px; /* 너무 퍼지지 않게 제한 */
-  margin: 0 auto;
-  padding: 0 20px;
+  flex-wrap: nowrap;
+  white-space: nowrap;
+  overflow: visible;   /* 여기 수정: 서브메뉴가 잘리지 않도록 */
 }
+
+
+.logo h1 {
+  margin: 0;
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.logo a {
+  color: #fff;
+  text-decoration: none;
+  font-family: 'Arial', sans-serif;
+  letter-spacing: 2px;
+}
+
+.logo a:hover {
+  color: #4a4a4a;
+}
+
 
 /* ===== 네비게이션 (Navigation) ===== */
 nav {
@@ -37,18 +94,29 @@ nav {
   align-items: center;
 }
 
-.main-menu {
+.main-nav ul.menu {
   display: flex;
-  gap: 5px;
+  gap: 10px;
   margin: 0;
   padding: 0;
   list-style: none;
+  flex-wrap: nowrap;   /* 줄바꿈 금지 */
 }
+
+
+.main-nav ul.menu li a {
+  text-decoration: none !important;
+}
+
+.main-nav ul.menu li a:hover {
+  text-decoration: none !important; /* hover 시에도 밑줄 제거 */
+}
+
 
 /* 메뉴 항목 공통 */
 .has-submenu {
-  position: relative; /* 서브메뉴의 기준점 */
-  padding-bottom: 5px; /* 마우스가 서브메뉴로 내려갈 때 끊김 방지 */
+  position: relative;
+  padding-bottom: 5px;
 }
 
 .has-submenu > a {
@@ -61,16 +129,20 @@ nav {
 }
 
 .has-submenu > a:hover {
-  color: #4a4a4a; /* 호버 시 글자색 변경 */
+  color: #4a4a4a;
+}
+
+.has-submenu:hover .submenu {
+  display: block;
 }
 
 /* ===== 서브메뉴 (Dropdown) ===== */
 .submenu {
-  display: none; /* 기본 숨김 */
+  display: none;
   position: absolute;
-  top: 100%; /* 부모의 아래쪽에 위치 */
+  top: 100%;
   left: 0;
-  background: #f8f9fa; /* 밝은 톤으로 변경하여 가독성 확보 */
+  background: #f8f9fa;
   min-width: 160px;
   list-style: none;
   margin: 0;
@@ -78,8 +150,10 @@ nav {
   border-radius: 4px;
   box-shadow: 0 4px 12px rgba(0,0,0,0.15);
   border: 1px solid #ddd;
-  z-index: 999;
+  z-index: 2000; /* 더 높게 설정 */
 }
+
+
 
 .submenu li a {
   display: block;
@@ -105,12 +179,14 @@ nav {
   display: flex;
   align-items: center;
   gap: 15px;
+  flex-wrap: nowrap;   /* 줄바꿈 금지 */
+  white-space: nowrap; /* 줄바꿈 방지 */
 }
 
 /* 검색창 스타일 */
 .search-form input {
   padding: 5px 12px;
-  border-radius: 20px; /* 둥근 검색창 */
+  border-radius: 20px;
   border: 1px solid #fff;
   background: rgba(255, 255, 255, 0.9);
   font-size: 14px;
@@ -127,6 +203,7 @@ nav {
   display: flex;
   align-items: center;
   font-size: 14px;
+  flex-wrap: nowrap;
 }
 
 .user-menu a {
@@ -142,10 +219,9 @@ nav {
 }
 
 .user-menu strong {
-  color: #333; /* 사용자 이름 강조 */
+  color: #333;
 }
 
-/* 로그아웃 버튼 (form 내부 button) */
 .user-menu button {
   font-size: 14px;
   font-weight: normal;
@@ -154,29 +230,4 @@ nav {
 
 .user-menu button:hover {
   opacity: 0.7;
-}
-
-/* 반응형 모바일 대응 (간단) */
-@media (max-width: 992px) {
-  .top-header .container-fluid {
-    flex-direction: column;
-    gap: 10px;
-  }
-  .main-menu {
-    gap: 0;
-  }
-  .main-menu > li > a {
-    font-size: 13px;
-    padding: 5px 8px;
-  }
-}
-
-/* ===== Footer ===== */
-footer {
-    background: #c7c0b8; /* 푸터 배경색: 어두운 회색 */
-    color: #fff; /* 글자색: 흰색 */
-    text-align: center; /* 텍스트 중앙 정렬 */
-    padding: 15px 0; /* 위아래 여백 15px */
-    font-size: 13px; /* 글자 크기 13px */
-    width: 100%; /* 화면 전체 폭 차지 */
 }

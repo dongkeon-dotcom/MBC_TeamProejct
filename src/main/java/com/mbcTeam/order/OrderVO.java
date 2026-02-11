@@ -16,4 +16,5 @@ public class OrderVO {
     private String orderDate;                // 주문일자
     
     
+    
 }

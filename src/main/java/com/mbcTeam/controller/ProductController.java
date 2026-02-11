@@ -1,7 +1,7 @@
 package com.mbcTeam.controller;
 
-import java.io.File;
-import java.time.LocalDate;
+import java.io.File; 
+
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -139,7 +139,7 @@ public class ProductController {
 			service.insertOption(option);
 		}
 
-		return "redirect:/product/list.do";
+		return "redirect:/product/productList.do";
 	}
 
 	@GetMapping("/list.do")
@@ -384,14 +384,6 @@ public class ProductController {
 	}
 	
 	
-	@GetMapping("/category.do")
-	public String categoryList(@RequestParam("category") String category, Model model) {
-	    List<ProductVO> productList = service.getProductsByCategory(category);
-	    model.addAttribute("productList", productList);
-	    model.addAttribute("category", category);
-	    return "product/productList"; // 카테고리별 상품 목록 JSP
-	}
-
 
 
 }

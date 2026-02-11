@@ -73,7 +73,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
             
             // 2. /user/** 전체를 permitAll 하셨으므로, 사실 위 설정들이 여기에 포함됩니다.
             // 만약 마이페이지처럼 '로그인한 사람만' 가야 하는 곳이 있다면 나중에 .authenticated()로 세밀하게 조정하세요.
-            .antMatchers("/user/**").permitAll() 
+            .antMatchers("/user/**").permitAll()  
+            
+            
+            
             
             .anyRequest().authenticated() // 그 외 모든 요청은 로그인 필요
             .and()

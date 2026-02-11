@@ -91,43 +91,72 @@
 
 	<!-- 세일 상품 카드 -->
 	<div class="row">
-		<c:if test="${empty saleProducts}">
-			<p class="text-center">세일 상품 데이터가 없습니다.</p>
-		</c:if>
-		<c:forEach var="p" items="${saleProducts}">
-			<div class="col-md-3 mb-4 product-card" data-category="${p.category}">
-				<div class="card h-100 shadow-sm">
-					<a
-						href="${path}/userproduct/userproductdetail.do?productIdx=${p.productIdx}">
+    <c:if test="${empty saleProducts}">
+        <p class="text-center">세일 상품 데이터가 없습니다.</p>
+    </c:if>
 
-						<c:choose>
-							<c:when test="${not empty p.productMainImg}">
-								<img
-									src="${path}/resources/images/ProductMainImg/${p.productMainImg}"
-									class="product-img" alt="${p.productName}">
-							</c:when>
-							<c:otherwise>
-								<div class="no-image">이미지 준비중</div>
-							</c:otherwise>
-						</c:choose>
+    <c:forEach var="p" items="${saleProducts}">
+        <div class="col-md-3 mb-4 product-card" data-category="${p.category}">
+            <div class="card h-100 shadow-sm">
+                <!-- 이미지 -->
+                <a href="${path}/userproduct/userproductdetail.do?productIdx=${p.productIdx}">
+                    <c:choose>
+                        <c:when test="${not empty p.productMainImg}">
+                            <img src="${path}/resources/images/ProductMainImg/${p.productMainImg}" 
+                                 class="product-img" alt="${p.productName}">
+                        </c:when>
+                        <c:otherwise>
+                            <div class="no-image">이미지 준비중</div>
+                        </c:otherwise>
+                    </c:choose>
+                </a>
+
+                <!-- 상품 정보 -->
+                <div class="card-body text-center">
+                    <h5 class="card-title">${p.productName}</h5>
+
+                    <!-- 가격/할인 표시 -->
+					<c:choose>
+					    <c:when test="${p.discountRate > 0}">
+					        <p class="card-text product-price">
+					            <span class="original-price">
+					                ${(p.price * 100) / (100 - p.discountRate)}원
+					            </span><br>
+					            <span class="discounted-price">${p.price}원</span>
+					            <span> ${p.discountRate}% </span>
+					        </p>
+					    </c:when>
+					    <c:otherwise>
+					        <p class="card-text product-price">${p.price}원</p>
+					    </c:otherwise>
+					</c:choose>
 
 
-					</a>
-					<div class="card-body text-center">
-						<h5 class="card-title">${p.productName}</h5>
-						<p class="card-text">
-							<span class="text-muted text-decoration-line-through">
-								${(p.price * 100) / (100 - p.discountRate)}원 </span><br> <span
-								class="text-danger fw-bold">${p.price}원</span>
-							<c:if test="${p.discountRate > 0}">
-								<span class="badge bg-success ms-2">${p.discountRate}% 할인</span>
-							</c:if>
-						</p>
-					</div>
-				</div>
-			</div>
-		</c:forEach>
-	</div>
+                    <!-- 리뷰/별점 -->
+                    <div class="product-rating">
+                        <c:forEach begin="1" end="5" var="i">
+                            <c:choose>
+                                <c:when test="${i <= (p.avgRating != null ? p.avgRating : 0)}">★</c:when>
+                                <c:otherwise>☆</c:otherwise>
+                            </c:choose>
+                        </c:forEach>
+                        <span class="rating-text">
+                            <c:choose>
+                                <c:when test="${not empty p.reviewCount and p.reviewCount > 0}">
+                                   ${p.reviewCount}
+                                </c:when>
+                                <c:otherwise>
+                                    ( 0 )
+                                </c:otherwise>
+                            </c:choose>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </c:forEach>
+</div>
+
 
 </section>
 
