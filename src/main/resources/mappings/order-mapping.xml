@@ -140,15 +140,21 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
    </select>
    
    <sql id = "searchInclude">
-	<where>       
-       <if test="search == 'orderId'">
-           AND INSTR(${prefix}order_Idx, #{keyword}) > 0
-       </if>
-       <if test="search == 'userName'">
-           AND INSTR(${prefix}user_Name, #{keyword}) > 0
-       </if>
+   <where>
+     <if test="search == 'orderId'">
+         AND INSTR(${prefix}order_Idx, #{keyword}) > 0
+     </if>
+     <if test="search == 'userName'">
+         AND INSTR(${prefix}receiver, #{keyword}) > 0
+     </if>
+     <if test="startDate != null and startDate != ''">
+		AND o.order_Date >= #{startDate}
+	 </if>
+	 <if test="endDate != null and endDate != ''">
+		AND o.order_Date &lt;= CONCAT (#{endDate}, ' 23:59:59') <!-- 23:59:59 앞에 띄어쓰기 있어야됨 -->
+	 </if>
 	</where>
-</sql>
+	</sql>
    
    <select id="GET_ORDER_MANAGEMENT" resultType="OrderManagementDTO">
    SELECT
@@ -163,23 +169,19 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
    		oi.color,
    		oi.quantity
    FROM Orders o
-   JOIN OrderItems oi ON o.order_Idx = oi.order_Idx
-   <include refid="searchInclude">
-   		<property name="prefix" value="o."/>
-   </include>
-   <where>
-   		<if test="startDate != null and startDate != ''">
-   			AND o.order_Date >= #{startDate}
-   		</if>
-   		<if test="endDate != null and endDate != ''">
-   			AND o.order_Date &lt;= CONCAT (#{endDate}, '23:59:59')
-   		</if>
-   </where>
-   ORDER BY o.order_Idx desc limit #{startIdx}, #{pageSize};
+   JOIN OrderItems oi ON o.order_Idx = oi.order_Idx   
+	<include refid="searchInclude">
+		<property name="prefix" value="o."/>
+	</include>
+   ORDER BY o.order_Idx desc limit #{startIdx}, #{pageSize}
    </select>
+   
    <select id="GET_ORDER_TOTAL_COUNT" parameterType="OrderManagementDTO" resultType="int">
    SELECT count(*) as totalCount from Orders o
-   JOIN OrderItems oi ON o.order_Idx = oi.order_Idx;   
+   JOIN OrderItems oi ON o.order_Idx = oi.order_Idx
+   	<include refid="searchInclude">
+		<property name="prefix" value="o."/>
+	</include>   
    </select>
    
    

@@ -13,18 +13,18 @@
                     <span class="filter-label">결제일</span>
                 </div>
                 <div class="col-auto d-flex align-items-center gap-2">
-                    <input type="date" name="startDate" class="form-control form-control-sm">
+                    <input type="date" name="startDate" value="${param.startDate}"  class="form-control form-control-sm">
                     <span>~</span>
-                    <input type="date" name="endDate" class="form-control form-control-sm">
+                    <input type="date" name="endDate" value="${param.endDate}" class="form-control form-control-sm">
                 </div>
                 <div class="col-auto ms-4">
-                    <select class="form-select form-select-sm" name="searchType">
-                        <option value="orderId">주문번호</option>
-                        <option value="userName">주문자</option>
+                    <select class="form-select form-select-sm" name="search">
+                        <option value="orderId" ${param.search == 'orderId' ? 'selected' : '' }>주문번호</option>
+                        <option value="userName" ${param.search == 'userName' ? 'selected' : '' }>주문자</option>
                     </select>
                 </div>
                 <div class="col-auto">
-                    <input type="text" name="keyword" class="form-control form-control-sm" style="width:200px;">
+                    <input type="text" name="keyword" value="${param.keyword}" class="form-control form-control-sm" style="width:200px;">
                 </div>
                 <div class="col-auto">
                     <button type="submit" class="btn btn-sm btn-dark">검색</button>

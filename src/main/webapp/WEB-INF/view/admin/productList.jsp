@@ -3,7 +3,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <c:import url="/WEB-INF/view/include/top.jsp" />
-<link href="${path}/resources/css/product/adminProductList.css" rel="stylesheet">
+<link href="${path}/resources/css/admin/adminProductList.css" rel="stylesheet">
 
 <section>
 
@@ -11,7 +11,7 @@
     <div class="table-container shadow-sm mt-4">
         
         <div class="d-flex justify-content-between mb-3">
-            <form action="${path}/product/adminProductList.do" class="d-flex gap-2" >
+            <form action="${path}/admin/adminProductList.do" class="d-flex gap-2" >
                 <select class="form-select search-select" name=search>
                     <option value="code">제품코드</option>
                     <option value="name">제품이름</option>
@@ -41,7 +41,7 @@
                     <td><input type="checkbox" class="form-check-input item-check" value="${m.productIdx}"></td>
                     <td>${m.productIdx}</td>
                     <td>
-                    <a href="${path}/product/adminProductEdit.do?productIdx=${m.productIdx}">
+                    <a href="${path}/admin/adminProductEdit.do?productIdx=${m.productIdx}">
                     ${m.productName}
                     </a>
                     </td>
@@ -74,7 +74,7 @@
 		<nav aria-label="Page navigation">
 		    <ul class="pagination justify-content-center">
 				<!-- paging 처음 생성 -->
-		        <c:url var="firstPageUrl" value="/product/adminProductList.do">
+		        <c:url var="firstPageUrl" value="/admin/adminProductList.do">
 		            <c:param name="startIdx" value="0"/>
 		            <c:param name="search" value="${search}"/>
 		            <c:param name="keyword" value="${keyword}"/>
@@ -87,7 +87,7 @@
 		
 		        <c:choose>
 		            <c:when test="${listStartPage > pageListSize}">
-		                <c:url var="beforePageUrl" value="/product/adminProductList.do">
+		                <c:url var="beforePageUrl" value="/admin/adminProductList.do">
 		                    <c:param name="startIdx" value="${(listStartPage - pageListSize - 1) * pageSize}" />
 		                    <c:param name="search" value="${search}"/>
 		                    <c:param name="keyword" value="${keyword}"/>
@@ -102,7 +102,7 @@
 		        </c:choose>
 		
 		        <c:forEach var="i" begin="${listStartPage}" end="${listEndPage}">
-		            <c:if test="${i <= totalPage}"> <c:url var="forPageUrl" value="/product/adminProductList.do">
+		            <c:if test="${i <= totalPage}"> <c:url var="forPageUrl" value="/admin/adminProductList.do">
 		                    <c:param name="startIdx" value="${(i-1) * pageSize}"/>
 		                    <c:param name="search" value="${search}"/>
 		                    <c:param name="keyword" value="${keyword}"/>
@@ -115,7 +115,7 @@
 		
 		        <c:choose>
 		            <c:when test="${listEndPage < totalPage}">
-		                <c:url var="afterPageUrl" value="/product/adminProductList.do">
+		                <c:url var="afterPageUrl" value="/admin/adminProductList.do">
 		                    <c:param name="startIdx" value="${listEndPage * pageSize}" />
 		                    <c:param name="search" value="${search}"/>
 		                    <c:param name="keyword" value="${keyword}"/>
@@ -129,7 +129,7 @@
 		            </c:otherwise>
 		        </c:choose>
 		
-		        <c:url var="endPageUrl" value="/product/adminProductList.do">
+		        <c:url var="endPageUrl" value="/admin/adminProductList.do">
 		            <c:param name="startIdx" value="${(totalPage-1) * pageSize}"/>
 		            <c:param name="search" value="${search}"/>
 		            <c:param name="keyword" value="${keyword}"/>
@@ -223,7 +223,7 @@ document.addEventListener('DOMContentLoaded', function() {
         if (confirm(selectedIds.length + "개의 항목을 변경하시겠습니까?")) {
             $.ajax({
                 type: 'POST',
-                url: path + '/product/adminUpdateStatus.do',                
+                url: path + '/admin/adminUpdateStatus.do',                
                 traditional: true, 
                 data: {
                     'productIdxs': selectedIds,

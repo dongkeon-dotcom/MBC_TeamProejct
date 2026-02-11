@@ -3,7 +3,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <c:import url="/WEB-INF/view/include/top.jsp" />
-<link href="${path}/resources/css/product/productAdd.css"
+<link href="${path}/resources/css/admin/productAdd.css"
 	rel="stylesheet">
 
 <section>
@@ -11,7 +11,7 @@
 	<div class="container my-5" style="max-width: 800px;">
 		<h2 class="text-center mb-5 fw-bold">상품 정보 수정 페이지</h2>
 
-		<form action="${path}/product/adminProductEditOK.do" method="post"
+		<form action="${path}/admin/adminProductEditOK.do" method="post"
 			enctype="multipart/form-data" onsubmit="return handleFormSubmit(event)">
 			<input type="hidden" name="productIdx" value = "${m.productIdx }"/>
 			<!-- OldImgDelete, OldOptionDelete 값 담아두는용 -->

@@ -22,8 +22,8 @@
                 <sec:authorize access="hasRole('ROLE_ADMIN')">
                     <li class="has-submenu me-3"><a href="#">관리자</a>
                         <ul class="submenu">
-                            <li><a href="${path}/product/productAddForm.do">상품등록</a></li>
-                            <li><a href="${path}/product/adminProductList.do">상품목록</a></li>
+                            <li><a href="${path}/admin/productAddForm.do">상품등록</a></li>
+                            <li><a href="${path}/admin/adminProductList.do">상품목록</a></li>
                             <li><a href="${path}/admin/salesChart.do">매출통계</a></li>
                             <li><a href="${path}/admin/userManagement.do">회원관리</a></li>
                             <li><a href="${path}/admin/orderManagement.do">주문관리</a></li>
