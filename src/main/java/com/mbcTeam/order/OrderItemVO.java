@@ -17,6 +17,7 @@ public class OrderItemVO {
     private String size;                // 사이즈
     private int quantity;                // 구매수량
     private String productMainImg;            // 제품대표이미지
+    private int status;					// 상태(0=주문확인대기, 1=주문확인완료)
     
     
     

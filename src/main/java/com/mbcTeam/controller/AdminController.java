@@ -28,6 +28,7 @@ import com.mbcTeam.dto.OrderManagementDTO;
 import com.mbcTeam.dto.ProductRequestDTO;
 import com.mbcTeam.dto.UserManagementDTO;
 import com.mbcTeam.order.OrderItemVO;
+import com.mbcTeam.order.OrderService;
 import com.mbcTeam.product.ProductDescImgVO;
 import com.mbcTeam.product.ProductImgVO;
 import com.mbcTeam.product.ProductOptionVO;
@@ -43,6 +44,9 @@ public class AdminController {
 
 	@Autowired
 	private ProductService productService;
+	
+	@Autowired
+	private OrderService orderService;
 	
 	@Autowired
 	private GeminiService geminiService;
@@ -384,6 +388,17 @@ public class AdminController {
 		productService.adminUpdateProductStatus(vo);
 		return "T";
 
+	}
+	
+	@ResponseBody
+	@PostMapping("updateOrderStatus.do")
+	public String updateOrderStatus(OrderManagementDTO dto) throws Exception{
+		System.out.println("******************************************");
+		System.out.println("DTO: "+ dto);
+		
+		service.adminUpdateOrderStatus(dto);
+		
+		return "success";
 	}
 
 	@ResponseBody

@@ -67,4 +67,10 @@ public class AdminDaoImpl implements AdminDao {
 		return mybatis.selectOne("ORDER.GET_ORDER_TOTAL_COUNT", dto);
 	}
 
+	@Override
+	public void adminUpdateOrderStatus(OrderManagementDTO dto) {
+		mybatis.update("ORDER.UPDATE_ORDER_STATUS",dto);
+		
+	}
+
 }

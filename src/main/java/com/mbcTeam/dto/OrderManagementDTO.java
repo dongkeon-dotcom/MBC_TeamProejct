@@ -16,6 +16,7 @@ public class OrderManagementDTO {
 	private String size;
 	private String color;
 	private int quantity;
+	private int itemIdx;
 	
 	
 	

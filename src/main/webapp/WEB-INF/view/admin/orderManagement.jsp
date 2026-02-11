@@ -37,9 +37,9 @@
         <table class="table table-hover align-middle mb-0">
             <thead>
                 <tr>
+                	<th>주문번호</th>
                     <th>상태</th>
-                    <th>결제일</th>
-                    <th>주문번호</th>
+                    <th>결제일</th>                    
                     <th>주문자</th>
                     <th>연락처</th>
                     <th>배송주소 (우편번호)</th>
@@ -52,9 +52,20 @@
             <tbody>
                 <c:forEach var="order" items="${orderList}">
                     <tr>
-                        <td>${order.status}</td>
-                        <td>${order.orderDate}</td>
-                        <td>${order.orderIdx}</td>
+                    	<td>${order.orderIdx}-${order.itemIdx}</td>
+                    	<td>
+                        <c:choose>
+                        	<c:when test="${order.status == 0}">
+                        		<button type="button" class="btn btn-sm btn-outline-primary status-btn"
+                        				data-idx="${order.itemIdx}" data-status="0">주문</button>                        	
+                        	</c:when>
+                        	<c:otherwise>
+                        		<button type="button" class="btn btn-sm btn-success status-btn"
+                        				data-idx="${order.itemIdx}" data-status="1">완료</button>
+                        	</c:otherwise>
+                        </c:choose>
+                        </td>
+                        <td>${order.orderDate}</td>                        
                         <td>${order.receiver}</td>
                         <td>${order.deliveryPhone}</td>
                         <td>${order.fullAddress}</td>
@@ -136,5 +147,46 @@
 	</nav>
 
 </section>
+<script src="https://code.jquery.com/jquery-1.10.2.js"></script>
+<script>
+$(document).ready(function() {
+    $('.status-btn').on('click', function() {
+        const btn = $(this);
+        const itemIdx = btn.data('idx');
+        const currentStatus = btn.data('status');
+        // 상태 전환: 0이면 1로, 1이면 0으로
+        const nextStatus = currentStatus === 0 ? 1 : 0;
+
+        if (!confirm('주문 상태를 변경하시겠습니까?')) return;
+		
+        const path = '${path}';
+        
+        $.ajax({
+            url: path + '/admin/updateOrderStatus.do',
+            type: 'POST',
+            data: { 
+            	itemIdx: itemIdx, 
+                status: nextStatus 
+            },
+            success: function(response) {
+                if(response === "success") {
+                    // 성공 시 버튼 디자인 및 텍스트 즉시 변경
+                    if (nextStatus === 1) {
+                        btn.text('완료').removeClass('btn-outline-primary').addClass('btn-success').data('status', 1);
+                    } else {
+                        btn.text('주문').removeClass('btn-success').addClass('btn-outline-primary').data('status', 0);
+                    }
+                    alert('상태가 변경되었습니다.');
+                } else {
+                    alert('변경 실패: ' + response);
+                }
+            },
+            error: function() {
+                alert('서버 통신 오류가 발생했습니다.');
+            }
+        });
+    });
+});
+</script>
 
 <c:import url="/WEB-INF/view/include/bottom.jsp" />

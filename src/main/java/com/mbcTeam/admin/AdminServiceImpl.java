@@ -63,4 +63,10 @@ public class AdminServiceImpl implements AdminService {
 	public int getOrderTotalCount(OrderManagementDTO dto) {
 		return dao.getOrderTotalCount(dto);
 	}
+
+	@Override
+	public void adminUpdateOrderStatus(OrderManagementDTO dto) {
+		dao.adminUpdateOrderStatus(dto);
+		
+	}
 }

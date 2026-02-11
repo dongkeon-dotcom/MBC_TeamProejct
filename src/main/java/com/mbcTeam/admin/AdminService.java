@@ -22,6 +22,7 @@ public interface AdminService {
     //주문관리 페이지용
     List<OrderManagementDTO> getOrderManagement(OrderManagementDTO dto);
     int getOrderTotalCount(OrderManagementDTO dto);
+    void adminUpdateOrderStatus(OrderManagementDTO dto); //주문 상태(주문,완료) 변경
     
     
     //구매자 이력 확인페이지

@@ -158,9 +158,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
    
    <select id="GET_ORDER_MANAGEMENT" resultType="OrderManagementDTO">
    SELECT
-   		o.status,
+   		oi.status,
    		o.order_Date,
    		o.order_Idx,
+   		oi.item_Idx,
    		o.receiver,
    		o.delivery_Phone,
    		CONCAT(o.address, ' ', o.Extra_Address, '(', o.zipcode, ')') AS fullAddress,
@@ -183,6 +184,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		<property name="prefix" value="o."/>
 	</include>   
    </select>
+   
+   <update id="UPDATE_ORDER_STATUS" parameterType="OrderManagementDTO">
+   		UPDATE OrderItems
+   		SET status = #{status}
+   		WHERE item_Idx = #{itemIdx}
+   </update>
    
    
    
