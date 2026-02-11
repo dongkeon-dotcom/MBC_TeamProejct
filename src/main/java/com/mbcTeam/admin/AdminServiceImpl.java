@@ -6,6 +6,7 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.mbcTeam.dto.OrderManagementDTO;
 import com.mbcTeam.dto.UserManagementDTO;
 import com.mbcTeam.order.OrderItemVO;
 import com.mbcTeam.order.OrderVO;
@@ -51,5 +52,15 @@ public class AdminServiceImpl implements AdminService {
 	@Override
 	public List<OrderItemVO> getUserDetailOrderItems(long value) {
 		return dao.getUserDetailOrderItems(value);
+	}
+
+	@Override
+	public List<OrderManagementDTO> getOrderManagement(OrderManagementDTO dto) {
+		return dao.getOrderManagement(dto);
+	}
+
+	@Override
+	public int getOrderTotalCount(OrderManagementDTO dto) {
+		return dao.getOrderTotalCount(dto);
 	}
 }

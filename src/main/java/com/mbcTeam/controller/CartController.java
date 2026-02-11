@@ -23,7 +23,6 @@ public class CartController {
 
     @Autowired
     private CartService cartService;
-
     
     @Autowired
 	private UserService service;
@@ -80,7 +79,6 @@ public class CartController {
     } 
     
     
-
 
     @PostMapping("/delete.do")
     public String deleteCart(@RequestParam long cartIdx, HttpSession session) {

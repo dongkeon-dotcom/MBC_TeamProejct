@@ -21,7 +21,7 @@
 						style="width: 110px;">
 						<option value="name" ${search == 'name' ? 'selected' : ''}>이름</option>
 						<option value="id" ${search == 'id' ? 'selected' : ''}>이메일</option>
-						<option value="code" ${search == 'code' ? 'selected' : ''}>번호</option>
+						<option value="code" ${search == 'code' ? 'selected' : ''}>회원번호</option>
 					</select> <input type="text" class="form-control" style="width: 250px;"
 						name="keyword" value="${keyword}" placeholder="검색어를 입력하세요">
 					<button type="submit" class="btn btn-dark">검색</button>

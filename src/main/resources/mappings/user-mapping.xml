@@ -116,12 +116,15 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
        <if test="search == 'name'">
            AND INSTR(${prefix}user_Name, #{keyword}) > 0
        </if>
+       <if test="search == 'id'">
+       	AND INSTR(${prefix}id, #{keyword}) > 0
+       </if>
 	</where>
 </sql>
 
 
 <!-- ADMIN 관리자_회원관리 페이지 용  -->
-<select id="getUserManagement" resultType="com.mbcTeam.dto.UserManagementDTO">
+<select id="getUserManagement" resultType="UserManagementDTO">
 	select
 		u.reg_date,
 		u.user_idx,
@@ -145,7 +148,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	]]>
 </select>
 
-<select id="GET_USER_TOTAL_COUNT" parameterType="com.mbcTeam.dto.UserManagementDTO" resultType="int">
+<select id="GET_USER_TOTAL_COUNT" parameterType="UserManagementDTO" resultType="int">
 	select count(*) as totalCount from users u
 	<include refid="searchInclude">
 		<property name="prefix" value=""/>
