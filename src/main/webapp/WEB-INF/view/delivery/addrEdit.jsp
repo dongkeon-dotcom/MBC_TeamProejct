@@ -76,7 +76,7 @@
 
     <div style="margin-top: 20px; text-align: center;">
         <button type="submit" class="btn-submit">수정완료</button>
-        <button type="button" onclick="window.close()">취소</button>
+        <button type="button" onclick="cancelAction()">취소</button>
     </div>
 </form>
 </div>
@@ -114,7 +114,7 @@ function execDaumPostcode() {
 }
 
 
-function window.close(){
+function cancelAction(){
 	
 	alert("취소하시겠습니까?  ")
 	location.href = "${path}/delivery/addressList.do";

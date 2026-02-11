@@ -142,12 +142,12 @@ public class DeliveryController {
     }
  // 7. 수정 실행 (목록에서 바로 수정할 경우 등)
     @PostMapping("/addressUpdateProcess.do")
-    public String addressUpdateProcess(DeliveryVO vo, @RequestParam(value="defaultCheck", defaultValue="false") boolean defaultCheck) {
+    public String addressUpdateProcess(DeliveryVO vo, @RequestParam(value="defaultCheck", defaultValue="false") boolean defaultAddress) {
         UserVO loginUser = getLoginUser();
         if (loginUser == null) return "redirect:/user/login.do";
 
         vo.setUserIdx(loginUser.getUserIdx()); // 사용자 번호 유지
-        vo.setDefaultAddress(defaultCheck);
+        vo.setDefaultAddress(defaultAddress);
         
         dservice.addrUpdate(vo); 
         

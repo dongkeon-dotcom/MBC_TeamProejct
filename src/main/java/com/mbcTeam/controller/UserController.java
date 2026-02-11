@@ -7,7 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-
+import javax.servlet.http.HttpServletRequest;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -306,7 +306,7 @@ MemberMapper memberMapper;
             @RequestParam(value="reviewFiles", required=false) MultipartFile[] files, 
             @RequestParam("orderIdx") int orderIdx, 
             HttpServletRequest request) throws Exception {
-
+    	System.out.println("아이템 인덱스 확인: " + vo.getItemIdx());
         UserVO loginMember = getLoginUser();
         if (loginMember == null) return "redirect:/user/login.do";
 
@@ -338,15 +338,75 @@ MemberMapper memberMapper;
         }
         return "redirect:/user/orderDetailList.do?orderIdx=" + orderIdx;
     }
-	
-	@GetMapping(value = "/reviewEdit.do")
-	public String reviewEdit() {
-		System.out.println("/reviewEdit.DO");
+    @GetMapping(value = "/reviewEdit.do")
+    public String reviewEdit(@RequestParam("reviewIdx") long reviewIdx, 
+                             @RequestParam("orderIdx") long orderIdx, // 1. 여기서 orderIdx를 꼭 받아야 합니다!
+                             Model model) {
+        
+        System.out.println("/reviewEdit.DO 요청 들어옴! 리뷰번호: " + reviewIdx + ", 주문번호: " + orderIdx);
 
-		return "user/reviewEdit";
+        // 1. DB에서 기존 후기 텍스트 데이터를 가져옵니다.
+        ReviewVO vo = rservice.getReviewOne(reviewIdx);
+         
+        // 2. DB에서 해당 리뷰에 달린 이미지 리스트를 가져옵니다.
+        List<ReviewImageVO> imgList = rservice.getReviewImages(reviewIdx);
+
+        // 3. 보따리(Model)에 담아서 JSP로 보냅니다.
+        model.addAttribute("reviewVO", vo);
+        model.addAttribute("imgList", imgList);
+        model.addAttribute("orderIdx", orderIdx); // 2. JSP로 orderIdx를 넘겨줘야 hidden에 담을 수 있어요!
+
+        return "user/reviewEdit";
+    }
+	
+	// 2. 실제 수정 실행 (DB 업데이트)
+
+	@RequestMapping(value = "/reviewUpdate.do", method = RequestMethod.POST)
+	public String reviewUpdate(ReviewVO vo, 
+	                           @RequestParam(value="reviewFiles", required=false) List<MultipartFile> files, 
+	                           @RequestParam("orderIdx") long orderIdx, // VO에 없으므로 직접 받음
+	                           HttpSession session) { // request 대신 session 사용
+
+	    // 1. 텍스트 정보 업데이트 (내용, 별점 등)
+	    rservice.updateReview(vo);
+	    
+	    // 2. 사진 교체 로직 (파일이 새로 들어왔을 때만 기존 사진 삭제)
+	    if (files != null && !files.isEmpty() && !files.get(0).isEmpty()) {
+	        
+	        // [필수] 기존 DB에 등록된 이미지 정보 삭제
+	        // rservice에 해당 메서드가 있는지 확인하세요!
+	        rservice.deleteReviewImgs(vo.getReviewIdx()); 
+	        
+	        // 실제 서버 내 저장 경로 찾기 (session 사용)
+	        String uploadPath = session.getServletContext().getRealPath("/resources/upload/");
+	        
+	        for (MultipartFile file : files) {
+	            if (!file.isEmpty()) {
+	                String saveFileName = System.currentTimeMillis() + "_" + file.getOriginalFilename();
+	                
+	                try {
+	                    // 서버 폴더에 실제 파일 저장
+	                    file.transferTo(new File(uploadPath, saveFileName));
+	                    
+	                    // DB에 새 이미지 정보 저장 (기존에 있던 REVIEWINSERTIMG 쿼리 활용)
+	                    ReviewImageVO imgVO = new ReviewImageVO();
+	                    imgVO.setReviewIdx(vo.getReviewIdx());
+	                    imgVO.setReviewImg(saveFileName);
+	                    
+	                    rservice.insertReviewImg(imgVO); // REVIEWINSERTIMG 호출
+	                    
+	                } catch (Exception e) {
+	                    System.out.println("사진 저장 중 오류: " + e.getMessage());
+	                }
+	            }
+	        }
+	    }
+	    
+	    // 3. 리다이렉트 (파라미터로 받은 orderIdx를 직접 사용)
+	    return "redirect:/user/orderDetailList.do?orderIdx=" + orderIdx;
+	}
 	}
 
-}
 	
 	
 	

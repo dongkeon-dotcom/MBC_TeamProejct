@@ -18,5 +18,5 @@ public class ReviewVO {
 	//   orderdetailList에서 후기작성시 각각으 ㅣ상품에 대한 후기작성을 위해서 상품옵션인 컬러와 사이즈를 가져옴 
 	private String color; // JOIN해서 가져올 컬러
     private String size;  // JOIN해서 가져올 사이즈
-   
+    private long itemIdx; // 가져와야지... 후기쓰려면 /.....
 }

@@ -21,10 +21,13 @@ public class DeliveryServiceImpl implements  DeliveryService{
 		return ddao.getAddressList(userIdx);
 	}
 
-	@Override
+	@Transactional
 	public void insertAddress(DeliveryVO vo) {
-		// TODO Auto-generated method stub
-		ddao.insertAddress(vo);
+	    // 만약 기본 배송지로 체크했다면 리셋 먼저 실행
+	    if (vo.isDefaultAddress()) {
+	        ddao.resetDefaultAddress(vo.getUserIdx());
+	    }
+	    ddao.insertAddress(vo);
 	}
 
 	@Override
@@ -46,10 +49,13 @@ public class DeliveryServiceImpl implements  DeliveryService{
 	}
 
 	
-	
-	@Override
+	// 수정 메서드 수정
+	@Transactional
 	public void addrUpdate(DeliveryVO vo) {
-	
+	    // 수정 시에도 기본 배송지 체크 시 리셋 실행
+	    if (vo.isDefaultAddress()) {
+	        ddao.resetDefaultAddress(vo.getUserIdx());
+	    }
 	    ddao.addrUpdate(vo);
 	}
 
