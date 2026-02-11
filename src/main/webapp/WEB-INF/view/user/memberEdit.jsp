@@ -21,7 +21,7 @@
 				<tr><td>암호</td><td><input type="password" name="password" id="password"placeholder="비밀번호를 입력하세요" minlength="4" maxlength="20" required></td></tr>
 				<tr><td>회원 이름</td><td><input type="text" name="userName" value="${m.userName}"></td></tr>
 				<tr><td>전화번호</td><td><input type="text" name="userPhone" value="${m.userPhone}"></td></tr>
-				<tr><td>주소</td> <td>(${d.zipcode}) ${d.address} ${d.extraAddress}</td></tr>
+				<tr><td>주소</td> <td>(${d.zipcode}) ${d.address} ${d.extraAddress} <input type="button" value="주소변경하기" onclick="addrCH()" /></td></tr>
 				<tr ><td colspan="2" align="center"> <input type="button" value="수정하기" onclick="memberUpdate()" /> 
 				 <input type="button" value="뒤로가기" onclick="memberBack()" /></td> </tr>
 			</table>
@@ -40,6 +40,12 @@ function memberBack(){
 	
 	alert("memberBack ")
 	location.href = "${path}/user/mypage.do";
+	
+}
+
+function addrCH(){
+	
+	location.href = "${path}/delivery/addressList.do";
 	
 }
 

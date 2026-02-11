@@ -153,6 +153,29 @@ public class DeliveryController {
         
         return "redirect:/delivery/addressList.do";
     }
+
+    @RequestMapping("/setDefaultAddress.do")
+    public String setDefaultAddress(@RequestParam("deliveryIdx") long deliveryIdx) {
+        
+        // 1. 상단에 정의된 메서드를 호출하여 로그인한 유저 객체를 가져옵니다.
+        UserVO loginUser = getLoginUser();
+        
+        // 2. 로그인 상태 확인
+        if (loginUser == null) {
+            // 로그인이 안 되어 있다면 로그인 페이지로 리다이렉트
+            return "redirect:/user/login.do";
+        }
+        
+        // 3. 유저 고유 번호(user_Idx) 꺼내기
+        // UserVO에 정의된 고유번호 필드명이 userIdx 혹은 user_Idx 인지 확인 후 사용하세요.
+        long userIdx = loginUser.getUserIdx(); 
+        
+        // 4. 서비스 호출 (리셋 + 설정을 트랜잭션으로 처리)
+        dservice.updateDefaultAddress(userIdx, deliveryIdx);
+        
+        // 5. 완료 후 목록으로 이동
+        return "redirect:/delivery/addressList.do";
+    }
 }
 
 

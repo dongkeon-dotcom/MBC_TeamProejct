@@ -32,17 +32,11 @@ public class DeliveryDaoImpl implements DeliveryDao{
 		mybatis.delete("ADDRESS.ADDRDELLIST", deliveryIdxList );
 	}
 
-	@Override //단일 주소삭제 
+	@Override 
 	public void updateDefaultAddress(long userIdx, long deliveryIdx) {
-		// 파라미터가 2개 이상일 때는 Map에 담아서 넘기는 것이 편합니다.
-        Map<String, Object> params = new HashMap<>();
-        params.put("userIdx", userIdx);
-        params.put("deliveryIdx", deliveryIdx);
-     // 1) 해당 유저의 모든 주소를 '일반(false)'으로 초기화 
-		mybatis.update("ADDRESS.resetDefaultAddress", userIdx );
-		 // 2) 선택한 주소만 '기본(true)'으로 설정
-		mybatis.update("ADDRESS.setDefaultAddress", params );
-		
+	    // DAO에서는 "특정 주소를 기본(Y)으로 설정"하는 이 쿼리 하나만 담당하게 합니다.
+	    // 어차피 deliveryIdx는 고유값이므로 userIdx 없이 deliveryIdx만 넘겨도 충분합니다.
+	    mybatis.update("ADDRESS.setDefaultAddress", deliveryIdx);
 	}
 
 	@Override
