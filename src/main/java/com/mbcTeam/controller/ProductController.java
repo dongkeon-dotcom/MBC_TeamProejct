@@ -63,9 +63,9 @@ public class ProductController {
 	
 	@GetMapping("/category.do")
 	public String categoryList(@RequestParam("category") String category, Model model) {
-	    List<ProductVO> productList = service.getProductsByCategory(category);
-	    model.addAttribute("productList", productList);
-	    model.addAttribute("category", category);
+	    //List<ProductVO> productList = service.getProductsByCategory(category);
+	    //model.addAttribute("productList", productList);
+	    //model.addAttribute("category", category);
 	    return "product/productList"; // 카테고리별 상품 목록 JSP
 	}
 
