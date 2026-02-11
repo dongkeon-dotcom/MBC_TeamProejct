@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mbcTeam.admin.AdminService;
 import com.mbcTeam.admin.GeminiService;
+import com.mbcTeam.dto.OrderManagementDTO;
 import com.mbcTeam.dto.UserManagementDTO;
 import com.mbcTeam.order.OrderItemVO;
 
@@ -95,13 +96,18 @@ public class AdminController {
 		
 		dto.setPageSize(pageSize);
 		
-		int totalPage = (int) Math.ceil((double) totalCount / pageSize);
+		int totalPage = (totalCount <=0) ? 1 : (int) Math.ceil((double) totalCount / pageSize);
 		int nowPage = (dto.getStartIdx() / pageSize) + 1;
-		int lastPage = (totalPage - 1) * pageSize;
+		int lastPage = Math.max(0, (totalPage - 1) * pageSize);
 
 		int listStartPage = (nowPage - 1) / pageListSize * pageListSize + 1;
 
 		int listEndPage = listStartPage + pageListSize - 1;
+		
+		if(listEndPage > totalPage) {
+			listEndPage = totalPage;
+		}
+		
 		
 		model.addAttribute("startIdx", dto.getStartIdx());
 		model.addAttribute("pageSize", dto.getPageSize());
@@ -144,9 +150,59 @@ public class AdminController {
 	}
 	
 	@GetMapping("/orderManagement.do")
-	public String OrderManagement(){
+	public String OrderManagement(
+			@RequestParam(value = "search", defaultValue = "orderId", required = false) String search,
+			@RequestParam(value = "keyword", defaultValue = "", required = false) String keyword,
+			@RequestParam(value="startDate", defaultValue = "", required=false) String startDate,
+            @RequestParam(value="endDate", defaultValue = "", required=false) String endDate,
+			Model model, OrderManagementDTO dto){
 
 		
+		dto.setSearch(search);
+		dto.setKeyword(keyword);
+		int pageSize=10;
+		int pageListSize=10;
+		
+		if (dto.getStartIdx() == 0) {
+			dto.setStartIdx(0);
+		} else {
+			dto.setStartIdx(dto.getStartIdx());
+		}
+		
+		int totalCount = service.getOrderTotalCount(dto);
+		
+		dto.setPageSize(pageSize);
+		
+		int totalPage = (totalCount <=0) ? 1 : (int) Math.ceil((double) totalCount / pageSize);
+		int nowPage = (dto.getStartIdx() / pageSize) + 1;
+		int lastPage = Math.max(0, (totalPage - 1) * pageSize);
+
+		int listStartPage = (nowPage - 1) / pageListSize * pageListSize + 1;
+
+		int listEndPage = listStartPage + pageListSize - 1;
+		
+		if(listEndPage > totalPage) {
+			listEndPage = totalPage;
+		}
+		
+		
+		model.addAttribute("startIdx", dto.getStartIdx());
+		model.addAttribute("pageSize", dto.getPageSize());
+		
+		model.addAttribute("orderList", service.getOrderManagement(dto));
+		
+		model.addAttribute("totalCount", totalCount);
+		model.addAttribute("lastPage", lastPage);
+		model.addAttribute("pageListSize", pageListSize);
+		model.addAttribute("listStartPage", listStartPage);
+		model.addAttribute("listEndPage", listEndPage);
+		
+		model.addAttribute("totalPage", totalPage);
+		model.addAttribute("nowPage", nowPage);
+		
+		model.addAttribute("search", dto.getSearch());
+		model.addAttribute("keyword", dto.getKeyword());
+			
 		return "admin/orderManagement";
 	}
 	

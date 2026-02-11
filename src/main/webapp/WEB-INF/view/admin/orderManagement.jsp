@@ -7,7 +7,7 @@
 	rel="stylesheet">
 <section class="container-fluid py-4">
     <div class="filter-card shadow-sm p-3 mb-4 bg-white rounded">
-        <form action="${path}/admin/orderList.do" method="get">
+        <form action="${path}/admin/orderManagement.do" method="get">
             <div class="row align-items-center g-3">
                 <div class="col-auto">
                     <span class="filter-label">결제일</span>
@@ -19,7 +19,6 @@
                 </div>
                 <div class="col-auto ms-4">
                     <select class="form-select form-select-sm" name="searchType">
-                        <option value="all">=검색조건=</option>
                         <option value="orderId">주문번호</option>
                         <option value="userName">주문자</option>
                     </select>
@@ -38,61 +37,104 @@
         <table class="table table-hover align-middle mb-0">
             <thead>
                 <tr>
-                    <th style="width: 50px;"><input type="checkbox"></th>
+                    <th>상태</th>
                     <th>결제일</th>
                     <th>주문번호</th>
                     <th>주문자</th>
-                    <th>상품명(대표)</th>
-                    <th>관리</th>
+                    <th>연락처</th>
+                    <th>배송주소 (우편번호)</th>
+                    <th>상품명</th>
+                    <th>사이즈</th>
+                    <th>컬러</th>
+                    <th>수량</th>
                 </tr>
             </thead>
             <tbody>
                 <c:forEach var="order" items="${orderList}">
                     <tr>
-                        <td><input type="checkbox"></td>
-                        <td>${order.paymentDate}</td>
+                        <td>${order.status}</td>
+                        <td>${order.orderDate}</td>
                         <td>${order.orderIdx}</td>
-                        <td>${order.userName}</td>
-                        <td>${order.representativeProduct}</td>
-                        <td>
-                            <button class="btn btn-sm btn-outline-primary" onclick="toggleDetail('${order.orderIdx}')">상세보기</button>
-                        </td>
-                    </tr>
-                    <tr id="detail-${order.orderIdx}" class="detail-row" style="display:none;">
-                        <td colspan="6" class="bg-light p-0">
-                            <div class="detail-content p-4">
-                                <table class="table table-sm table-bordered bg-white shadow-sm mb-0">
-                                    <thead class="detail-thead">
-                                        <tr>
-                                            <th>상품명</th>
-                                            <th>색상</th>
-                                            <th>사이즈</th>
-                                            <th>수량</th>
-                                            <th>가격(할인포함)</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="items-${order.orderIdx}">
-                                        </tbody>
-                                </table>
-                            </div>
-                        </td>
+                        <td>${order.receiver}</td>
+                        <td>${order.deliveryPhone}</td>
+                        <td>${order.fullAddress}</td>
+                        <td>${order.productName}</td>
+                        <td>${order.size}</td>
+                        <td>${order.color}</td>                        
+                        <td>${order.quantity}</td>
                     </tr>
                 </c:forEach>
             </tbody>
         </table>
     </div>
 
-    <nav class="mt-4">
-        <ul class="pagination justify-content-center custom-pagination">
-            <li class="page-item"><a class="page-link gray" href="#">&laquo;&laquo; 처음</a></li>
-            <li class="page-item"><a class="page-link gray" href="#">이전</a></li>
-            <li class="page-item active"><a class="page-link" href="#">1</a></li>
-            <li class="page-item"><a class="page-link" href="#">2</a></li>
-            <li class="page-item"><a class="page-link" href="#">3</a></li>
-            <li class="page-item"><a class="page-link" href="#">다음</a></li>
-            <li class="page-item"><a class="page-link blue" href="#">마지막 &raquo;&raquo;</a></li>
-        </ul>
-    </nav>
+	<nav aria-label="Page navigation" class="mt-4">
+		<ul class="pagination justify-content-center">
+			<c:url var="firstPageUrl" value="/admin/orderManagement.do">
+				<c:param name="startIdx" value="0" />
+				<c:param name="search" value="${search}" />
+				<c:param name="keyword" value="${keyword}" />
+			</c:url>
+			<li class="page-item ${startIdx == 0 ? 'disabled' : ''}"><a
+				class="page-link" href="${firstPageUrl}">&laquo;&laquo; 처음</a></li>
+
+			<c:choose>
+				<c:when test="${listStartPage > pageListSize}">
+					<c:url var="beforePageUrl" value="/admin/orderManagement.do">
+						<c:param name="startIdx"
+							value="${(listStartPage - pageListSize - 1) * pageSize}" />
+						<c:param name="search" value="${search}" />
+						<c:param name="keyword" value="${keyword}" />
+					</c:url>
+					<li class="page-item"><a class="page-link"
+						href="${beforePageUrl}">이전</a></li>
+				</c:when>
+				<c:otherwise>
+					<li class="page-item disabled"><span class="page-link">이전</span></li>
+				</c:otherwise>
+			</c:choose>
+
+			<c:forEach var="i" begin="${listStartPage}" end="${listEndPage}">
+				<c:if test="${i <= totalPage}">
+					<c:url var="forPageUrl" value="/admin/orderManagement.do">
+						<c:param name="startIdx" value="${(i-1) * pageSize}" />
+						<c:param name="search" value="${search}" />
+						<c:param name="keyword" value="${keyword}" />
+					</c:url>
+					<li
+						class="page-item ${i == (startIdx / pageSize + 1) ? 'active' : ''}">
+						<a class="page-link" href="${forPageUrl}">${i}</a>
+					</li>
+				</c:if>
+			</c:forEach>
+
+			<c:choose>
+				<c:when test="${listEndPage < totalPage}">
+					<c:url var="afterPageUrl" value="/admin/orderManagement.do">
+						<c:param name="startIdx" value="${listEndPage * pageSize}" />
+						<c:param name="search" value="${search}" />
+						<c:param name="keyword" value="${keyword}" />
+					</c:url>
+					<li class="page-item"><a class="page-link"
+						href="${afterPageUrl}">다음</a></li>
+				</c:when>
+				<c:otherwise>
+					<li class="page-item disabled"><span class="page-link">다음</span></li>
+				</c:otherwise>
+			</c:choose>
+
+			<c:url var="endPageUrl" value="/admin/orderManagement.do">
+				<c:param name="startIdx" value="${(totalPage-1) * pageSize}" />
+				<c:param name="search" value="${search}" />
+				<c:param name="keyword" value="${keyword}" />
+			</c:url>
+			<li
+				class="page-item ${startIdx / pageSize + 1 == totalPage ? 'disabled' : ''}">
+				<a class="page-link" href="${endPageUrl}">마지막 &raquo;&raquo;</a>
+			</li>
+		</ul>
+	</nav>
+
 </section>
 
 <c:import url="/WEB-INF/view/include/bottom.jsp" />

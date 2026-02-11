@@ -139,6 +139,49 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	WHERE order_idx = #{orderIdx};
    </select>
    
+   <sql id = "searchInclude">
+	<where>       
+       <if test="search == 'orderId'">
+           AND INSTR(${prefix}order_Idx, #{keyword}) > 0
+       </if>
+       <if test="search == 'userName'">
+           AND INSTR(${prefix}user_Name, #{keyword}) > 0
+       </if>
+	</where>
+</sql>
+   
+   <select id="GET_ORDER_MANAGEMENT" resultType="OrderManagementDTO">
+   SELECT
+   		o.status,
+   		o.order_Date,
+   		o.order_Idx,
+   		o.receiver,
+   		o.delivery_Phone,
+   		CONCAT(o.address, ' ', o.Extra_Address, '(', o.zipcode, ')') AS fullAddress,
+   		oi.product_Name,
+   		oi.size,
+   		oi.color,
+   		oi.quantity
+   FROM Orders o
+   JOIN OrderItems oi ON o.order_Idx = oi.order_Idx
+   <include refid="searchInclude">
+   		<property name="prefix" value="o."/>
+   </include>
+   <where>
+   		<if test="startDate != null and startDate != ''">
+   			AND o.order_Date >= #{startDate}
+   		</if>
+   		<if test="endDate != null and endDate != ''">
+   			AND o.order_Date &lt;= CONCAT (#{endDate}, '23:59:59')
+   		</if>
+   </where>
+   ORDER BY o.order_Idx desc limit #{startIdx}, #{pageSize};
+   </select>
+   <select id="GET_ORDER_TOTAL_COUNT" parameterType="OrderManagementDTO" resultType="int">
+   SELECT count(*) as totalCount from Orders o
+   JOIN OrderItems oi ON o.order_Idx = oi.order_Idx;   
+   </select>
+   
    
    
    

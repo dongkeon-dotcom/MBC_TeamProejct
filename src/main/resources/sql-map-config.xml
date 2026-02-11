@@ -24,6 +24,7 @@
     <typeAlias alias="ProductRequestDTO"  type="com.mbcTeam.dto.ProductRequestDTO" />
     <typeAlias alias="UserManagementDTO"  type="com.mbcTeam.dto.UserManagementDTO" />
     <typeAlias alias="UserPurchaseDTO"  type="com.mbcTeam.dto.UserPurchaseDTO" />
+    <typeAlias alias="OrderManagementDTO" type="com.mbcTeam.dto.OrderManagementDTO" />
   </typeAliases>
   
   <mappers>    
