@@ -70,7 +70,7 @@
                         <span class="rating-text">
                             <c:choose>
                                 <c:when test="${not empty p.reviewCount and p.reviewCount > 0}">
-                                    ${p.reviewCount}
+                                    ( ${p.reviewCount} )
                                 </c:when>
                                 <c:otherwise>
                                     ( 0 )

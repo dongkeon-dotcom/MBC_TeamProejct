@@ -318,7 +318,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			p.product_main_img AS productMainImg,
 			p.discount_rate AS discountRate,
 			p.is_Recommended AS isRecommended,
-			IFNULL(ROUND(AVG(r.rating)),0) as avgRating
+			IFNULL(ROUND(AVG(r.rating)),0) as avgRating,
+			COUNT(r.product_Idx) as reviewCount
     FROM Products p
     LEFT JOIN Reviews r ON p.product_Idx = r.product_Idx
     <where>

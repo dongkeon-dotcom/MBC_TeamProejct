@@ -45,6 +45,7 @@ public class ProductVO {
 	private Integer avgRating; // 평균 평점
 	private Integer reviewCount; // 리뷰 개수
 	
+	
 
 	
 	
