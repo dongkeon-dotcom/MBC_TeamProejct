@@ -33,4 +33,21 @@ public class CartDaoImpl implements CartDao {
     public int updateCart(CartVO cart) {
         return mybatis.update("CARTS.updateCart", cart);
     }
+
+	
+	@Override
+	public CartVO getCartItem(Long cartIdx) {
+	    return mybatis.selectOne("CARTS.getCartItem", cartIdx);
+	}
+	
+	@Override
+	public void deleteByUserId(long userIdx) {
+	    mybatis.delete("CARTS.deleteByUserId", userIdx);
+	}
+
+	@Override
+	public void clearCart(long userIdx) {
+	    mybatis.delete("CARTS.deleteByUserId", userIdx);
+	}
+	
 }

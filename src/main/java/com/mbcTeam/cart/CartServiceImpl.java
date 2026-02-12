@@ -30,4 +30,20 @@ public class CartServiceImpl implements CartService {
     public int updateCart(CartVO cartvo) {
         return dao.updateCart(cartvo);
     }
+    
+    @Override
+    public CartVO getCartItem(Long cartIdx) {
+        return dao.getCartItem(cartIdx); // dao에도 메서드 추가 필요
+    }
+    
+    @Override
+    public void deleteByUserId(long userIdx) {
+        dao.deleteByUserId(userIdx);
+    }
+    
+    @Override
+    public void clearCart(long userIdx) {
+        dao.clearCart(userIdx); 
+    }
+    
 }

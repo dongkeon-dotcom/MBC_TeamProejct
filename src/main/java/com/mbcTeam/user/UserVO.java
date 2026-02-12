@@ -17,5 +17,5 @@ public class UserVO {
 	private int loginType;
 	//isDeleted,isEasyLogin 매서드 호출시 is제외한 이름으로호촐됩니다 그런 규칙이래요...
 	//userController의 memberOK.do 에서 확인가능 
-//아 할거 너무 많아 아 하기싫어 ( 박명수짤 ) 
+
 }

@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 
 
@@ -47,17 +48,22 @@ public class OrderServiceImpl implements OrderService {
 
 	
 	@Override
-	public void insertOrder(OrderVO order, List<OrderItemVO> items) {
-	    // 주문 저장
-	    dao.insert(order);
+    @Transactional // 하나라도 실패하면 전체 롤백
+    public void insertOrder(OrderVO order, List<OrderItemVO> items) {
+        // 1. Orders 테이블 저장 (orderIdx가 생성됨)
+        dao.insert(order); 
 
-	    // 주문 상세 반복 저장
-	    for (OrderItemVO item : items) {
-	        item.setOrderIdx(order.getOrderIdx()); // FK 연결
-	        dao.insertOrderItem(item); // ✅ 새로 추가된 메서드 사용
-	    }
-	}
+        // 2. 생성된 orderIdx를 각 상세 아이템에 주입 후 저장
+        for (OrderItemVO item : items) {
+            item.setOrderIdx(order.getOrderIdx()); 
+            dao.insertOrderItem(item);
+        }
+        
+        
+    }
 
 
+	
+	
 	
 }

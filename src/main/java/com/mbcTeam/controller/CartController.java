@@ -27,6 +27,7 @@ public class CartController {
     @Autowired
 	private UserService service;
     
+    
     private UserVO getLoginUser() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if (auth == null || !auth.isAuthenticated() || "anonymousUser".equals(auth.getPrincipal())) {
@@ -35,29 +36,34 @@ public class CartController {
         // 시큐리티의 username(여기서는 id/email)으로 DB 조회
         return service.getByEmail(auth.getName());
     }
-    
-    
-    
+
     @PostMapping("/add.do")
     public String addCart(@RequestParam long productIdx,
-                          @RequestParam long optionIdx,
-                          @RequestParam int quantity,
+                          @RequestParam(value="optionIdxList") List<Long> optionIdxList,
+                          @RequestParam(value="quantityList") List<Integer> quantityList,
                           HttpSession session) {
-        UserVO loginUser = (UserVO) session.getAttribute("loginMember");
+        
+        // 시큐리티 혹은 세션에서 유저 정보 가져오기
+        UserVO loginUser = getLoginUser(); 
         if (loginUser == null) {
-            return "redirect:/user/login.do"; // 로그인 필요
+            return "redirect:/user/login.do";
         }
 
-        CartVO cart = new CartVO();
-        cart.setUserIdx(loginUser.getUserIdx());
-        cart.setProductIdx(productIdx);
-        cart.setOptionIdx(optionIdx);
-        cart.setQuantity(quantity);
+        // 여러 개의 옵션을 각각 CartVO로 만들어 인서트
+        for (int i = 0; i < optionIdxList.size(); i++) {
+            CartVO cart = new CartVO();
+            cart.setUserIdx(loginUser.getUserIdx());
+            cart.setProductIdx(productIdx);
+            cart.setOptionIdx(optionIdxList.get(i));
+            cart.setQuantity(quantityList.get(i));
 
-        cartService.insertCart(cart);
-        return "redirect:/cart/cartlist.do?userIdx=" + loginUser.getUserIdx();
+            cartService.insertCart(cart);
+        }
+        
+        return "redirect:/cart/cartlist.do";
     }
-
+    
+    
     @GetMapping("/cartlist.do")
     public String listCart(Model model) {
         // 1. 시큐리티 컨텍스트에서 로그인 유저 정보 가져오기
@@ -80,26 +86,33 @@ public class CartController {
     
     
 
-    @PostMapping("/delete.do")
-    public String deleteCart(@RequestParam long cartIdx, HttpSession session) {
-        UserVO loginUser = (UserVO) session.getAttribute("loginMember");
-        cartService.deleteCart(cartIdx);
-        return "redirect:/cart/cartlist.do";
-
-    }
-
+    
     @PostMapping("/update.do")
     public String updateCart(@RequestParam long cartIdx,
-                             @RequestParam int quantity,
-                             HttpSession session) {
-        UserVO loginUser = (UserVO) session.getAttribute("loginMember");
+                             @RequestParam int quantity) {
+        // 1. 로그인 체크 (시큐리티 활용)
+        UserVO loginUser = getLoginUser();
+        if (loginUser == null) {
+            return "redirect:/user/login.do";
+        }
 
+        // 2. 수량 업데이트 실행
         CartVO cart = new CartVO();
         cart.setCartIdx(cartIdx);
         cart.setQuantity(quantity);
 
         cartService.updateCart(cart);
         return "redirect:/cart/cartlist.do";
+    }
 
+    @PostMapping("/delete.do")
+    public String deleteCart(@RequestParam long cartIdx) {
+        UserVO loginUser = getLoginUser();
+        if (loginUser == null) {
+            return "redirect:/user/login.do";
+        }
+        
+        cartService.deleteCart(cartIdx);
+        return "redirect:/cart/cartlist.do";
     }
 }

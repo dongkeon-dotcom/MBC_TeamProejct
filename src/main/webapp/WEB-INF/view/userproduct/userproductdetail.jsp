@@ -229,7 +229,7 @@ function openTab(tabId, btn) {
 			</div>
 
 			<div class="button-row">
-				>
+				
 				<form id="buyForm" action="${path}/order/payment.do" method="post"
 					onsubmit="return validateForm()">
 					<input type="hidden" name="productIdx"

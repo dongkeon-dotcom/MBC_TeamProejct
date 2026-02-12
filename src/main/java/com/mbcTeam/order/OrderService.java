@@ -15,8 +15,7 @@ public interface OrderService {
 
 	    List<OrderVO> select(OrderVO vo); 
 	    OrderVO selectOrderByOrderIdx(long orderIdx);
-	    
-	 // OrderService.java
+
 	    
 	    void insertOrder(OrderVO order, List<OrderItemVO> items);
 	    

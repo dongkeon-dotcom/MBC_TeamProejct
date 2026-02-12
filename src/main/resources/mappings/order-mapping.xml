@@ -7,25 +7,51 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
 
  <!-- 주문 등록 -->
-  <insert id="insertOrder" parameterType="OrderVO">
+ <insert id="insertOrder" parameterType="com.mbcTeam.order.OrderVO" 
+        useGeneratedKeys="true" keyProperty="orderIdx">
     INSERT INTO Orders (
-        user_Idx, total_Price, receiver, delivery_Phone, address, extra_Address, zipcode, order_Date
+        user_Idx, total_Price, receiver, delivery_Phone, 
+        address, Extra_Address, Zipcode, order_Date, status
+    ) VALUES (
+        #{userIdx}, #{totalPrice}, #{receiver}, #{deliveryPhone}, 
+        #{address}, #{extraAddress}, #{zipcode}, NOW(), 0
     )
-    VALUES (
-        #{userIdx}, #{totalPrice}, #{recevier}, #{deliveryPhone}, #{address}, #{extraAddress}, #{zipcode}, NOW()
-    )
-  </insert>
+</insert>
+
 
 
 
   <!-- 주문 상세 등록 -->
-  <insert id="insertOrderItem" parameterType="OrderItemVO">
-    INSERT INTO OrderItems ( order_Idx, product_Idx, category, subCategory, product_Name,
-       						 price, discount_rate, color, size, quantity, product_main_img
-    )
-    VALUES (#{orderIdx}, #{productIdx}, #{category}, #{subCategory}, #{productName}, #{price}, #{discountRate},
-       	    #{color}, #{size}, #{quantity}, #{productMainImg} )
-  </insert>
+<insert id="insertOrderItem" parameterType="com.mbcTeam.order.OrderItemVO">
+    INSERT INTO OrderItems ( 
+        order_Idx, 
+        product_Idx, 
+        category, 
+        subCategory, 
+        product_Name,
+        price, 
+        discount_rate, 
+        color, 
+        size, 
+        quantity, 
+        product_main_img,
+        status  ) VALUES (
+        #{orderIdx}, 
+        #{productIdx}, 
+        #{category}, 
+        #{subCategory}, 
+        #{productName}, 
+        #{price}, 
+        #{discountRate}, 
+        #{color}, 
+        #{size}, 
+        #{quantity}, 
+        #{productMainImg},
+        #{status} )
+</insert>
+
+
+
 
   <!-- 주문 상세 조회 -->
   <select id="selectOrderItems" parameterType="long" resultType="OrderItemVO">
@@ -67,19 +93,23 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   </delete>
 
   <!-- 주문 조회 -->
-  <select id="selectOrder" parameterType="OrderVO" resultType="OrderVO">
-    SELECT order_Idx AS orderIdx,
-           user_Idx AS userIdx,
-           total_Price AS totalPrice,
-           receiver AS recevier,
-           delivery_Phone AS deliveryPhone,
-           address,
-           extra_Address AS extraAddress,
-           zipcode,
-           order_Date AS orderDate
-    FROM Orders
-    WHERE user_Idx = #{userIdx}
-  </select>
+	<select id="selectOrder" parameterType="com.mbcTeam.order.OrderVO" 
+	        resultType="com.mbcTeam.order.OrderVO">
+	    SELECT 
+	        order_Idx       AS orderIdx,
+	        user_Idx        AS userIdx,
+	        total_Price     AS totalPrice,
+	        receiver        AS receiver,
+	        delivery_Phone  AS deliveryPhone,
+	        address         AS address,
+	        Extra_Address   AS extraAddress,
+	        Zipcode         AS zipcode,
+	        order_Date      AS orderDate,
+	        status          AS status
+	    FROM Orders
+	    WHERE order_Idx = #{orderIdx}
+	</select>
+
    
    	<!-- 차트 월별 매출통계용 -->
 	<select id="getMonthlySales" resultType="map">

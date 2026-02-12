@@ -15,4 +15,11 @@ public class CartVO {
     private int price;
     private String color;
     private String size;
+    private String productMainImg; // 메인 이미지 파일명
+
+  
+        
+       
+
+    
 }

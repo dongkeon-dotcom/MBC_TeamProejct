@@ -4,9 +4,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 
-
-
-
 <mapper namespace="CARTS">
 
     <insert id="insertCart" parameterType="com.mbcTeam.cart.CartVO">
@@ -14,20 +11,17 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         VALUES (#{userIdx}, #{productIdx}, #{optionIdx}, #{quantity})
     </insert>
 
-    <delete id="deleteCart" parameterType="long">
-        DELETE FROM Carts WHERE cart_idx = #{cartIdx}
-    </delete>
-
     <select id="selectCart" parameterType="long" resultType="com.mbcTeam.cart.CartVO">
-        SELECT c.cart_idx AS cartIdx,
-               c.user_idx AS userIdx,
-               c.product_idx AS productIdx,
-               c.option_idx AS optionIdx,
-               c.quantity,
-               p.product_name AS productName,
-               p.price,
-               o.color,
-               o.size
+        SELECT 
+            c.cart_idx AS cartIdx,
+            c.user_idx AS userIdx,
+            c.product_idx AS productIdx,
+            c.option_idx AS optionIdx,
+            c.quantity,
+            p.product_name AS productName,
+            p.product_main_img AS productMainImg, p.price,
+            p.discount_rate AS discountRate,     o.color,
+            o.size
         FROM Carts c
         JOIN Products p ON c.product_idx = p.product_idx
         JOIN ProductOption o ON c.option_idx = o.option_idx
@@ -36,10 +30,35 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
     <update id="updateCart" parameterType="com.mbcTeam.cart.CartVO">
         UPDATE Carts
-        SET quantity = #{quantity},
-            option_idx = #{optionIdx}
+        SET quantity = #{quantity}
         WHERE cart_idx = #{cartIdx}
     </update>
+
+    <select id="getCartItem" parameterType="long" resultType="com.mbcTeam.cart.CartVO">
+        SELECT 
+            c.cart_idx AS cartIdx,
+            c.user_idx AS userIdx,
+            c.product_idx AS productIdx,
+            c.option_idx AS optionIdx,
+            c.quantity,
+            p.product_name AS productName,
+            p.product_main_img AS productMainImg, p.price,
+            p.discount_rate AS discountRate, 
+            o.color,
+            o.size
+        FROM Carts c
+        JOIN Products p ON c.product_idx = p.product_idx
+        JOIN ProductOption o ON c.option_idx = o.option_idx
+        WHERE c.cart_idx = #{cartIdx}
+    </select>
+
+    <delete id="deleteCart" parameterType="long">
+        DELETE FROM Carts WHERE cart_idx = #{cartIdx}
+    </delete>
+
+    <delete id="deleteByUserId" parameterType="long">
+        DELETE FROM Carts WHERE user_idx = #{userIdx}
+    </delete>
 
 </mapper>
 

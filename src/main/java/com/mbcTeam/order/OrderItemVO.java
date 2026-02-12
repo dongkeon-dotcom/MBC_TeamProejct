@@ -19,5 +19,8 @@ public class OrderItemVO {
     private String productMainImg;            // 제품대표이미지
     private int totalPrice; 
     
+    private int optionIdx;       // ✅ 추가: 주문한 옵션 번호 (이게 있어야 에러가 안 납니다)
+    private int status;
+    
     
 }

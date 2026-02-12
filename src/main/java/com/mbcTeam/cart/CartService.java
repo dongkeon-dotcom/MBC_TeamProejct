@@ -10,4 +10,9 @@ public interface CartService {
     int deleteCart(long cartIdx);
     int updateCart(CartVO cartvo);
     List<CartVO> selectCart(long userIdx);
+    
+    CartVO getCartItem(Long cartIdx);
+    void deleteByUserId(long userIdx);
+    void clearCart(long userIdx);
+    
 }
