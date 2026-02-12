@@ -317,9 +317,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			p.price AS price,
 			p.reg_Date AS regDate,
 			p.product_Desc AS productDesc,
+			p.product_main_img AS productMainImg,
 			p.discount_rate AS discountRate,
-			p.is_Recommended AS isRecommended
+			p.is_Recommended AS isRecommended,
+			IFNULL(ROUND(AVG(r.rating)),0) as avgRating
     FROM Products p
+    LEFT JOIN Reviews r ON p.product_Idx = r.product_Idx
     <where>
         <if test="category != null and category != ''">
             AND p.category = #{category}
@@ -328,6 +331,17 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             AND p.subCategory = #{subCategory}
         </if>
     </where>
+    GROUP BY
+    	p.product_Idx,
+    	p.category,
+    	p.subCategory,
+    	p.product_Name,
+    	p.price,
+    	p.reg_Date,
+    	p.product_Desc,
+    	p.product_main_img,
+    	p.discount_rate,
+    	p.is_Recommended 
     ORDER BY p.reg_Date DESC
 </select>
 
