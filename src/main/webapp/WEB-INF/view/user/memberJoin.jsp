@@ -11,7 +11,8 @@
     </style>
 
 
-<section>
+<section align="center">
+      <div align="center">
     <br>
     <div align="center">
         <h1>${isSocial ? '소셜 계정 회원가입' : '일반 회원가입'}</h1>
@@ -109,6 +110,7 @@
                 </tr>
             </table>
         </form>
+    </div>
     </div>
 </section>
 
