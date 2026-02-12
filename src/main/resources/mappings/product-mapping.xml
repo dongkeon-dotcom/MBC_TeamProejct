@@ -285,27 +285,25 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	</select>
 
 	<!-- 상품 상세 조회 (사용자용) -->
-	<select id="SELECT_PRODUCT_DETAIL_USER" parameterType="int"
-		resultType="ProductVO">
-		SELECT p.product_Idx,
-		p.category,
-		p.subCategory,
-		p.product_Name,
-		p.price,
-		p.reg_Date,
-		p.product_Desc,
-		p.discount_Rate,
-		p.is_Recommended,
-		mainImg.product_Img AS pMainImgPath,
-		sizeImg.product_Img AS pSizeImgPath
-		FROM Products p
-		LEFT JOIN ProductImg mainImg
-		ON p.product_Idx = mainImg.product_Idx AND mainImg.product_Img_Order = 1
-		LEFT JOIN ProductImg sizeImg
-		ON p.product_Idx = sizeImg.product_Idx AND sizeImg.product_Img_Order = 2
-		WHERE p.product_Idx = #{productIdx}
-	</select>
-
+	<select id="SELECT_PRODUCT_DETAIL_USER" parameterType="int" resultType="ProductVO">
+    SELECT p.product_Idx,
+           p.category,
+           p.subCategory,
+           p.product_Name,
+           p.price,
+           p.reg_Date,
+           p.product_Desc,
+           p.discount_Rate,
+           p.is_Recommended,
+           mainImg.product_Img AS productMainImg, 
+           sizeImg.product_Img AS productSizeImg
+    FROM Products p
+    LEFT JOIN ProductImg mainImg
+      ON p.product_Idx = mainImg.product_Idx AND mainImg.product_Img_Order = 1
+    LEFT JOIN ProductImg sizeImg
+      ON p.product_Idx = sizeImg.product_Idx AND sizeImg.product_Img_Order = 2
+    WHERE p.product_Idx = #{productIdx}
+</select>
 
 	<!-- 카테고리 + 서브카테고리별 상품 조회 -->
 	<select id="SELECT_BY_CATEGORY" parameterType="map"
