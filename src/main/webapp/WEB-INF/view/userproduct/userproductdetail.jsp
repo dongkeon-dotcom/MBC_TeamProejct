@@ -7,9 +7,6 @@
 
 <c:import url="/WEB-INF/view/include/top.jsp" />
 
-<html>
-<head>
-<title>${product.productName}상세보기</title>
 <link rel="stylesheet"
 	href="${path}/resources/css/userproduct/userproductdetail.css">
 
@@ -154,9 +151,7 @@ function openTab(tabId, btn) {
 
 
 </script>
-</head>
-
-<body>
+<section>
 	<div class="product-detail">
 		<div class="product-image">
 			<c:choose>
@@ -298,8 +293,6 @@ function openTab(tabId, btn) {
 			</div>
 		</c:forEach>
 	</div>
+</section>
 
-
-</body>
-</html>
 <c:import url="/WEB-INF/view/include/bottom.jsp" />

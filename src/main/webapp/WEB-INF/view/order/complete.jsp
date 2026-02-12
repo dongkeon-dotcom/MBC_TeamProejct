@@ -2,10 +2,6 @@
 	pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <c:import url="/WEB-INF/view/include/top.jsp" />
-
-<html>
-<head>
-    <title>결제 완료</title>
     <style>
         body { font-family: Arial, sans-serif; margin: 30px; }
         .container { max-width: 600px; margin: auto; border: 1px solid #ddd; padding: 20px; border-radius: 8px; }
@@ -14,8 +10,7 @@
         .btn { background-color: #4CAF50; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; }
         .btn:hover { background-color: #45a049; }
     </style>
-</head>
-<body>
+<section>    
 <div class="container">
     <h2>결제 확인</h2>
 
@@ -41,13 +36,6 @@
         <button type="submit" class="btn">결제 완료</button>
     </form>
 </div>
-</body>
-</html>
 
-
-<script>
-    
-</script>
-
-<br>
+</section>
 <c:import url="/WEB-INF/view/include/bottom.jsp" />

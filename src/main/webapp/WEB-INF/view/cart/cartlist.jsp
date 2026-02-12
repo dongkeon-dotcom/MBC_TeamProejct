@@ -4,10 +4,6 @@
 <c:import url="/WEB-INF/view/include/top.jsp" />
 
 
- 
-<html>
-<head>
-    <title>장바구니</title>
     <style>
         body { font-family: Arial, sans-serif; margin: 20px; }
         h1 { text-align: center; }
@@ -17,9 +13,7 @@
         .btn { padding: 8px 12px; background: #0077FF; color: white; border: none; cursor: pointer; }
         .btn:hover { background: #0055aa; }
     </style>
-</head>
 
-<body>
     <h1>장바구니</h1>
 
     <!-- 장바구니 테이블 -->
@@ -63,10 +57,6 @@
             <button type="submit" class="btn">구매하기</button>
         </form>
 	</div>
-	
-</body>
-</html>
-
 
 <script>
 function toggleSelectAll() {

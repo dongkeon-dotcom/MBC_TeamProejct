@@ -3,6 +3,7 @@
 <c:set var="path" scope="request" value="${pageContext.request.contextPath }"/>    
 <!DOCTYPE html>
 <html>
+<!-- 팝업창이라 head, body 등 태그 다 있어야함 -->
 <head>
 <meta charset="UTF-8">
 <title>새 배송지 등록</title>

@@ -4,14 +4,9 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <c:import url="/WEB-INF/view/include/top.jsp" />
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
-<!DOCTYPE html>
-<html>
-<head>
+
 <!-- 커스터머오더 관리    -->
-<meta charset="UTF-8">
-<title>Insert title here</title>
-</head>
-<body>
+
 
 <section style="max-width: 1000px; margin: 0 auto; padding: 20px;">
     <div align="center">
@@ -76,12 +71,6 @@
         </div>
     </div>
 </section>
-
-</body>
-</html>
-
-
-
 
 
 

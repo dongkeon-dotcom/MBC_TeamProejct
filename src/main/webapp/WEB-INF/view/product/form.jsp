@@ -5,14 +5,9 @@
 
 <!--  <link href="${path}/resources/product/test.css" rel="stylesheet">-->
 
-<html>
-<head>
-<title>상품 등록</title>
 <script src="${path}/resources/js/productForm.js">   </script>
 <script src="${path}/resources/js/productOption.js"> </script>
-
-</head>
-<body>
+<section>
 	<div align="center">
 		        <h2>상품 등록</h2>
         <form action="${path}/product/formOK.do" method="post" enctype="multipart/form-data">
@@ -108,7 +103,6 @@
             <input type="submit" value="등록" />
         </form>
     </div>
-</body>
-</html>
+</section>
 
 <c:import url="/WEB-INF/view/include/bottom.jsp" />

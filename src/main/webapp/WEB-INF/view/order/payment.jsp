@@ -2,14 +2,9 @@
     pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <c:import url="/WEB-INF/view/include/top.jsp" />
-
-<html>
-<head>
-<title>결제 페이지</title>
 <link rel="stylesheet" href="${path}/resources/css/order/checkout.css">
-</head>
 
-<body>
+<section>
 <div class="checkout-container">
     <h2 class="checkout-title">결제 페이지</h2>
 
@@ -74,7 +69,6 @@
         <button type="submit" class="checkout-btn">${totalAmount}원 결제 하기</button>
     </form>
 </div>
-</body>
-</html>
+</section>
 
 <c:import url="/WEB-INF/view/include/bottom.jsp" />

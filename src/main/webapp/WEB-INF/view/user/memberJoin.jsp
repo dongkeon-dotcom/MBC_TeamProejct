@@ -4,18 +4,12 @@
 
 <c:import url="/WEB-INF/view/include/top.jsp" />
 
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="UTF-8">
-    <title>회원 가입</title>
     <style>
         .social-badge { background-color: #fee500; color: #3c1e1e; padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: bold; margin-left: 5px; border: 1px solid #e2d100; }
         .readonly-box { background-color: #f8f9fa; border: 1px solid #dee2e6; cursor: not-allowed; color: #6c757d; }
         .msg-text { font-size: 13px; margin-top: 5px; display: block; }
     </style>
-</head>
-<body>
+
 
 <section>
     <br>
@@ -208,7 +202,4 @@ function checkEmail() {
 }
 
 </script>
-
 <c:import url="/WEB-INF/view/include/bottom.jsp" />
-</body>
-</html>
