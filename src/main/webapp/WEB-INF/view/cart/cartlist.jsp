@@ -24,7 +24,7 @@
 
     <!-- 장바구니 테이블 -->
    <table>
-    <tr>
+    <tr>    <th>채크박스 </th>
         <th>상품명</th>
         <th>옵션</th>
         <th>수량</th>
@@ -34,6 +34,7 @@
 
     <c:forEach var="item" items="${cartList}">
     <tr>
+      <th><input type="checkbox" id="selectAll" onclick="toggleSelectAll()"></th> 
         <td>${item.productName}</td>
         <td>${item.color}/${item.size}</td>
         <td>
@@ -68,6 +69,12 @@
 
 
 <script>
+function toggleSelectAll() {
+    const selectAll = document.getElementById('selectAll');
+    const checkboxes = document.querySelectorAll('.chk');
+    checkboxes.forEach(cb => cb.checked = selectAll.checked);
+}
+
 
 </script>
 
