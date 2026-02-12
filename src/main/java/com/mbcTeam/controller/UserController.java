@@ -19,6 +19,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -67,16 +69,58 @@ MemberMapper memberMapper;
 	@Autowired
 	PasswordEncoder  passwordEncoder;
 	
-	
+
 	private UserVO getLoginUser() {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        if (auth == null || !auth.isAuthenticated() || "anonymousUser".equals(auth.getPrincipal())) {
-            return null;
-        }
-        // 시큐리티의 username(여기서는 id/email)으로 DB 조회
-        return service.getByEmail(auth.getName());
-    }
+	    Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+	    
+	    if (auth == null || !auth.isAuthenticated() || "anonymousUser".equals(auth.getPrincipal())) {
+	        return null;
+	    }
+
+	    String email = "";
+
+	    // 1. 소셜 로그인(OAuth2)인 경우 처리
+	    if (auth instanceof OAuth2AuthenticationToken) {
+	        OAuth2User oAuth2User = (OAuth2User) auth.getPrincipal();
+	        // 구글/네이버/카카오 모두 'email' 속성을 가지고 있다면 아래와 같이 추출
+	        email = (String) oAuth2User.getAttributes().get("email");
+	    } else {
+	        // 2. 일반 로그인인 경우 처리
+	        email = auth.getName();
+	    }
+
+	    System.out.println("===> 실제 조회할 이메일: " + email);
+	    
+	    // DB에서 이메일로 유저 정보를 가져옴
+	    return service.getByEmail(email);
+	}
+		
 	
+	
+	/**
+	  * 전화번호 자동 하이픈 생성 메서드
+	  */
+	 private String formatPhoneNumber(String phone) {
+	     if (phone == null || phone.isEmpty()) return "";
+	     
+	     // 숫자 이외의 문자 제거
+	     phone = phone.replaceAll("[^0-9]", "");
+
+	     if (phone.length() == 11) { // 010-1234-5678
+	         return phone.replaceFirst("([0-9]{3})([0-9]{4})([0-9]{4})$", "$1-$2-$3");
+	     } else if (phone.length() == 10) { 
+	         if (phone.startsWith("02")) { // 02-1234-5678
+	             return phone.replaceFirst("(02)([0-9]{4})([0-9]{4})$", "$1-$2-$3");
+	         } else { // 010-123-4567
+	             return phone.replaceFirst("([0-9]{3})([0-9]{3})([0-9]{4})$", "$1-$2-$3");
+	         }
+	     } else if (phone.length() == 9 && phone.startsWith("02")) { // 02-123-4567
+	         return phone.replaceFirst("(02)([0-9]{3})([0-9]{4})$", "$1-$2-$3");
+	     }
+	     
+	     return phone; // 형식이 맞지 않으면 숫자 그대로 반환
+	 }
+	 
 	
 	@GetMapping(value = "/list.do")
 	public String list(UserVO vo, Model model) {
@@ -102,25 +146,17 @@ MemberMapper memberMapper;
 	}
 
 	@GetMapping(value = "/mypage.do")
-	public String mypage(Model model) { // 매개변수에서 @AuthenticationPrincipal 부분 삭제
-		// 1. 직접 시큐리티 컨텍스트에서 인증 정보 추출
-	    Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+	public String mypage(Model model) {
+	    // 1. 소셜/일반 로그인 구분해서 유저 정보를 가져오는 메서드 호출
+	    UserVO userVO = getLoginUser();
 
-	    // 2. 로그인 여부 체크
-	    if (auth == null || !auth.isAuthenticated() || "anonymousUser".equals(auth.getPrincipal())) {
+	    // 2. 로그인 안 되어 있으면 로그인 페이지로
+	    if (userVO == null) {
 	        return "redirect:/user/login.do";
 	    }
 
-	    // 3. 로그인된 아이디(이메일) 가져오기
-	    String userId = auth.getName(); 
-	    
-	    // 4. DB에서 실제 사용자 정보(이름 등) 가져오기
-	    // MemberMapperDao를 활용합니다. (컨트롤러 상단에 @Autowired 되어있어야 함)
-	    UserVO userVO = memberMapper.getByEmail(userId);
-	    
-	    // 5. JSP로 전달
-	    model.addAttribute("userVO", userVO);
-	    model.addAttribute("userId", userId);
+	    // 3. 모델에 담기 (이제 userVO.userName에 "홍길동" 같은 진짜 이름이 들어있음)
+	    model.addAttribute("user", userVO); 
 
 	    return "user/mypage";
 	}
@@ -128,12 +164,15 @@ MemberMapper memberMapper;
 	// 1. 개인정보 수정 페이지
     @GetMapping("/memberEdit.do")
     public String edit(Model model) {
+    	
         UserVO loginMember = getLoginUser();
+        System.out.println("/되.DO"+loginMember);
         if (loginMember == null) return "redirect:/user/login.do";
 
         DeliveryVO delivery = service.getDelivery(loginMember.getUserIdx());
         if (delivery == null) delivery = new DeliveryVO();
-
+        String formatted = formatPhoneNumber(loginMember.getUserPhone());
+        loginMember.setUserPhone(formatted);
         model.addAttribute("d", delivery);
         model.addAttribute("m", loginMember);
         return "user/memberEdit";
@@ -142,21 +181,29 @@ MemberMapper memberMapper;
  // 2. 회원 정보 수정 처리
     @PostMapping("/memberUpdate.do")
     public String memberUpdate(UserVO vo) {
-        UserVO loginMember = getLoginUser();
+    	UserVO loginMember = getLoginUser();
         if (loginMember == null) return "redirect:/user/login.do";
 
-        // 세션 대신 가져온 loginMember에서 번호 추출
+        // 1. 유저 식별값 설정
         vo.setUserIdx(loginMember.getUserIdx());
 
-        // 비밀번호 처리
+        // 2. [추가] 전화번호 포맷팅 (01012345678 -> 010-1234-5678)
+        // JSP에서 합쳐서 보낸 숫자를 다시 하이픈 형태로 변환합니다.
+        if (vo.getUserPhone() != null) {
+            vo.setUserPhone(formatPhoneNumber(vo.getUserPhone()));
+        }
+
+        // 3. 비밀번호 처리
         if (vo.getPassword() != null && !vo.getPassword().trim().isEmpty()) {
             vo.setPassword(passwordEncoder.encode(vo.getPassword()));
         } else {
+            // 비밀번호를 입력하지 않았다면 기존 비밀번호 유지
             vo.setPassword(loginMember.getPassword());
         }
 
+        // 4. DB 업데이트
         service.updateUser(vo);
-        // 시큐리티를 사용하므로 세션 교체 코드는 불필요 (다음에 조회할 때 DB에서 다시 읽어옴)
+        
         return "redirect:/user/mypage.do";
     }
  // 3. 주문 상세 내역
@@ -231,7 +278,7 @@ MemberMapper memberMapper;
      String id = request.getParameter("id");
      String password = request.getParameter("password");
      String userName = request.getParameter("userName");
-     String userPhone = request.getParameter("userPhone");
+     String userPhone = request.getParameter("userPhone"); // JSP에서 합쳐진 값 (예: 01012345678)
      String isSocialUser = request.getParameter("isSocialUser");
 
      // 1. 서버단 필수 검증
@@ -240,34 +287,34 @@ MemberMapper memberMapper;
          return "user/memberJoin";
      }
 
-     // 2. 이메일 중복 체크 (id 필드에 이메일이 들어있으므로)
+     // 2. 이메일 중복 체크
      if (service.existsByEmail(id)) {
          request.setAttribute("msg", "이미 가입된 계정입니다.");
          return "user/memberJoin";
      }
 
+     // [추가] 전화번호 포맷팅 처리 (01012345678 -> 010-1234-5678)
+     String formattedPhone = formatPhoneNumber(userPhone);
+
      // 3. VO 기본 세팅
      UserVO vo = new UserVO();
-     vo.setId(id); // VO의 id 필드에 이메일 저장
+     vo.setId(id); 
      vo.setUserName(userName);
-     vo.setUserPhone(userPhone);
+     vo.setUserPhone(formattedPhone); // ★ 포맷팅된 번호 세팅
      vo.setUserRole("USER");
      vo.setDeleted(false);
 
-     // 4. 소셜 유저 여부에 따른 분기 처리 (loginType 설정)
+     // 4. 소셜 유저 여부에 따른 분기 처리
      if ("Y".equals(isSocialUser)) {
          vo.setEasyLogin(true); 
-         // 소셜 유저는 임의의 고정 비밀번호를 암호화하여 저장
          vo.setPassword(passwordEncoder.encode("SOCIAL_AUTH_TEMP_PW")); 
          
-         // [핵심] CustomOAuth2UserService에서 세션에 저장해둔 loginType(1,2,3)을 가져옴
          Integer socialLoginType = (Integer) session.getAttribute("loginType");
-         vo.setLoginType(socialLoginType != null ? socialLoginType : 1); // 없으면 기본값 1
+         vo.setLoginType(socialLoginType != null ? socialLoginType : 1); 
      } else {
          vo.setEasyLogin(false);
-         vo.setLoginType(0); // 일반 유저는 loginType 0
+         vo.setLoginType(0); 
          
-         // 일반 유저는 입력받은 비밀번호 암호화
          if (password != null && !password.isEmpty()) {
              vo.setPassword(passwordEncoder.encode(password));
          }
@@ -277,12 +324,8 @@ MemberMapper memberMapper;
      service.insert(vo);
 
      // 6. 가입 직후 세션 설정
-     // 로그인이 완료된 후 top.jsp에서 이름을 바로 띄우기 위해 저장합니다.
      session.setAttribute("userName", userName);
      session.setAttribute("loginType", vo.getLoginType());
-     
-     // PK인 userIdx를 로그 직후에 활용하고 싶다면 DB 인서트 후 vo에서 꺼낼 수 있습니다.
-     // (MyBatis insert문에서 useGeneratedKeys="true" 설정이 되어 있어야 함)
      session.setAttribute("userIdx", vo.getUserIdx());
 
      // 7. 가입 성공 후 소셜 관련 임시 세션 제거
@@ -290,14 +333,13 @@ MemberMapper memberMapper;
          session.removeAttribute("socialId");
          session.removeAttribute("socialName");
          session.removeAttribute("isSocial");
-         // 가입에 사용한 loginType은 위에서 vo에 담았으므로 삭제해도 무방합니다.
-         // session.removeAttribute("loginType"); 
      }
 
-     System.out.println("===> 회원가입 완료: " + userName + " (Type: " + vo.getLoginType() + ")");
+     System.out.println("===> 회원가입 완료: " + userName + " (" + formattedPhone + ")");
      
      return "redirect:/user/login.do";
  }
+
  
  
     @ResponseBody

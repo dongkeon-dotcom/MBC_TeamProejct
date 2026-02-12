@@ -12,7 +12,7 @@
     <h1>마이페이지1</h1>
    
   <table>   
-    <tr> <td> <strong>${userId}</strong>님 환영합니다!</td></tr>
+    <tr> <td> <strong>${user.userName}</strong>님 환영합니다!</td></tr>
       <tr> <td>  <a href="${path}/user/memberEdit.do">회원정보 수정 </a></td></tr>
        <tr> <td>  <a href="${path}/user/orderList.do">주문내역</a></td></tr>
         <tr> <td><a href="${path}/delivery/addressList.do">주소지관리</a></td></tr>
