@@ -70,8 +70,8 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
         	session.setAttribute("socialId", email); // VO의 id 필드용 이메일
         	session.setAttribute("isSocial", true);
-
-        	System.out.println("===> [Service] 세션에 이메일 저장 완료: " + email);
+        	session.setAttribute("socialName", name);
+        	System.out.println("===> [Service] 세션에 이메일 저장 완료: " + email+name);
 
         	throw new OAuth2AuthenticationException("not_joined_user");
         }
