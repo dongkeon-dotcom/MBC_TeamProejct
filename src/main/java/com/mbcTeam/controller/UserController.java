@@ -189,10 +189,15 @@ MemberMapper memberMapper;
     }
 
     @GetMapping("/loginOK.do")
-    public String loginOK() {
-    	//메인등에서 로그인하기 클릭시로그인페이지로이동하기위한루트 
-    	System.out.println("/loginOK.DO");
-        return "redirect:/"; // 메인으로 리다이렉트
+    public String loginOK(HttpSession session) {
+    	// 세션에서 꺼내기
+        Integer userIdx = (Integer) session.getAttribute("userIdx");
+        String userName = (String) session.getAttribute("userName");
+
+        System.out.println("로그인 성공 유저 PK: " + userIdx);
+        System.out.println("로그인 성공 유저 이름: " + userName);
+        
+        return "redirect:/";
     }
 
  // 1. 회원가입 페이지 이동
@@ -221,15 +226,12 @@ MemberMapper memberMapper;
 	    return "user/memberJoin";
 	}
 
-  
  @RequestMapping(value = "/memberOK.do", method = RequestMethod.POST)
  public String memberOK(HttpServletRequest request, HttpSession session) {
      String id = request.getParameter("id");
      String password = request.getParameter("password");
      String userName = request.getParameter("userName");
      String userPhone = request.getParameter("userPhone");
-     
-     // JSP에서 <input type="hidden" name="isSocialUser" value="${isSocial ? 'Y' : 'N'}"> 으로 보낸다고 가정
      String isSocialUser = request.getParameter("isSocialUser");
 
      // 1. 서버단 필수 검증
@@ -244,7 +246,7 @@ MemberMapper memberMapper;
          return "user/memberJoin";
      }
 
-     // 3. VO 세팅
+     // 3. VO 기본 세팅
      UserVO vo = new UserVO();
      vo.setId(id); // VO의 id 필드에 이메일 저장
      vo.setUserName(userName);
@@ -252,13 +254,19 @@ MemberMapper memberMapper;
      vo.setUserRole("USER");
      vo.setDeleted(false);
 
-     // 4. 소셜 유저 여부에 따른 분기 처리
+     // 4. 소셜 유저 여부에 따른 분기 처리 (loginType 설정)
      if ("Y".equals(isSocialUser)) {
          vo.setEasyLogin(true); 
-         // 소셜 유저는 임의의 고정 비밀번호를 암호화하여 저장 (로그인 시 사용되지는 않지만 DB 제약조건 대비)
+         // 소셜 유저는 임의의 고정 비밀번호를 암호화하여 저장
          vo.setPassword(passwordEncoder.encode("SOCIAL_AUTH_TEMP_PW")); 
+         
+         // [핵심] CustomOAuth2UserService에서 세션에 저장해둔 loginType(1,2,3)을 가져옴
+         Integer socialLoginType = (Integer) session.getAttribute("loginType");
+         vo.setLoginType(socialLoginType != null ? socialLoginType : 1); // 없으면 기본값 1
      } else {
          vo.setEasyLogin(false);
+         vo.setLoginType(0); // 일반 유저는 loginType 0
+         
          // 일반 유저는 입력받은 비밀번호 암호화
          if (password != null && !password.isEmpty()) {
              vo.setPassword(passwordEncoder.encode(password));
@@ -268,16 +276,30 @@ MemberMapper memberMapper;
      // 5. DB 인서트
      service.insert(vo);
 
-     // 6. [수정] 가입 성공 후 소셜 관련 세션 확실히 제거 (키값 맞춤)
+     // 6. 가입 직후 세션 설정
+     // 로그인이 완료된 후 top.jsp에서 이름을 바로 띄우기 위해 저장합니다.
+     session.setAttribute("userName", userName);
+     session.setAttribute("loginType", vo.getLoginType());
+     
+     // PK인 userIdx를 로그 직후에 활용하고 싶다면 DB 인서트 후 vo에서 꺼낼 수 있습니다.
+     // (MyBatis insert문에서 useGeneratedKeys="true" 설정이 되어 있어야 함)
+     session.setAttribute("userIdx", vo.getUserIdx());
+
+     // 7. 가입 성공 후 소셜 관련 임시 세션 제거
      if ("Y".equals(isSocialUser)) {
-         session.removeAttribute("socialId"); // socialEmail 아님!
+         session.removeAttribute("socialId");
          session.removeAttribute("socialName");
          session.removeAttribute("isSocial");
+         // 가입에 사용한 loginType은 위에서 vo에 담았으므로 삭제해도 무방합니다.
+         // session.removeAttribute("loginType"); 
      }
 
-     System.out.println("===> 회원가입 완료: " + id + " (소셜여부: " + isSocialUser + ")");
+     System.out.println("===> 회원가입 완료: " + userName + " (Type: " + vo.getLoginType() + ")");
+     
      return "redirect:/user/login.do";
- }    
+ }
+ 
+ 
     @ResponseBody
     @RequestMapping(value="/checkEmail.do", method=RequestMethod.GET, produces="application/json; charset=UTF-8")
     public Map<String, Object> checkEmail(@RequestParam("id") String id) {
