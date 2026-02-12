@@ -51,6 +51,7 @@
 					                        	<table class="table table-sm table-bordered text-center bg-white mb-0">
 					                        		<thead class="table-dark">
 					                        		<tr>
+					                        			<th>상품번호</th>
 					                        			<th>상품명</th>
 					                        			<th>색상</th>
 					                        			<th>사이즈</th>
@@ -115,6 +116,7 @@ function toggleDetail(orderIdx){
 					let ratingText = (item.rating === null || item.rating === 0) ? "-" : item.rating;
 					
 					html += "<tr>";
+					html += "	<td>" + item.productIdx + "</td>";
 					html += "	<td>" + item.productName + "</td>";
 					html += "	<td>" + item.color + "</td>";
 					html += "	<td>" + item.size + "</td>";
