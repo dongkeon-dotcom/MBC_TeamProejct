@@ -29,17 +29,21 @@ public class UserProductController {
         List<ProductVO> userProductList;
         if (category != null && !category.isEmpty()) {
             if (subCategory != null && !subCategory.isEmpty()) {
+            	//카테고리랑 서브카테고리 고른거
                 userProductList = service.selectByCategoryAndSub(category, subCategory);
             } else {
+            	//카테고리 고른거
                 userProductList = service.selectByCategory(category);
             }
         } else {
+        	//전체
             userProductList = service.selectAll();
         }
 
         model.addAttribute("userProductList", userProductList); 
-        model.addAttribute("selectedCategory", category);
-        model.addAttribute("selectedSubCategory", subCategory);
+        //26-02-12 동건: 안쓰는거 같아서 주석처리
+        //model.addAttribute("selectedCategory", category);
+        //model.addAttribute("selectedSubCategory", subCategory);
 
         return "userproduct/userproductlist";
     }

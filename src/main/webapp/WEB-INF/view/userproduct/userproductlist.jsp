@@ -23,9 +23,6 @@
 </c:if>
 
 	
-	
-	
-	
     <!-- 상품 리스트 -->
     <div class="product-grid">
         <c:forEach var="p" items="${userProductList}">
