@@ -165,14 +165,20 @@ public class AdminController {
 	}
 	
 	@GetMapping("/adminProductList.do")
-	public String ProductList(@RequestParam(value = "search", defaultValue = "code", required = false) String search,
-			@RequestParam(value = "keyword", defaultValue = "", required = false) String keyword, ProductVO vo,
+	public String ProductList(
+			@RequestParam(value = "search", defaultValue = "code", required = false) String search,
+			@RequestParam(value = "keyword", defaultValue = "", required = false) String keyword,
+			@RequestParam(value = "recommendedFilter", defaultValue="all", required = false ) String recommendedFilter,
+			@RequestParam(value = "discountFilter", defaultValue="all", required = false) String discountFilter,			
+			ProductVO vo,
 			Model model) {
 		System.out.println("/adminProductList.DO");
-		System.out.println("테스트: " + search);
-		System.out.println("테스트: " + keyword);
+		//System.out.println("테스트: " + search);
+		//System.out.println("테스트: " + keyword);
 		vo.setSearch(search);
 		vo.setKeyword(keyword);
+		vo.setRecommendedFilter(recommendedFilter);
+		vo.setDiscountFilter(discountFilter);
 
 		int pageSize = 10;
 		int pageListSize = 10;
@@ -210,12 +216,15 @@ public class AdminController {
 
 		model.addAttribute("search", vo.getSearch());
 		model.addAttribute("keyword", vo.getKeyword());
+		model.addAttribute("recommendedFilter", vo.getRecommendedFilter());
+		model.addAttribute("discountFilter", vo.getDiscountFilter());
+		
 
-		System.out.println("************************************************");
-		System.out.println("startIdx: " + vo.getStartIdx());
-		System.out.println("pageSize: " + vo.getPageSize());
-		System.out.println("search: " + vo.getSearch());
-		System.out.println("keyword: " + vo.getKeyword());
+//		System.out.println("************************************************");
+//		System.out.println("startIdx: " + vo.getStartIdx());
+//		System.out.println("pageSize: " + vo.getPageSize());
+//		System.out.println("search: " + vo.getSearch());
+//		System.out.println("keyword: " + vo.getKeyword());
 
 		return "admin/productList";
 	}
