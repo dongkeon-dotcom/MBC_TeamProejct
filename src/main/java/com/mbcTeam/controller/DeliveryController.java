@@ -87,6 +87,9 @@ public class DeliveryController {
         dservice.deleteAddresses(idList);
         
         return "redirect:/delivery/addressList.do";
+        
+        
+        
     }
     
     // 4. 주소 추가 팝업창 띄우기

@@ -1,46 +1,61 @@
 @charset "UTF-8";
 
+/* 전체 컨테이너 */
 .checkout-container {
-    max-width: 800px;
-    margin: 30px auto;
-    padding: 20px;
+    max-width: 900px;
+    margin: 40px auto;
+    padding: 25px;
     border: 1px solid #ddd;
-    border-radius: 8px;
+    border-radius: 10px;
     background: #fff;
-    font-family: Arial, sans-serif;
+    font-family: 'Noto Sans KR', Arial, sans-serif;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
 }
 
+/* 제목 */
 .checkout-title {
     text-align: center;
     margin-bottom: 30px;
-    font-size: 24px;
+    font-size: 26px;
     font-weight: bold;
+    color: #333;
 }
 
 /* 공통 박스 스타일 */
 .checkout-box {
     border: 1px solid #eee;
-    border-radius: 6px;
-    padding: 15px;
-    margin-bottom: 20px;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 25px;
     background-color: #fafafa;
 }
 
-/* 배송지 정보 */
-.checkout-shipping h3,
-.checkout-items h3,
-.checkout-summary h3 {
-    margin-bottom: 10px;
+/* 박스 제목 */
+.checkout-box h4 {
+    margin-bottom: 12px;
     font-size: 18px;
     font-weight: bold;
     border-bottom: 1px solid #ddd;
-    padding-bottom: 5px;
+    padding-bottom: 6px;
+    color: #444;
 }
 
-/* 상품 정보 */
+/* 배송지 정보 */
+.checkout-shipping p {
+    margin: 6px 0;
+    font-size: 15px;
+    color: #555;
+}
+
+.checkout-shipping strong {
+    font-size: 16px;
+    color: #222;
+}
+
+/* 주문 상품 */
 .checkout-item {
     border-bottom: 1px dashed #ccc;
-    padding: 10px 0;
+    padding: 12px 0;
 }
 
 .checkout-item:last-child {
@@ -48,13 +63,15 @@
 }
 
 .checkout-item p {
-    margin: 4px 0;
+    margin: 5px 0;
     font-size: 14px;
+    color: #444;
 }
 
 .item-name {
     font-weight: bold;
     font-size: 16px;
+    color: #222;
 }
 
 /* 결제 요약 */
@@ -62,22 +79,24 @@
     text-align: right;
     font-size: 16px;
     font-weight: bold;
+    color: #e60023;
 }
 
-/* 버튼 */
+/* 결제 버튼 */
 .checkout-btn {
     display: block;
     width: 100%;
-    background-color: #4CAF50;
+    background-color: #e60023;
     color: #fff;
-    padding: 12px;
+    padding: 14px;
     border: none;
-    border-radius: 5px;
+    border-radius: 6px;
     font-size: 18px;
     cursor: pointer;
-    margin-top: 20px;
+    margin-top: 25px;
+    transition: background 0.3s ease;
 }
 
 .checkout-btn:hover {
-    background-color: #45a049;
+    background-color: #c4001d;
 }
