@@ -105,6 +105,20 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <if test="search == 'name'">
             AND INSTR(product_Name, #{keyword}) > 0
         </if>
+        
+        <if test="recommendedFilter == 'true'">
+        	AND is_recommended = 1
+        </if>
+        <if test="recommendedFilter == 'false'">
+        	AND is_recommended = 0
+        </if>
+        
+        <if test="discountFilter == 'sale'">
+            AND discount_Rate > 0
+        </if>
+        <if test="discountFilter == 'normal'">
+            AND (discount_Rate = 0)
+        </if>                
 		</where>
 	</sql>
 

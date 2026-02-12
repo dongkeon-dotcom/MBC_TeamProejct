@@ -10,16 +10,30 @@
 <div class="container-fluid">
     <div class="table-container shadow-sm mt-4">
         
-        <div class="d-flex justify-content-between mb-3">
-            <form action="${path}/admin/adminProductList.do" class="d-flex gap-2" >
-                <select class="form-select search-select" name=search>
-                    <option value="code">제품코드</option>
-                    <option value="name">제품이름</option>
-                </select>
-                <input type="text" class="form-control" style="width: 200px;" name=keyword>
-                <button type=submit class="btn btn-secondary">검색하기</button>
-            </form>
-        </div>
+	<div class="d-flex justify-content-between mb-3">
+	    <form action="${path}/admin/adminProductList.do" class="d-flex gap-2 flex-wrap">
+	        <select class="form-select" name="recommendedFilter" style="width: 130px;">
+	            <option value="all" ${param.recommendedFilter == 'all' ? 'selected' : ''}>전체</option>
+	            <option value="true" ${param.recommendedFilter == 'true' ? 'selected' : ''}>추천제품</option>
+	            <option value="false" ${param.recommendedFilter == 'false' ? 'selected' : ''}>일반제품</option>
+	        </select>
+	
+	        <select class="form-select" name="discountFilter" style="width: 130px;">
+	            <option value="all" ${param.discountFilter == 'all' ? 'selected' : ''}>전체</option>
+	            <option value="sale" ${param.discountFilter == 'sale' ? 'selected' : ''}>할인중</option>
+	            <option value="normal" ${param.discountFilter == 'normal' ? 'selected' : ''}>정가(0%)</option>
+	        </select>
+	
+	        <select class="form-select search-select" name="search" style="width: 120px;">
+	            <option value="code" ${param.search == 'code' ? 'selected' : ''}>제품코드</option>
+	            <option value="name" ${param.search == 'name' ? 'selected' : ''}>제품이름</option>
+	        </select>
+	        
+	        <input type="text" class="form-control" style="width: 200px;" name="keyword" value="${keyword}">
+	        <button type="submit" class="btn btn-secondary">검색하기</button>
+	        <a href="${path}/admin/adminProductList.do" class="btn btn-outline-secondary">초기화</a>
+	    </form>
+	</div>
 
         <table class="table table-bordered text-center align-middle">
             <thead>
