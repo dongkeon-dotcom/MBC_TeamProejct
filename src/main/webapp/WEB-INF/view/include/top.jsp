@@ -70,49 +70,48 @@
                     <a href="${path}/user/login.do">장바구니</a>
                 </sec:authorize>
 
-               <%-- 로그인 상태일 때 --%>
-<sec:authorize access="isAuthenticated()">
-    <sec:authentication property="principal" var="principal" />
+    <sec:authorize access="isAuthenticated()">
+    <%-- 1. 현재 로그인된 객체 정보를 auth 객체에 담습니다. --%>
+    <sec:authentication property="principal" var="auth" />
+
     <span class="me-3">
         <strong>
             <c:choose>
-                <%-- 소셜 로그인인지 확인하는 안전한 방법: principal 클래스명 확인 --%>
-                <c:when test="${fn:contains(principal, 'DefaultOAuth2User') or fn:contains(principal, 'OAuth2User')}">
+                <%-- 2. 소셜 로그인 여부 확인 (attributes가 있으면 소셜) --%>
+                <c:when test="${not empty auth.attributes}">
                     <c:choose>
                         <%-- 네이버 --%>
-                        <c:when test="${not empty principal.attributes.response}">
-                            ${principal.attributes.response.name}
+                        <c:when test="${not empty auth.attributes.response}">
+                            ${auth.attributes.response.name}
                         </c:when>
                         <%-- 카카오 --%>
-                        <c:when test="${not empty principal.attributes.kakao_account}">
-                            ${principal.attributes.kakao_account.profile.nickname}
+                        <c:when test="${not empty auth.attributes.kakao_account}">
+                            ${auth.attributes.kakao_account.profile.nickname}
                         </c:when>
                         <%-- 구글 --%>
-                        <c:when test="${not empty principal.attributes.name}">
-                            ${principal.attributes.name}
+                        <c:when test="${not empty auth.attributes.name}">
+                            ${auth.attributes.name}
                         </c:when>
                         <c:otherwise>소셜회원</c:otherwise>
                     </c:choose>
                 </c:when>
 
-                <%-- 일반 로그인 유저 (attributes 속성이 없는 일반 User 객체) --%>
+                <%-- 3. 일반 로그인 유저 (attributes가 없는 경우) --%>
                 <c:otherwise>
-                    <%-- 일반 로그인은 principal.username 또는 직접 커스텀한 필드(userName) 사용 --%>
-                    ${principal.username} 
+                    <%-- 중요: principal.username 같은 하위 필드를 직접 적지 않습니다. --%>
+                    <%-- 아래 태그는 시큐리티가 알아서 '아이디' 혹은 '대표이름'을 출력합니다. --%>
+                    <sec:authentication property="name" />
                 </c:otherwise>
             </c:choose>
         </strong>님 환영합니다.
     </span>
-
-                    <a href="${path}/user/mypage.do" class="me-2">마이페이지</a>
-                    <a href="${path}/cart" class="me-2">장바구니</a>
-
-   <%-- 로그아웃 버튼을 단순 링크로 변경 (가장 추천) --%>
-<a href="${path}/user/logout.do" class="me-2" style="color:blue; text-decoration:underline;">
-    로그아웃
-</a>
-              
-                </sec:authorize>
+ <a href="${path}/user/login.do" class="me-2">마이페이지</a>
+                    <a href="${path}/user/login.do">장바구니</a>
+    <%-- 로그아웃 링크 --%>
+    <a href="${path}/user/logout.do" style="color:blue; text-decoration:underline; cursor:pointer;">
+        로그아웃
+    </a>
+</sec:authorize>
             </div>
         </div>
     </div>
