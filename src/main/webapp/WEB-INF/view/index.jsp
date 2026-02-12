@@ -116,20 +116,20 @@
                     <h5 class="card-title">${p.productName}</h5>
 
                     <!-- 가격/할인 표시 -->
-					<c:choose>
-					    <c:when test="${p.discountRate > 0}">
-					        <p class="card-text product-price">
-					            <span class="original-price">
-					                ${(p.price * 100) / (100 - p.discountRate)}원
-					            </span><br>
-					            <span class="discounted-price">${p.price}원</span>
-					            <span> ${p.discountRate}% </span>
-					        </p>
-					    </c:when>
-					    <c:otherwise>
-					        <p class="card-text product-price">${p.price}원</p>
-					    </c:otherwise>
-					</c:choose>
+					 <c:choose>
+                        <c:when test="${not empty p.discountRate and p.discountRate > 0}">
+                            <p class="product-price">
+                                <span class="original-price">${p.price}원</span>
+                                <span class="discounted-price">
+                                    ${p.price - (p.price * p.discountRate / 100)}원
+                                </span>
+                                <span class="product-discount">${p.discountRate}%</span>
+                            </p>
+                        </c:when>
+                        <c:otherwise>
+                            <p class="product-price">${p.price}원</p>
+                        </c:otherwise>
+                    </c:choose>
 
 
                     <!-- 리뷰/별점 -->

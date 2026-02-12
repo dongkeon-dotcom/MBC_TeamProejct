@@ -32,47 +32,48 @@
         </select>
     </div>
 
-  
     <!-- 주문 상품 정보 -->
-<div class="checkout-box checkout-items">
-    <h4>주문상품</h4>
-    <div class="checkout-item">
-        <p class="item-name"><strong>${product.productName}</strong></p>
-        <p>옵션: ${selectedOption.color} / ${selectedOption.size}</p>
-        <p>수량: ${quantity}개</p>
-        <p>가격: ${product.price}원</p>
-        <c:if test="${product.discountRate > 0}">
-            <p>할인가: ${product.price * (100 - product.discountRate) / 100}원</p>
-        </c:if>
+    <div class="checkout-box checkout-items">
+        <h4>주문상품</h4>
+        <c:forEach var="item" items="${orderItems}">
+            <div class="checkout-item">
+                <p class="item-name"><strong>${item.productName}</strong></p>
+                <p>옵션: ${item.color} / ${item.size}</p>
+                <p>수량: ${item.quantity}개</p>
+                <p>가격: ${item.price}원</p>
+                <p>합계: ${item.totalPrice}원</p>
+            </div>
+        </c:forEach>
     </div>
-</div>
 
     <!-- 결제 요약 -->
     <div class="checkout-box checkout-summary">
         <h3>결제 요약</h3>
         <p>배송비: 0원</p>
-        <p>최종 결제 금액: ${totalPrice}원</p>
+        <p>최종 결제 금액: ${totalAmount}원</p>
     </div>
 
     <!-- 결제 버튼 -->
     <form action="${pageContext.request.contextPath}/order/complete.do" method="post">
         <!-- Hidden 필드들 -->
         <input type="hidden" name="productIdx" value="${product.productIdx}">
-        <input type="hidden" name="optionIdx" value="${selectedOption.optionIdx}">
-        <input type="hidden" name="quantity" value="${quantity}">
-        <input type="hidden" name="totalPrice" value="${totalPrice}">
+        
+        <!-- 여러 옵션 처리 -->
+        <c:forEach var="item" items="${orderItems}">
+            <input type="hidden" name="optionIdxList" value="${item.optionIdx}">
+            <input type="hidden" name="quantityList" value="${item.quantity}">
+        </c:forEach>
+
+        <input type="hidden" name="totalPrice" value="${totalAmount}">
         <input type="hidden" name="receiver" value="${delivery.receiver}">
         <input type="hidden" name="deliveryPhone" value="${delivery.deliveryPhone}">
         <input type="hidden" name="address" value="${delivery.address}">
         <input type="hidden" name="extraAddress" value="${delivery.extraAddress}">
         <input type="hidden" name="zipcode" value="${delivery.zipcode}">
 
-        <button type="submit" class="checkout-btn">${totalPrice}원 결제 하기</button>
+        <button type="submit" class="checkout-btn">${totalAmount}원 결제 하기</button>
     </form>
 </div>
-
-
-
 </body>
 </html>
 

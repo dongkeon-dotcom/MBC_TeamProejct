@@ -17,6 +17,8 @@ import com.mbcTeam.order.OrderVO;
 import com.mbcTeam.order.OrderItemVO;
 import com.mbcTeam.product.ProductService;
 import com.mbcTeam.product.ProductVO;
+import com.mbcTeam.shop.DeliveryService;
+import com.mbcTeam.shop.DeliveryVO;
 import com.mbcTeam.user.UserService;
 import com.mbcTeam.user.UserVO;
 import com.mbcTeam.product.ProductOptionVO;
@@ -37,6 +39,10 @@ public class OrderController {
     
     @Autowired
     private UserService userService;
+    
+    @Autowired
+    private DeliveryService dservice;
+
 
     // 결제 페이지 이동 (여러 옵션 처리)
     @PostMapping("/payment.do")
@@ -44,48 +50,58 @@ public class OrderController {
                               @RequestParam List<Integer> optionIdxList,
                               @RequestParam List<Integer> quantityList,
                               Model model) {
+
+        // 로그인 사용자 가져오기
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        UserVO loginUser = userService.getByEmail(auth.getName());
+
+        // ✅ 기본 배송지 가져오기
+        DeliveryVO delivery = null;
+        List<DeliveryVO> addresses = dservice.getAddressList(loginUser.getUserIdx());
+        if (addresses != null && !addresses.isEmpty()) {
+            delivery = addresses.stream()
+                                .filter(DeliveryVO::isDefaultAddress)
+                                .findFirst()
+                                .orElse(addresses.get(0)); // 기본 배송지가 없으면 첫 번째 주소 사용
+        }
+        model.addAttribute("delivery", delivery);
+
         // 상품 조회
         ProductVO product = productService.detail(productIdx);
 
+        // 주문상품 리스트 생성
         List<OrderItemVO> orderItems = new ArrayList<>();
         int totalAmount = 0;
-
         for (int i = 0; i < optionIdxList.size(); i++) {
             ProductOptionVO option = optionService.getOptionById(optionIdxList.get(i));
             int quantity = quantityList.get(i);
 
-            // 가격 계산
             int basePrice = product.getPrice();
             int discountedPrice = product.getDiscountRate() > 0
                     ? (int)Math.floor(basePrice * (100 - product.getDiscountRate()) / 100.0)
                     : basePrice;
-            int totalPrice = discountedPrice * quantity;
+            int itemTotalPrice = discountedPrice * quantity;
 
-            // 주문 상세 객체 생성
             OrderItemVO item = new OrderItemVO();
             item.setProductIdx(productIdx);
             item.setProductName(product.getProductName());
-            item.setCategory(product.getCategory());
-            item.setSubCategory(product.getSubCategory());
             item.setColor(option.getColor());
             item.setSize(option.getSize());
             item.setQuantity(quantity);
-            item.setPrice(basePrice);
-            item.setDiscountRate(product.getDiscountRate());
-            item.setProductMainImg(product.getProductMainImg());
-            item.setTotalPrice(totalPrice); // VO에 필드 추가 필요
+            item.setPrice(discountedPrice);
+            item.setTotalPrice(itemTotalPrice);
 
             orderItems.add(item);
-            totalAmount += totalPrice;
+            totalAmount += itemTotalPrice;
         }
 
-        // JSP에 전달할 데이터
         model.addAttribute("product", product);
         model.addAttribute("orderItems", orderItems);
         model.addAttribute("totalAmount", totalAmount);
 
         return "order/payment";
     }
+
 
     // 결제 완료 처리
     @PostMapping("/complete.do")

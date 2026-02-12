@@ -149,7 +149,7 @@
     </span>
 
     <%-- 링크 수정: 마이페이지와 장바구니는 로그인 상태이므로 실제 경로로 연결하는 것이 좋습니다. --%>
-    <a href="${path}/mypage/info.do" class="me-2">마이페이지</a>
+    <a href="${path}/user/mypage.do" class="me-2">마이페이지</a>
     <a href="${path}/cart/list.do" class="me-2">장바구니</a>
     
     <%-- 로그아웃 링크 --%>
