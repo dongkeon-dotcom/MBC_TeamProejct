@@ -129,7 +129,7 @@
         </strong>님 환영합니다.
     </span>
 
-    <a href="${path}/mypage/info.do" class="me-2">마이페이지</a>
+    <a href="${path}/user/mypage.do" class="me-2">마이페이지</a>
     <a href="${path}/cart/list.do" class="me-2">장바구니</a>
     <a href="${path}/user/logout.do" style="color:blue; text-decoration:underline;">로그아웃</a>
 </sec:authorize>

@@ -24,7 +24,7 @@
         
         <c:set var="path" value="${pageContext.request.contextPath}" />
 
-        <form name="joinForm" method="post" action="${path}/user/memberOK.do">
+        <form name="joinForm" method="post" action="${path}/user/memberOK.do" onsubmit="return validateForm()">
             <%-- Security 필수: CSRF 토큰 --%>
             <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
             
@@ -85,13 +85,25 @@
                     </td>
                 </tr>
 
-                <%-- 4. 전화번호 영역 --%>
-                <tr><td colspan="2" style="font-weight: bold; padding-top: 15px;">전화번호</td></tr>
-                <tr>
-                    <td colspan="2">
-                        <input type="text" name="userPhone" id="userPhone" style="width: 100%; padding: 8px;" placeholder="ex) 010-1234-5678" />
-                    </td>
-                </tr>
+               <%-- 4. 전화번호 영역 --%>
+<tr><td colspan="2" style="font-weight: bold; padding-top: 15px;">전화번호</td></tr>
+<tr>
+    <td colspan="2" style="display: flex; align-items: center; gap: 5px;">
+        <select id="phone1" style="width: 80px; padding: 8px;">
+            <option value="010">010</option>
+            <option value="011">011</option>
+            <option value="016">016</option>
+            <option value="02">02</option>
+            <option value="031">031</option>
+        </select>
+        <span style="padding: 0 5px;">-</span>
+        <input type="text" id="phone_body" style="flex: 1; padding: 8px;" 
+               placeholder="숫자만 입력" maxlength="8"
+               oninput="this.value=this.value.replace(/[^0-9]/g,'');" />
+        
+        <input type="hidden" name="userPhone" id="userPhone" />
+    </td>
+</tr>
 
                 <tr>
                     <td colspan="2" align="center">
@@ -109,7 +121,6 @@
 <script>
 const isSocial = ${isSocial == true ? true : false};
 let emailChecked = isSocial; // 소셜 가입이면 중복체크 이미 된 것으로 간주
-
 function joinCheck() {
     const form = document.joinForm;
 
@@ -138,24 +149,31 @@ function joinCheck() {
         }
     }
 
-    // 3. 공통 유효성 검사
+    // 3. 이름 검사
     if (form.userName.value.trim() === "") {
         alert("이름을 입력하세요");
         form.userName.focus();
         return;
     }
-    if (form.userPhone.value.trim() === "") {
-        alert("전화번호를 입력하세요");
-        form.userPhone.focus();
+
+    // 4. [수정] 전화번호 검사 및 합치기
+    const p1 = document.getElementById('phone1').value;
+    const pBody = document.getElementById('phone_body').value;
+    
+    if (pBody.trim() === "" || pBody.length < 7) {
+        alert("전화번호 뒷자리를 정확히 입력해 주세요.");
+        document.getElementById('phone_body').focus();
         return;
     }
 
+    // ★ 여기서 번호를 합쳐서 hidden 필드에 넣어줍니다.
+    document.getElementById('userPhone').value = p1 + pBody;
+
+    // 5. 최종 제출
     if(confirm("입력하신 정보로 회원가입을 진행할까요?")) {
         form.submit();
     }
 }
-
-
 
 function checkEmail() {
     const email = document.getElementById("id").value.trim();
@@ -169,7 +187,6 @@ function checkEmail() {
         return;
     }
 
-    // fetch API 호출
     fetch(path + "/user/checkEmail.do?id=" + encodeURIComponent(email))
         .then(res => res.json())
         .then(data => {
@@ -189,6 +206,7 @@ function checkEmail() {
             msg.style.color = "orange";
         });
 }
+
 </script>
 
 <c:import url="/WEB-INF/view/include/bottom.jsp" />
