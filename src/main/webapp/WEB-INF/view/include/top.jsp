@@ -70,24 +70,23 @@
                     <a href="${path}/user/login.do">장바구니</a>
                 </sec:authorize>
 
-               <%-- 로그인 상태일 때 --%>
+       <%-- 로그인 상태일 때 --%>
 <sec:authorize access="isAuthenticated()">
-    <sec:authentication property="principal" var="principal" />
     <span class="me-3">
         <strong>
             <c:choose>
-                <%-- 소셜 로그인인지 확인하는 안전한 방법: principal 클래스명 확인 --%>
-                <c:when test="${fn:contains(principal, 'DefaultOAuth2User') or fn:contains(principal, 'OAuth2User')}">
+                <%-- 1. 소셜 로그인인 경우 (객체 안에 attributes가 있는지로 판단) --%>
+                <c:when test="${not empty principal.attributes}">
                     <c:choose>
-                        <%-- 네이버 --%>
+                        <%-- 네이버: response.name --%>
                         <c:when test="${not empty principal.attributes.response}">
                             ${principal.attributes.response.name}
                         </c:when>
-                        <%-- 카카오 --%>
+                        <%-- 카카오: kakao_account.profile.nickname --%>
                         <c:when test="${not empty principal.attributes.kakao_account}">
                             ${principal.attributes.kakao_account.profile.nickname}
                         </c:when>
-                        <%-- 구글 --%>
+                        <%-- 구글: name --%>
                         <c:when test="${not empty principal.attributes.name}">
                             ${principal.attributes.name}
                         </c:when>
@@ -95,10 +94,9 @@
                     </c:choose>
                 </c:when>
 
-                <%-- 일반 로그인 유저 (attributes 속성이 없는 일반 User 객체) --%>
+                <%-- 2. 일반 로그인인 경우 (가장 안전한 방식) --%>
                 <c:otherwise>
-                    <%-- 일반 로그인은 principal.username 또는 직접 커스텀한 필드(userName) 사용 --%>
-                    ${principal.username} 
+                    <sec:authentication property="name" />
                 </c:otherwise>
             </c:choose>
         </strong>님 환영합니다.

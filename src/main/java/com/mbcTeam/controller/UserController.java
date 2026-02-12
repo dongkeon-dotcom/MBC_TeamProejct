@@ -204,7 +204,11 @@ MemberMapper memberMapper;
 	    String socialId = (String) session.getAttribute("socialId");
 	    String socialName = (String) session.getAttribute("socialName");
 	    Boolean isSocial = (Boolean) session.getAttribute("isSocial");
-
+	 // 로그 확인! 여기서 두 값이 똑같이 이메일로 나오면 서비스 단이 범인입니다.
+	    System.out.println("DEBUG socialId: " + socialId);
+	    System.out.println("DEBUG socialName: " + socialName);
+	    
+	    
 	    if (Boolean.TRUE.equals(isSocial) && socialId != null) {
 	        model.addAttribute("id", socialId); // JSP의 ${id}로 전달
 	        model.addAttribute("userName", socialName);
