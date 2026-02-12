@@ -29,7 +29,8 @@ import java.util.List;
 @PropertySource("classpath:config/oauth.properties")
 public class SecurityConfig extends WebSecurityConfigurerAdapter{
 
-	
+	@Autowired
+	private CustomOAuth2FailureHandler customOAuth2FailureHandler;
 	
 	@Autowired
     private CustomUserDetailsService userDetailsService;
@@ -123,6 +124,19 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
                     // 에러 확인 후 원래 가려던 회원가입 페이지로 리다이렉트
                     response.sendRedirect(request.getContextPath() + "/user/member.do");
                 })
+                .and().oauth2Login()
+                .loginPage("/user/login.do")
+                .redirectionEndpoint()
+                    .baseUri("/login/oauth2/code/**") 
+                    .and()
+                .userInfoEndpoint()
+                    .userService(customOAuth2UserService) 
+                    .and()
+                .defaultSuccessUrl("/index.do", true)
+                
+                // [수정된 부분] 람다식 대신 미리 만든 customOAuth2FailureHandler를 연결합니다.
+                .failureHandler(customOAuth2FailureHandler) 
+                
                 .and()
 
             // 5. 로그아웃 설정
@@ -198,106 +212,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
             .clientName("Kakao")
             .build();
     }
-    
-   /*
-    @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http
-            .csrf(csrf -> csrf.disable())
-            .authorizeHttpRequests(auth -> auth
-                .antMatchers("/", "/index.do", "/user/login.do", 
-                		"/user/member.do", "/user/insert.do", 
-                             "/resources/**", "/static/**", 
-                             "/login/oauth2/code/**", "/oauth2/authorization/**").permitAll()
-                .anyRequest().authenticated()
-            )
-            .formLogin(form -> form
-            		.loginPage("/user/loginOK.do")              // 로그인 화면 주소
-            	    .loginProcessingUrl("/user/loginOK.do")      // JSP의 <form action> 주소와 일치시킴!
-            	    .usernameParameter("id")                    // JSP의 <input name="id">와 일치시킴! (중요)
-            	    .passwordParameter("password")              // JSP의 <input name="password">와 일치
-            	    .defaultSuccessUrl("/index.do", true )       // 로그인 성공 시 이동
-            	    .permitAll()
-            )
-            
-            .logout(logout -> logout
-            	    .logoutUrl("/user/logout.do")          // 사용자가 로그아웃을 요청할 주소
-            	    .logoutSuccessUrl("/")                 // 로그아웃 성공 후 이동할 주소
-            	    .invalidateHttpSession(true)           // 세션 삭제
-            	    .deleteCookies("JSESSIONID")           // 쿠키 삭제
-            	    .permitAll()
-            	)
-            .oauth2Login(oauth2 -> oauth2
-                .loginPage("/user/loginOK.do")
-                // [필수] 서블릿이 *.do만 받으므로 콜백 주소에도 .do가 붙도록 설정
-                .redirectionEndpoint(redirection -> redirection
-                    .baseUri("/login/oauth2/code/*.do") 
-                )
-                
-                .userInfoEndpoint(userInfo -> userInfo.userService(customOAuth2UserService))
-                .successHandler(oauth2SuccessHandler)
-               
-            )
-            .userDetailsService(securityUserDetailsService);
-        return http.build();
-    }
-
-
-    @Bean
-    public ClientRegistrationRepository clientRegistrationRepository() {
-        List<ClientRegistration> registrations = new ArrayList<>();
-        registrations.add(googleClientRegistration());
-        registrations.add(naverClientRegistration());
-        registrations.add(kakaoClientRegistration());
-        return new InMemoryClientRegistrationRepository(registrations);
-    }
-
-    // 각 설정의 redirectUri 끝에 .do를 추가하여 서블릿 매핑과 일치시킵니다.
-    private ClientRegistration kakaoClientRegistration() {
-        return ClientRegistration.withRegistrationId("kakao")
-            .clientId(kakaoClientId)
-            .clientSecret(kakaoClientSecret)
-            .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
-            .redirectUri("{baseUrl}/login/oauth2/code/{registrationId}.do")
-            .scope("profile_nickname", "account_email")
-            .authorizationUri("https://kauth.kakao.com/oauth/authorize")
-            .tokenUri("https://kauth.kakao.com/oauth/token")
-            .userInfoUri("https://kapi.kakao.com/v2/user/me")
-            .userNameAttributeName("id")
-            .clientName("Kakao")
-            .build();
-    }  
-
-    private ClientRegistration googleClientRegistration() {
-        return ClientRegistration.withRegistrationId("google")
-            .clientId(googleClientId)
-            .clientSecret(googleClientSecret)
-            .redirectUri("{baseUrl}/login/oauth2/code/{registrationId}.do")
-            .scope("profile", "email")
-            .authorizationUri("https://accounts.google.com/o/oauth2/v2/auth")
-            .tokenUri("https://www.googleapis.com/oauth2/v4/token")
-            .userInfoUri("https://www.googleapis.com/oauth2/v3/userinfo")
-            .userNameAttributeName(IdTokenClaimNames.SUB)
-            .clientName("Google")
-            .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
-            .build();
-    }
-
-    private ClientRegistration naverClientRegistration() {
-        return ClientRegistration.withRegistrationId("naver")
-            .clientId(naverClientId)
-            .clientSecret(naverClientSecret)
-            .redirectUri("{baseUrl}/login/oauth2/code/{registrationId}.do")
-            .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
-            .authorizationUri("https://nid.naver.com/oauth2.0/authorize")
-            .tokenUri("https://nid.naver.com/oauth2.0/token")
-            .userInfoUri("https://openapi.naver.com/v1/nid/me")
-            .userNameAttributeName("response")
-            .clientName("Naver")
-            .build();
-    }
-    */
-
+  
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
