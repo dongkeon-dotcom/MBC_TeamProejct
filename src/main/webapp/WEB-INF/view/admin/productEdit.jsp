@@ -40,11 +40,34 @@
 							<option selected>-- 하위 카테고리 선택 --</option>
 						</select>
 					</div>
-					
 					<div class="col-12 mb-4">
 						<label class="main-label">상품명</label>
 						<input type="text" class="form-control"
 						name="productName" id="productName" placeholder="상품 이름" value="${m.productName}">
+					</div>
+					<div class="row">
+					<div class="col-6 mb-4">
+						<label class="main-label">추천</label>
+						<c:choose>
+							<c:when test="${!m.recommended}">
+								<button type="button" class="btn btn-sm btn-outline-primary recommend-btn"
+										data-status=false>해제</button>
+							</c:when>
+							<c:otherwise>
+								<button type="button" class="btn btn-sm btn-success recommend-btn"
+										data-status=true>추천</button>
+							</c:otherwise>
+						</c:choose>
+					</div>
+					<div class="col-6 mb-4">
+						<label class="main-label">할인</label>
+						<div class="input-group">
+						<input type="number" class="form-control"
+						name="discountRate" id="discountRate" placeholder="할인률" value="${m.discountRate }"
+						placeholder="0" min="0" max="100">
+						<span class="input-group-text">%</span>
+						</div>
+					</div>
 					</div>
 					<div class="col-12 mb-4">
 						<label class="main-label">상품가격</label>
@@ -219,6 +242,20 @@
 
 <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
 <script>
+$(document).ready(function(){
+	$('.recommend-btn').on('click', function(){
+		const btn = $(this);
+		const currentStatus = btn.data('status');
+		const nextStatus = currentStatus === false ? true : false;
+		
+		if(nextStatus === true){
+			btn.text('추천').removeClass('btn-outline-primary').addClass('btn-success').data('status', true);
+		} else{
+			btn.text('해제').removeClass('btn-success').addClass('btn-outline-primary').data('status', false);
+		}
+		
+	});	
+});
 $(document).ready(function() {
     $('.ai-gen-btn').on('click', function() {
         // 1. 필요한 입력값 가져오기 (input 태그의 id를 확인하세요!)
@@ -519,7 +556,25 @@ function validateOptions() {
 
 // 폼 전송 이벤트 연결
 function handleFormSubmit(e) {
-    // 1. 상품명 체크
+	
+	// 카테고리 체크
+	const category = document.getElementById('category').value.trim();
+	if(category === "-- 카테고리 선택 --"){
+		alert("카테고리를 선택해주세요");
+        document.getElementById('category').focus();
+        return false; // 전송 중단
+	}
+		
+	// 하위 카테고리 체크
+	const subCategory = document.getElementById('subCategory').value.trim();
+	if(subCategory === "-- 하위 카테고리 선택 --"){
+		alert("하위 카테고리를 선택해주세요");
+        document.getElementById('subCategory').focus();
+        return false; // 전송 중단
+	}
+	
+	
+    // 상품명 체크
     const productName = document.getElementById('productName').value.trim();
     if (productName === "") {
         alert("상품명을 입력해주세요.");
@@ -539,6 +594,51 @@ function handleFormSubmit(e) {
     if (!validateOptions()) {
         return false; // 중복이면 전송 중단
     }
+    
+    // 대표이미지 검사
+    const mainImgContainer = document.getElementById('mainFileList');
+    const hasMainImg = mainImgContainer.querySelectorAll('.input-group').length > 0;
+
+    if(!hasMainImg){
+    	alert("대표이미지를 등록해 주세요.");
+    	return false;
+    }
+    
+    // 상세이미지 검사
+    const detailImgContainer = document.getElementById('detailFileList');
+    const hasDetailImg = detailImgContainer.querySelectorAll('.input-group').length > 0;
+
+    if(!hasDetailImg){
+    	alert("상세이미지를 최소 1장 등록해 주세요.");
+    	return false;
+    }
+    
+    // 설명이미지 검사
+    const descImgContainer = document.getElementById('descFileList');
+    const hasDescImg = descImgContainer.querySelectorAll('.input-group').length > 0;
+    
+    if(!hasDescImg){
+    	alert("설명이미지를 최소 1장 등록해 주세요.");
+    	return false;
+    }
+    
+    // 사이즈이미지 검사
+    const sizeImgContainer = document.getElementById('sizeFileList');
+    const hasSizeImg = sizeImgContainer.querySelectorAll('.input-group').length > 0;
+   
+    if(!hasSizeImg){
+    	alert("사이즈이미지를 등록해 주세요.");
+    	return false;
+    }
+    
+    // 상품 설명 검사
+    const productDesc = document.getElementById('productDesc').value.trim();
+    if (productDesc === "") {
+        alert("상품설명을 입력해주세요.");
+        return false; // 전송 중단
+    }
+    
+    
 
     // 모든 검사 통과 시 true 반환하여 폼 제출 허용
     return true;
