@@ -66,5 +66,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     FROM ReviewImage 
     WHERE review_Idx = #{reviewIdx}
 </select>
+
 </mapper>
 

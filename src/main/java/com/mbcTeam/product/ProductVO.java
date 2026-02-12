@@ -26,6 +26,9 @@ public class ProductVO {
 	//검색용 데이터
 	private String search;		//검색 항목
 	private String keyword; 	//검색 값
+	//검색용 데이터2
+	private String recommendedFilter;	//전체, 추천, 일반
+	private String discountFilter;		//전체, 세일, 일반
 	
 	//페이지 사이즈 조절용 데이터
 	private int startIdx;		//검색 시작번호
@@ -41,6 +44,7 @@ public class ProductVO {
 
 	private Integer avgRating; // 평균 평점
 	private Integer reviewCount; // 리뷰 개수
+	
 	
 
 	

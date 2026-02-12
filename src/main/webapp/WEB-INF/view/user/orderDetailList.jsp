@@ -4,14 +4,9 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 
 <c:import url="/WEB-INF/view/include/top.jsp" />
-<!DOCTYPE html>
-<html>
-<head>
+
 <!-- 커스터머오더 관리    -->
-<meta charset="UTF-8">
-<title>Insert title here</title>
-</head>
-<body>
+
 
 
 <section>
@@ -148,10 +143,6 @@ function editReview(rIdx, oIdx) { // 함수가 받을 때 이름을 rIdx, oIdx�
 
 
 </script>
-</body>
-</html>
-
-
 
 
 

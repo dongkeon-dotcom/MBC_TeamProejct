@@ -11,6 +11,8 @@ import javax.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -44,15 +46,49 @@ public class DeliveryController {
 	@Autowired
 	private UserService service;
 	
+
 	private UserVO getLoginUser() {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        if (auth == null || !auth.isAuthenticated() || "anonymousUser".equals(auth.getPrincipal())) {
-            return null;
+	    Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+	    
+	    if (auth == null || !auth.isAuthenticated() || "anonymousUser".equals(auth.getPrincipal())) {
+	        return null;
+	    }
+
+	    String email = "";
+
+	    // 1. 소셜 로그인(OAuth2)인 경우 처리
+	    if (auth instanceof OAuth2AuthenticationToken) {
+	        OAuth2User oAuth2User = (OAuth2User) auth.getPrincipal();
+	        // 구글/네이버/카카오 모두 'email' 속성을 가지고 있다면 아래와 같이 추출
+	        email = (String) oAuth2User.getAttributes().get("email");
+	    } else {
+	        // 2. 일반 로그인인 경우 처리
+	        email = auth.getName();
+	    }
+
+	    System.out.println("===> 실제 조회할 이메일: " + email);
+	    
+	    // DB에서 이메일로 유저 정보를 가져옴
+	    return service.getByEmail(email);
+	}
+	// [추가] 전화번호 포맷팅 메서드
+    private String formatPhoneNumber(String phone) {
+        if (phone == null || phone.isEmpty()) return "";
+        phone = phone.replaceAll("[^0-9]", ""); // 숫자만 남기기
+
+        if (phone.length() == 11) {
+            return phone.replaceFirst("([0-9]{3})([0-9]{4})([0-9]{4})$", "$1-$2-$3");
+        } else if (phone.length() == 10) {
+            if (phone.startsWith("02")) {
+                return phone.replaceFirst("(02)([0-9]{4})([0-9]{4})$", "$1-$2-$3");
+            } else {
+                return phone.replaceFirst("([0-9]{3})([0-9]{3})([0-9]{4})$", "$1-$2-$3");
+            }
+        } else if (phone.length() == 9 && phone.startsWith("02")) {
+            return phone.replaceFirst("(02)([0-9]{3})([0-9]{4})$", "$1-$2-$3");
         }
-        // 시큐리티의 username(여기서는 id/email)으로 DB 조회
-        return service.getByEmail(auth.getName());
+        return phone;
     }
-	
 	
 	// 1. 주소록 목록 보기
     @GetMapping("/addressList.do")
@@ -98,8 +134,7 @@ public class DeliveryController {
     public String addressInsert() {
         return "delivery/addressInsert"; // addressInsert.jsp 호출
     }
-	
- // 5. 주소 등록/수정 프로세스 (팝업창에서 호출)
+ // 5. 주소 등록 프로세스 (팝업창)
     @PostMapping("/addressInsertProcess.do")
     public String addressInsertProcess(DeliveryVO dvo, HttpServletResponse response) throws Exception {
         UserVO loginUser = getLoginUser();
@@ -115,7 +150,11 @@ public class DeliveryController {
 
         dvo.setUserIdx(loginUser.getUserIdx());
 
-        // PK(deliveryIdx)가 있으면 수정, 없으면 등록
+        // [추가] 전화번호 포맷팅 적용
+        if (dvo.getDeliveryPhone() != null) {
+            dvo.setDeliveryPhone(formatPhoneNumber(dvo.getDeliveryPhone()));
+        }
+
         if (dvo.getDeliveryIdx() > 0) {
             dservice.addrUpdate(dvo);
         } else {
@@ -143,14 +182,19 @@ public class DeliveryController {
         
         return "delivery/addrEdit"; // addressEdit.jsp 호출
     }
- // 7. 수정 실행 (목록에서 바로 수정할 경우 등)
+ // 7. 수정 실행
     @PostMapping("/addressUpdateProcess.do")
     public String addressUpdateProcess(DeliveryVO vo, @RequestParam(value="defaultCheck", defaultValue="false") boolean defaultAddress) {
         UserVO loginUser = getLoginUser();
         if (loginUser == null) return "redirect:/user/login.do";
 
-        vo.setUserIdx(loginUser.getUserIdx()); // 사용자 번호 유지
+        vo.setUserIdx(loginUser.getUserIdx());
         vo.setDefaultAddress(defaultAddress);
+
+        // [추가] 전화번호 포맷팅 적용
+        if (vo.getDeliveryPhone() != null) {
+            vo.setDeliveryPhone(formatPhoneNumber(vo.getDeliveryPhone()));
+        }
         
         dservice.addrUpdate(vo); 
         

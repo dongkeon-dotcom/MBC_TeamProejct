@@ -152,6 +152,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	</select>
 	<select id="GET_USER_DETAIL_ORDER_ITEMS" parameterType="Long" resultType="UserPurchaseDTO">
 	SELECT
+		oi.product_Idx,
 		oi.product_name,
 		oi.color,
 		oi.size,

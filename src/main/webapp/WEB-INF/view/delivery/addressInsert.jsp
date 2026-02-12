@@ -1,7 +1,9 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <c:set var="path" scope="request" value="${pageContext.request.contextPath }"/>    
 <!DOCTYPE html>
 <html>
+<!-- 팝업창이라 head, body 등 태그 다 있어야함 -->
 <head>
 <meta charset="UTF-8">
 <title>새 배송지 등록</title>
@@ -13,17 +15,19 @@
     input[type="text"] { width: 100%; padding: 8px; box-sizing: border-box; }
     .btn-submit { width: 100%; padding: 10px; background: #007bff; color: white; border: none; cursor: pointer; }
     .btn-addr { padding: 5px 10px; background: #6c757d; color: white; border: none; cursor: pointer; margin-bottom: 5px; }
+    .phone-group { display: flex; align-items: center; gap: 5px; }
+    .phone-group select { padding: 8px; width: 80px; }
 </style>
 </head>
 <body>
 
 <h3>새 배송지 등록</h3>
 
-<form action="${pageContext.request.contextPath}/delivery/addressInsertProcess.do" method="post">
+<form action="${path}/delivery/addressInsertProcess.do" method="post" onsubmit="return prepareSubmit()">
     
     <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
 
-<div class="form-group">
+    <div class="form-group">
         <label>배송지 이름 (예: 집, 회사)</label>
         <input type="text" name="deliveryName" placeholder="배송지 이름을 입력하세요" required>
     </div>
@@ -35,7 +39,20 @@
     
     <div class="form-group">
         <label>전화번호</label>
-        <input type="text" name="deliveryPhone" placeholder="010-0000-0000" required>
+        <div class="phone-group">
+            <select id="phone1">
+                <option value="010">010</option>
+                <option value="011">011</option>
+                <option value="016">016</option>
+                <option value="02">02</option>
+                <option value="031">031</option>
+            </select>
+            <span>-</span>
+            <input type="text" id="phone_body" placeholder="숫자만 입력" maxlength="8" 
+                   oninput="this.value=this.value.replace(/[^0-9]/g,'');" required>
+            
+            <input type="hidden" name="deliveryPhone" id="deliveryPhone">
+        </div>
     </div>
     
     <div class="form-group">
@@ -56,33 +73,36 @@
 </form>
 
 <script>
+// 저장 전 전화번호 합치기
+function prepareSubmit() {
+    const p1 = document.getElementById('phone1').value;
+    const pBody = document.getElementById('phone_body').value;
+    
+    if(pBody.length < 7) {
+        alert("전화번호를 정확히 입력해주세요.");
+        document.getElementById('phone_body').focus();
+        return false;
+    }
+
+    // 합쳐서 hidden 필드에 할당
+    document.getElementById('deliveryPhone').value = p1 + pBody;
+    return true;
+}
+
 function execDaumPostcode() {
     new daum.Postcode({
-        // 팝업창 디자인 테마 (필요 없으면 theme 블록 전체 삭제 가능)
-        theme: {
-            searchBgColor: "#0B65C8", // 검색창 배경색
-            queryTextColor: "#FFFFFF" // 검색창 글자색
-        },
         oncomplete: function(data) {
-            // 팝업에서 검색결과 항목을 클릭했을 때 실행할 코드를 작성하는 부분입니다.
-
-            var addr = ''; // 주소 변수
-
-            // 사용자가 선택한 주소 타입에 따라 해당 주소 값을 가져온다.
-            if (data.userSelectedType === 'R') { // 사용자가 도로명 주소를 선택했을 경우
+            var addr = '';
+            if (data.userSelectedType === 'R') {
                 addr = data.roadAddress;
-            } else { // 사용자가 지번 주소를 선택했을 경우(J)
+            } else {
                 addr = data.jibunAddress;
             }
-
-            // 우편번호와 주소 정보를 해당 필드(input)에 넣는다.
             document.getElementById('zipcode').value = data.zonecode;
             document.getElementById("address").value = addr;
-            
-            // 상세주소 입력 필드로 포커스를 이동한다.
             document.getElementById("extraAddress").focus();
         }
-    }).open(); // .embed() 대신 .open()을 사용하면 새 창이 뜹니다.
+    }).open();
 }
 </script>
 

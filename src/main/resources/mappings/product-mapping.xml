@@ -105,6 +105,20 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <if test="search == 'name'">
             AND INSTR(product_Name, #{keyword}) > 0
         </if>
+        
+        <if test="recommendedFilter == 'true'">
+        	AND is_recommended = 1
+        </if>
+        <if test="recommendedFilter == 'false'">
+        	AND is_recommended = 0
+        </if>
+        
+        <if test="discountFilter == 'sale'">
+            AND discount_Rate > 0
+        </if>
+        <if test="discountFilter == 'normal'">
+            AND (discount_Rate = 0)
+        </if>                
 		</where>
 	</sql>
 
@@ -271,41 +285,44 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	</select>
 
 	<!-- 상품 상세 조회 (사용자용) -->
-	<select id="SELECT_PRODUCT_DETAIL_USER" parameterType="int"
-		resultType="ProductVO">
-		SELECT p.product_Idx,
-		p.category,
-		p.subCategory,
-		p.product_Name,
-		p.price,
-		p.reg_Date,
-		p.product_Desc,
-		p.discount_Rate,
-		p.is_Recommended,
-		mainImg.product_Img AS pMainImgPath,
-		sizeImg.product_Img AS pSizeImgPath
-		FROM Products p
-		LEFT JOIN ProductImg mainImg
-		ON p.product_Idx = mainImg.product_Idx AND mainImg.product_Img_Order = 1
-		LEFT JOIN ProductImg sizeImg
-		ON p.product_Idx = sizeImg.product_Idx AND sizeImg.product_Img_Order = 2
-		WHERE p.product_Idx = #{productIdx}
-	</select>
-
+	<select id="SELECT_PRODUCT_DETAIL_USER" parameterType="int" resultType="ProductVO">
+    SELECT p.product_Idx,
+           p.category,
+           p.subCategory,
+           p.product_Name,
+           p.price,
+           p.reg_Date,
+           p.product_Desc,
+           p.discount_Rate,
+           p.is_Recommended,
+           mainImg.product_Img AS productMainImg, 
+           sizeImg.product_Img AS productSizeImg
+    FROM Products p
+    LEFT JOIN ProductImg mainImg
+      ON p.product_Idx = mainImg.product_Idx AND mainImg.product_Img_Order = 1
+    LEFT JOIN ProductImg sizeImg
+      ON p.product_Idx = sizeImg.product_Idx AND sizeImg.product_Img_Order = 2
+    WHERE p.product_Idx = #{productIdx}
+</select>
 
 	<!-- 카테고리 + 서브카테고리별 상품 조회 -->
 	<select id="SELECT_BY_CATEGORY" parameterType="map"
-        resultType="com.mbcTeam.product.ProductVO">
-    SELECT p.product_Idx AS productIdx,
-			p.category AS category,
-			p.subCategory AS subCategory,
-			p.product_Name AS productName,
-			p.price AS price,
-			p.reg_Date AS regDate,
-			p.product_Desc AS productDesc,
-			p.discount_rate AS discountRate,
-			p.is_Recommended AS isRecommended
+        resultType="ProductVO">
+    SELECT
+    	p.product_Idx AS productIdx,
+    	p.category AS category,
+    	p.subCategory AS subCategory,
+    	p.product_Name AS productName,
+    	p.price AS price,
+    	p.reg_Date AS regDate,
+    	p.product_Desc AS productDesc,
+    	p.product_main_img AS productMainImg,
+    	p.discount_rate AS discountRate,
+    	p.is_Recommended AS isRecommended,
+    	IFNULL(ROUND(AVG(r.rating)),0) as avgRating,
+    	COUNT(r.product_Idx) as reviewCount
     FROM Products p
+    LEFT JOIN Reviews r ON p.product_Idx = r.product_Idx
     <where>
         <if test="category != null and category != ''">
             AND p.category = #{category}
@@ -314,6 +331,17 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             AND p.subCategory = #{subCategory}
         </if>
     </where>
+    GROUP BY
+    	p.product_Idx,
+    	p.category,
+    	p.subCategory,
+    	p.product_Name,
+    	p.price,
+    	p.reg_Date,
+    	p.product_Desc,
+    	p.product_main_img,
+    	p.discount_rate,
+    	p.is_Recommended 
     ORDER BY p.reg_Date DESC
 </select>
 
@@ -361,19 +389,35 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
 	<!-- 상품 검색 카테고리 포함 -->
 	<select id="SEARCH_PRODUCTS" parameterType="string" resultType="ProductVO">
-	    SELECT p.product_Idx AS productIdx,
-	           p.category AS category,
-	           p.subCategory AS subCategory,
-	           p.product_Name AS productName,
-	           p.price AS price,
-	           p.reg_Date AS regDate,
-	           p.product_Desc AS productDesc,
-	           p.discount_rate AS discountRate,
-	           p.is_Recommended AS isRecommended
+	    SELECT
+	    	p.product_Idx AS productIdx,
+	    	p.category AS category,
+	    	p.subCategory AS subCategory,
+	    	p.product_Name AS productName,
+	    	p.price AS price,
+	    	p.reg_Date AS regDate,
+	    	p.product_Desc AS productDesc,
+	    	p.product_main_img AS productMainImg,
+	    	p.discount_rate AS discountRate,
+	    	p.is_Recommended AS isRecommended,
+	    	IFNULL(ROUND(AVG(r.rating)),0) as avgRating,
+	    	COUNT(r.product_Idx) as reviewCount
 	    FROM Products p
+	    LEFT JOIN Reviews r ON p.product_Idx = r.product_Idx
 	    WHERE p.category LIKE CONCAT('%', #{keyword}, '%')
 	       OR p.subCategory LIKE CONCAT('%', #{keyword}, '%')
 	       OR p.product_Name LIKE CONCAT('%', #{keyword}, '%')
+	    GROUP BY
+	    	p.product_Idx,
+	    	p.category,
+	    	p.subCategory,
+	    	p.product_Name,
+	    	p.price,
+	    	p.reg_Date,
+	    	p.product_Desc,
+	    	p.product_main_img,
+	    	p.discount_rate,
+	    	p.is_Recommended 	    
 	    ORDER BY p.reg_Date DESC
 	</select>
 		

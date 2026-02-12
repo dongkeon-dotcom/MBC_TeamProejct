@@ -1,69 +1,9 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <c:import url="/WEB-INF/view/include/top.jsp" />
+<link rel="stylesheet" href="${path}/resources/css/order/checkout.css">
 
-
-<html>
-<head>
-<title>결제 페이지</title>
-<style>
-    /* 버튼 실종 방지 및 레이아웃 최적화 */
-    .checkout-container {
-        max-width: 800px;
-        margin: 40px auto;
-        padding: 30px;
-        border: 1px solid #ddd;
-        border-radius: 15px;
-        background: #fff;
-        font-family: 'Noto Sans KR', sans-serif;
-        /* 높이 제한 해제 */
-        display: block !important; 
-        overflow: visible !important; 
-        height: auto !important; 
-        position: relative;
-    }
-
-    .checkout-title { text-align: center; margin-bottom: 30px; font-weight: bold; }
-
-    .checkout-box {
-        border: 1px solid #f0f0f0;
-        border-radius: 10px;
-        padding: 20px;
-        margin-bottom: 20px;
-        background-color: #fafafa;
-    }
-
-    .checkout-item {
-        padding: 15px 0;
-        border-bottom: 1px dashed #ddd;
-    }
-
-    .checkout-btn-wrapper {
-        margin-top: 40px;
-        padding-top: 20px;
-        clear: both;
-    }
-
-    .checkout-btn {
-        display: block;
-        width: 100%;
-        background-color: #f07376;
-        color: #fff;
-        padding: 20px;
-        border: none;
-        border-radius: 10px;
-        font-size: 20px;
-        font-weight: bold;
-        cursor: pointer;
-        transition: background 0.3s;
-    }
-
-    .checkout-btn:hover { background-color: #d65a5d; }
-    
-</style>
-</head>
-
-<body>
+<section>
 <div class="checkout-container">
     <h2 class="checkout-title">주문서</h2>
 
@@ -125,6 +65,7 @@
         </button>
     </form>
 </div>
+</section>
 
 
 

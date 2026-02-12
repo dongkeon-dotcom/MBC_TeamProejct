@@ -6,6 +6,7 @@ import lombok.Data;
 public class UserPurchaseDTO {
 
     
+	private int productIdx;			// 제품번호
 	private String productName;		// 제품명
 	private String color;			// 컬러
     private String size;			// 사이즈

@@ -396,7 +396,25 @@ function validateOptions() {
 
 // 폼 전송 이벤트 연결
 function handleFormSubmit(e) {
-    // 1. 상품명 체크
+	
+	// 카테고리 체크
+	const category = document.getElementById('category').value.trim();
+	if(category === "-- 카테고리 선택 --"){
+		alert("카테고리를 선택해주세요");
+        document.getElementById('category').focus();
+        return false; // 전송 중단
+	}
+		
+	// 하위 카테고리 체크
+	const subCategory = document.getElementById('subCategory').value.trim();
+	if(subCategory === "-- 하위 카테고리 선택 --"){
+		alert("하위 카테고리를 선택해주세요");
+        document.getElementById('subCategory').focus();
+        return false; // 전송 중단
+	}
+	
+	
+    // 상품명 체크
     const productName = document.getElementById('productName').value.trim();
     if (productName === "") {
         alert("상품명을 입력해주세요.");
@@ -416,6 +434,51 @@ function handleFormSubmit(e) {
     if (!validateOptions()) {
         return false; // 중복이면 전송 중단
     }
+    
+    // 대표이미지 검사
+    const mainImgContainer = document.getElementById('mainFileList');
+    const hasMainImg = mainImgContainer.querySelectorAll('.input-group').length > 0;
+
+    if(!hasMainImg){
+    	alert("대표이미지를 등록해 주세요.");
+    	return false;
+    }
+    
+    // 상세이미지 검사
+    const detailImgContainer = document.getElementById('detailFileList');
+    const hasDetailImg = detailImgContainer.querySelectorAll('.input-group').length > 0;
+
+    if(!hasDetailImg){
+    	alert("상세이미지를 최소 1장 등록해 주세요.");
+    	return false;
+    }
+    
+    // 설명이미지 검사
+    const descImgContainer = document.getElementById('descFileList');
+    const hasDescImg = descImgContainer.querySelectorAll('.input-group').length > 0;
+    
+    if(!hasDescImg){
+    	alert("설명이미지를 최소 1장 등록해 주세요.");
+    	return false;
+    }
+    
+    // 사이즈이미지 검사
+    const sizeImgContainer = document.getElementById('sizeFileList');
+    const hasSizeImg = sizeImgContainer.querySelectorAll('.input-group').length > 0;
+   
+    if(!hasSizeImg){
+    	alert("사이즈이미지를 등록해 주세요.");
+    	return false;
+    }
+    
+    // 상품 설명 검사
+    const productDesc = document.getElementById('productDesc').value.trim();
+    if (productDesc === "") {
+        alert("상품설명을 입력해주세요.");
+        return false; // 전송 중단
+    }
+    
+    
 
     // 모든 검사 통과 시 true 반환하여 폼 제출 허용
     return true;

@@ -2,16 +2,10 @@
 	pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <c:import url="/WEB-INF/view/include/top.jsp" />
-<br>
 
-<html>
-<head>
-<title>상품 리스트</title>
+
 <link rel="stylesheet" href="${path}/resources/css/userproduct/userproductlist.css">
-</head>
-
-<body>
-
+<section>
 	
 <!-- 검색 결과 안내 -->
 <c:if test="${not empty searchKeyword}">
@@ -28,9 +22,6 @@
     </div>
 </c:if>
 
-	
-	
-	
 	
     <!-- 상품 리스트 -->
     <div class="product-grid">
@@ -79,7 +70,7 @@
                         <span class="rating-text">
                             <c:choose>
                                 <c:when test="${not empty p.reviewCount and p.reviewCount > 0}">
-                                    ${p.reviewCount}
+                                    ( ${p.reviewCount} )
                                 </c:when>
                                 <c:otherwise>
                                     ( 0 )
@@ -92,10 +83,6 @@
         </c:forEach>
     </div>
 
-</body>
-
-
-</html>
-
 <br><br><br>
+</section>
 <c:import url="/WEB-INF/view/include/bottom.jsp" />
