@@ -1,7 +1,6 @@
 @charset "UTF-8";
 
-/* [1] 레이아웃 초기화 및 푸터 하단 고정 핵심 설정 */
-/* html과 body에 높이를 부여해야 flex: 1이 작동합니다 */
+/* [1] 레이아웃 초기화 */
 html, body {
     height: 100%;
     margin: 0;
@@ -11,18 +10,19 @@ html, body {
 body {
     display: flex;
     flex-direction: column;
-    min-height: 100vh; /* 화면 전체 높이 확보 */
+    min-height: 100vh;
     font-family: 'Pretendard', sans-serif;
     background-color: #fff;
+    color: #333;
 }
 
-/* [2] 본문 영역: 본문이 짧아도 남는 공간을 다 차지해서 푸터를 밀어냄 */
+/* [2] 본문 영역 */
 .main-content-area {
     flex: 1; 
     width: 100%;
     display: flex;
     flex-direction: column;
-    margin-top: 60px; /* 헤더 높이만큼 본문을 아래로 밀어줌 */
+    margin-top: 60px; /* 고정 헤더(Top bar) 높이 */
 }
 
 /* [3] 상품 상세 컨테이너 */
@@ -38,7 +38,7 @@ body {
 .product-top-section {
     display: flex;
     justify-content: space-between;
-    gap: 40px;
+    gap: 50px;
     margin-bottom: 60px;
     align-items: flex-start;
 }
@@ -77,6 +77,8 @@ body {
     font-size: 18px;
     z-index: 10;
 }
+.btn-prev { left: 10px; }
+.btn-next { right: 10px; }
 
 .sub-images {
     margin-top: 15px;
@@ -85,12 +87,17 @@ body {
 }
 
 .sub-images img {
-    width: 70px;
-    height: 70px;
+    width: 75px;
+    height: 75px;
     border-radius: 6px;
     cursor: pointer;
-    border: 2px solid #eee; /* 기본 테두리 */
+    border: 2px solid transparent;
     object-fit: cover;
+    transition: 0.2s;
+}
+
+.sub-images img.active {
+    border-color: #333;
 }
 
 /* [5] 상품 정보 우측 영역 */
@@ -115,9 +122,11 @@ body {
     border: 1px solid #ddd;
     border-radius: 6px;
     background-color: #fff;
+    font-size: 14px;
+    cursor: pointer;
 }
 
-/* 선택 옵션 테이블 */
+/* ✅ 선택 옵션 테이블 (수량 조절 핵심) */
 .selected-options-container {
     margin-top: 20px;
     background: #fdfdfd;
@@ -128,7 +137,37 @@ body {
 
 #optionTable { width: 100%; border-collapse: collapse; }
 #optionTable th { font-size: 12px; color: #999; padding-bottom: 10px; border-bottom: 1px solid #eee; }
-#optionTable td { padding: 10px 0; text-align: center; border-bottom: 1px solid #f9f9f9; }
+
+#optionTable td { 
+    padding: 12px 0; 
+    text-align: center; 
+    border-bottom: 1px solid #f9f9f9; 
+    vertical-align: middle;
+}
+
+/* 수량 입력창 스타일 */
+#optionTable input[type="number"] {
+    width: 50px;
+    height: 30px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    text-align: center;
+    font-size: 14px;
+}
+
+.price-cell {
+    font-weight: 700;
+    color: #333;
+}
+
+.btn-delete {
+    background: none;
+    border: none;
+    color: #bbb;
+    font-size: 20px;
+    cursor: pointer;
+}
+.btn-delete:hover { color: #e60023; }
 
 .total-amount-box {
     display: flex;
@@ -146,39 +185,40 @@ body {
 .action-buttons form { flex: 1; }
 .btn-buy-now, .btn-add-cart {
     width: 100%;
-    padding: 15px;
+    padding: 16px;
     border-radius: 6px;
     font-size: 16px;
     font-weight: 700;
     cursor: pointer;
+    transition: 0.2s;
 }
 .btn-buy-now { background: #333; color: #fff; border: none; }
+.btn-buy-now:hover { background: #000; }
 .btn-add-cart { background: #fff; color: #333; border: 1px solid #ccc; }
+.btn-add-cart:hover { background: #f8f9fa; }
 
-/* [6] 탭 메뉴 */
+/* [6] 탭 메뉴 (Sticky 고정) */
 .tab-menu {
     display: flex;
     border-bottom: 1px solid #ddd;
     margin-top: 60px;
     background: #fff; 
-
-    /* [수정] 스크롤 고정 설정 */
     position: sticky;
-    top: 55px;        /* 헤더 높이에 딱 맞게 조절 (안 맞으면 60px로 변경) */
-    z-index: 900;     /* 헤더(1000)보다는 낮아야 헤더의 서브메뉴가 탭 위로 나옵니다 */
-    
-    /* 고정되었을 때 상단 헤더와 경계선이 생기도록 그림자 추가 */
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); 
+    top: 60px;        /* 헤더 높이와 일치시킴 */
+    z-index: 900;     /* 헤더(1000)보다 낮게 설정 */
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05); 
 }
+
 .tab-btn {
     flex: 1;
-    padding: 15px 0;
+    padding: 18px 0;
     border: none;
     background: none;
     font-size: 16px;
     color: #888;
     cursor: pointer;
     border-bottom: 3px solid transparent;
+    transition: 0.3s;
 }
 
 .tab-btn.active {
@@ -189,18 +229,30 @@ body {
 
 .tab-content {
     display: none;
-    padding: 40px 0;
-    min-height: 300px;
-    scroll-margin-top: 110px;
+    padding: 60px 0;
+    min-height: 400px;
+    line-height: 1.6;
 }
 
 .tab-content.active {
     display: block;
 }
 
-/* [7] 푸터 고정 (bottom.jsp 내의 실제 태그에 맞춰 적용) */
+/* [7] 푸터 고정 */
 footer, .footer, #footer {
     width: 100%;
-    margin-top: auto; /* 본문이 짧을 때 바닥으로 밀어내는 핵심 속성 */
-    clear: both;      /* 위쪽 요소들과 겹치지 않게 초기화 */
+    margin-top: auto; 
+    background-color: #f8f9fa;
+    padding: 40px 0;
+    border-top: 1px solid #eee;
 }
+
+/* 리뷰 스타일 추가 */
+.review-item {
+    padding: 20px;
+    border-bottom: 1px solid #eee;
+}
+.review-header { margin-bottom: 10px; }
+.review-author { font-weight: bold; margin-right: 15px; }
+.review-stars { color: #fbc02d; }
+.empty-msg { text-align: center; color: #999; padding: 50px 0; }

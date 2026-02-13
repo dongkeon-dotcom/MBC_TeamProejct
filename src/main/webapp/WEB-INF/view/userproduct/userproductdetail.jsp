@@ -11,23 +11,27 @@
     <div class="product-detail-wrapper">
         
         <div class="product-top-section">
-            <div class="product-image-zone">
-                <div class="main-img-container">
+            <div class="product-image">
+                <div class="main-img-container" style="position: relative; overflow: hidden;">
                     <button type="button" class="btn-prev" onclick="changeSlide(-1)">〈</button>
+                    
                     <c:choose>
                         <c:when test="${not empty product.productMainImg}">
-                            <img id="currentMainImg" src="${path}/resources/images/ProductMainImg/${product.productMainImg}" alt="${product.productName}">
+                            <img id="currentMainImg" src="${path}/resources/images/ProductMainImg/${product.productMainImg}" 
+                                 alt="${product.productName}">
                         </c:when>
                         <c:otherwise>
-                            <img src="${path}/resources/images/no-image.png" alt="이미지 준비중">
+                            <img id="currentMainImg" src="${path}/resources/images/no-image.png" alt="이미지 준비중">
                         </c:otherwise>
                     </c:choose>
+
                     <button type="button" class="btn-next" onclick="changeSlide(1)">〉</button>
                 </div>
 
                 <div class="sub-images">
                     <img src="${path}/resources/images/ProductMainImg/${product.productMainImg}" 
                          class="thumb active" onclick="setMainImg(this.src)">
+                         
                     <c:forEach var="img" items="${subImgList}">
                         <img src="${path}/resources/images/ProductImg/${img.productImg}" 
                              class="thumb" onclick="setMainImg(this.src)">
@@ -35,8 +39,11 @@
                 </div>
             </div>
 
-            <div class="product-info-zone">
-                <p class="category-path">${product.category} &gt; ${product.subCategory}</p>
+            <div class="product-info">
+                <p class="category-path">
+                    <c:out value="${product.category}" /> &gt; <c:out value="${product.subCategory}" />
+                </p>
+                
                 <h2 class="product-title">${product.productName}</h2>
 
                 <div class="price-container">
@@ -112,197 +119,138 @@
         <div id="info" class="tab-content active">
             <div class="description-text">${product.productDesc}</div>
             <c:forEach var="descImg" items="${descImgList}">
-                <img src="${path}/resources/images/ProductDescImg/${descImg.productDescImg}" style="max-width: 100%; display: block; margin: 0 auto 20px;">
+                <img src="${path}/resources/images/ProductDescImg/${descImg.productDescImg}" class="desc-img">
             </c:forEach>
         </div>
-
+        
         <div id="size" class="tab-content">
-            <c:choose>
-                <c:when test="${not empty product.productSizeImg}">
-                    <img src="${path}/resources/images/ProductSizeImg/${product.productSizeImg}" style="max-width: 100%; display: block; margin: 0 auto;">
-                </c:when>
-                <c:otherwise><p class="empty-msg">등록된 사이즈 정보 이미지가 없습니다.</p></c:otherwise>
-            </c:choose>
+            <img src="${path}/resources/images/ProductSizeImg/${product.productSizeImg}" class="desc-img">
         </div>
 
         <div id="review" class="tab-content">
             <c:forEach var="r" items="${reviewList}">
                 <div class="review-item">
-                    <div class="review-header">
-                        <span class="review-author">${r.userName}</span> 
-                        <span class="review-stars">
-                            <c:forEach begin="1" end="${r.rating}">★</c:forEach>
-                            <c:forEach begin="${r.rating + 1}" end="5">☆</c:forEach>
-                        </span>
-                    </div>
-                    <p class="review-body">${r.review}</p>
+                    <strong>${r.userName}</strong> <span>${r.rating}점</span>
+                    <p>${r.review}</p>
                 </div>
             </c:forEach>
-            <c:if test="${empty reviewList}"><p class="empty-msg">등록된 리뷰가 없습니다.</p></c:if>
         </div>
-    </div> </div> <script>
-// 1. 유효성 검사 및 폼 전송
-function validateForm() {
-    const rows = document.querySelectorAll("#optionTable tbody tr");
-    if (rows.length === 0) {
-        alert("상품 옵션을 최소 하나 이상 선택해주세요.");
-        return false;
-    }
-    return true;
-}
+    </div>
+</div>
 
-function createHidden(name, value, optionIdx) {
-    const input = document.createElement("input");
-    input.type = "hidden";
-    input.name = name;
-    input.value = value;
-    if (optionIdx) input.dataset.optionIdx = optionIdx;
-    return input;
-}
-
-// 2. 옵션 자동 추가
-function addOptionAuto() {
-    const optionSelect = document.getElementById("option");
-    const selected = optionSelect.options[optionSelect.selectedIndex];
-    
-    if (!selected.value) return;
-
-    const color = selected.dataset.color;
-    const size = selected.dataset.size;
-    const optionIdx = selected.value;
-    const basePrice = parseInt(document.getElementById("basePrice").value);
-    const discountRate = parseInt(document.getElementById("discountRate").value);
-    const discountedPrice = discountRate > 0 ? Math.floor(basePrice * (100 - discountRate) / 100) : basePrice;
-
-    const rows = document.querySelectorAll("#optionTable tbody tr");
-    for (let row of rows) {
-        if (row.dataset.optionIdx === optionIdx) {
-            const qtyInput = row.querySelector("input[type='number']");
-            qtyInput.value = parseInt(qtyInput.value) + 1;
-            updateRowTotal(row);
-            return;
-        }
-    }
-
-    const table = document.getElementById("optionTable").querySelector("tbody");
-    const row = document.createElement("tr");
-    row.dataset.optionIdx = optionIdx;
-    row.dataset.price = discountedPrice;
-    row.innerHTML = `
-        <td>\${color} / \${size}</td>
-        <td><input type="number" value="1" min="1" onchange="updateRowTotal(this.closest('tr'))"></td>
-        <td class="price-cell">\${discountedPrice.toLocaleString()}원</td>
-        <td><button type="button" class="btn-delete" onclick="removeRow(this)">×</button></td>
-    `;
-    table.appendChild(row);
-
-    [document.getElementById("buyForm"), document.getElementById("cartForm")].forEach(form => {
-        form.appendChild(createHidden("optionIdxList", optionIdx));
-        form.appendChild(createHidden("quantityList", 1, optionIdx));
-    });
-
-    updateTotal();
-    optionSelect.selectedIndex = 0;
-}
-
-function updateRowTotal(row) {
-    const qty = parseInt(row.querySelector("input[type='number']").value) || 1;
-    const price = parseInt(row.dataset.price);
-    row.querySelector(".price-cell").innerText = (price * qty).toLocaleString() + "원";
-    const optionIdx = row.dataset.optionIdx;
-    document.querySelectorAll(`input[name='quantityList'][data-option-idx='\${optionIdx}']`).forEach(input => { input.value = qty; });
-    updateTotal();
-}
-
-function removeRow(btn) {
-    const row = btn.closest("tr");
-    const optionIdx = row.dataset.optionIdx;
-    document.querySelectorAll(`input[data-option-idx='\${optionIdx}'], input[name='optionIdxList'][value='\${optionIdx}']`).forEach(el => el.remove());
-    row.remove();
-    updateTotal();
-}
-
-function updateTotal() {
-    let total = 0;
-    document.querySelectorAll("#optionTable tbody tr").forEach(row => {
-        const qty = parseInt(row.querySelector("input[type='number']").value) || 0;
-        total += (qty * parseInt(row.dataset.price));
-    });
-    document.getElementById("totalAmount").innerText = total.toLocaleString() + "원";
-}
-
-// 3. 탭 전환
-function openTab(tabId, btn) {
-    document.querySelectorAll(".tab-content").forEach(tab => tab.classList.remove("active"));
-    document.querySelectorAll(".tab-btn").forEach(tabBtn => tabBtn.classList.remove("active"));
-    document.getElementById(tabId).classList.add("active");
-    btn.classList.add("active");
-}
-
-// 4. 이미지 슬라이드
+<script>
+/* [1] 이미지 슬라이드 (가장 최근 로직) */
 let images = [];
-const mainImgElement = document.getElementById("currentMainImg");
 let currentIndex = 0;
 
 window.addEventListener('load', function() {
     const thumbs = document.querySelectorAll(".sub-images img");
     thumbs.forEach(img => images.push(img.src));
+    updateThumbStyle();
 });
 
 function setMainImg(src) {
-    mainImgElement.src = src;
+    document.getElementById("currentMainImg").src = src;
     currentIndex = images.indexOf(src);
     updateThumbStyle();
 }
 
 function changeSlide(direction) {
-    if(images.length <= 1) return;
-    currentIndex += direction;
-    if (currentIndex < 0) currentIndex = images.length - 1;
-    if (currentIndex >= images.length) currentIndex = 0;
-    mainImgElement.src = images[currentIndex];
+    if (images.length <= 1) return;
+    currentIndex = (currentIndex + direction + images.length) % images.length;
+    document.getElementById("currentMainImg").src = images[currentIndex];
     updateThumbStyle();
 }
 
 function updateThumbStyle() {
     const thumbs = document.querySelectorAll(".sub-images img");
     thumbs.forEach((img, index) => {
-        img.style.borderColor = (index === currentIndex) ? "#333" : "transparent";
+        img.style.border = (index === currentIndex) ? "2px solid #333" : "1px solid #eee";
+        img.style.opacity = (index === currentIndex) ? "1" : "0.6";
     });
 }
+
+/* [2] 옵션 추가 및 계산 */
+function addOptionAuto() {
+    const sel = document.getElementById("option");
+    const opt = sel.options[sel.selectedIndex];
+    if (!opt.value) return;
+
+    const color = opt.dataset.color;
+    const size = opt.dataset.size;
+    const idx = opt.value;
+    const base = parseInt(document.getElementById("basePrice").value);
+    const rate = parseInt(document.getElementById("discountRate").value);
+    const price = rate > 0 ? Math.floor(base * (100 - rate) / 100) : base;
+
+    // 중복 체크
+    const rows = document.querySelectorAll("#optionTable tbody tr");
+    for (let r of rows) {
+        if (r.dataset.optionIdx === idx) {
+            const input = r.querySelector("input[type='number']");
+            input.value = parseInt(input.value) + 1;
+            updateRowTotal(r); sel.selectedIndex = 0; return;
+        }
+    }
+
+    const tr = document.createElement("tr");
+    tr.dataset.optionIdx = idx;
+    tr.dataset.price = price;
+    tr.innerHTML = '<td>' + color + ' / ' + size + '</td>' +
+                   '<td><input type="number" value="1" min="1" onchange="updateRowTotal(this.closest(\'tr\'))"></td>' +
+                   '<td class="price-cell">' + price.toLocaleString() + '원</td>' +
+                   '<td><button type="button" class="btn-delete" onclick="removeRow(this)">×</button></td>';
+    document.querySelector("#optionTable tbody").appendChild(tr);
+
+    // Hidden Input 추가
+    [document.getElementById("buyForm"), document.getElementById("cartForm")].forEach(f => {
+        const i1 = document.createElement("input"); i1.type="hidden"; i1.name="optionIdxList"; i1.value=idx;
+        const i2 = document.createElement("input"); i2.type="hidden"; i2.name="quantityList"; i2.value=1; i2.dataset.optionIdx=idx;
+        f.appendChild(i1); f.appendChild(i2);
+    });
+
+    updateTotal();
+    sel.selectedIndex = 0;
+}
+
+function updateRowTotal(r) {
+    const qty = r.querySelector("input").value;
+    r.querySelector(".price-cell").innerText = (qty * r.dataset.price).toLocaleString() + "원";
+    const idx = r.dataset.optionIdx;
+    document.querySelectorAll("input[name='quantityList'][data-option-idx='"+idx+"']").forEach(i => i.value = qty);
+    updateTotal();
+}
+
+function removeRow(btn) {
+    const r = btn.closest("tr");
+    const idx = r.dataset.optionIdx;
+    document.querySelectorAll("input[data-option-idx='"+idx+"'], input[name='optionIdxList'][value='"+idx+"']").forEach(e => e.remove());
+    r.remove();
+    updateTotal();
+}
+
+function updateTotal() {
+    let t = 0;
+    document.querySelectorAll("#optionTable tbody tr").forEach(r => {
+        t += (r.querySelector("input").value * r.dataset.price);
+    });
+    document.getElementById("totalAmount").innerText = t.toLocaleString() + "원";
+}
+
+/* [3] 탭 메뉴 */
 function openTab(tabId, btn) {
-    // 1. 모든 콘텐츠 숨기기
-    document.querySelectorAll(".tab-content").forEach(tab => {
-        tab.classList.remove("active");
-    });
-
-    // 2. 모든 버튼 비활성화
-    document.querySelectorAll(".tab-btn").forEach(tabBtn => {
-        tabBtn.classList.remove("active");
-    });
-
-    // 3. 선택된 탭 활성화
-    const activeTab = document.getElementById(tabId);
-    activeTab.classList.add("active");
+    document.querySelectorAll(".tab-content").forEach(t => t.classList.remove("active"));
+    document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
+    document.getElementById(tabId).classList.add("active");
     btn.classList.add("active");
-
-    // 4. 해당 탭 위치로 스크롤 이동 (헤더+탭 높이 고려)
-    const headerHeight = 60; // 상단 헤더 높이
-    const tabMenuHeight = 50; // 탭 메뉴 높이
-    const offset = headerHeight + tabMenuHeight; // 총 가려지는 높이
-
-    const elementPosition = activeTab.getBoundingClientRect().top;
-    const offsetPosition = elementPosition + window.pageYOffset - offset;
-
-    window.scrollTo({
-        top: offsetPosition,
-        behavior: "smooth" // 부드럽게 이동
-        
-        	document.getElementById(tabId).scrollIntoView({ behavior: 'smooth', block: 'start' });
-    });
 }
 
-
+function validateForm() {
+    if (document.querySelectorAll("#optionTable tbody tr").length === 0) {
+        alert("옵션을 선택해주세요."); return false;
+    }
+    return true;
+}
 </script>
 
 <c:import url="/WEB-INF/view/include/bottom.jsp" />
