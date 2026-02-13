@@ -20,7 +20,7 @@ public class CartVO {
     private int discountRate; // 장바구니 할인율 표기
 
   
-        
+    private int stock;
        
 
     
