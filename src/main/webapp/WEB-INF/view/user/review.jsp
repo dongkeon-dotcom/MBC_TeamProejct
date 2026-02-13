@@ -1,50 +1,61 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <c:import url="/WEB-INF/view/include/top.jsp" />
+<link href="${path}/resources/css/user/review.css" rel="stylesheet">
 
-<section>
-    <h3 style="text-align:center; margin-top:20px;">리뷰 폼</h3>
-    <br>
-    <div class="product-detail">
+<section class="review-wrapper"> <div class="product-detail">
         <div align="center">
-            <h2>상품 후기 작성</h2>
-            <form action="${path}/user/reviewInsert.do" method="post" enctype="multipart/form-data" onsubmit="return validateForm()">
-                <input type="hidden" name="productIdx" value="${param.productIdx}">
-                <input type="hidden" name="orderIdx" value="${param.orderIdx}">
-                <input type="hidden" name="itemIdx" value="${param.itemIdx}">
+            <h2>상품 후기 수정</h2>
+            <p>작성하신 후기를 수정하실 수 있습니다.</p>
+            
+            <form action="${path}/user/reviewUpdate.do" method="post" enctype="multipart/form-data" onsubmit="return validateForm()">
+                <input type="hidden" name="orderIdx" value="${orderIdx}">
+                <input type="hidden" name="reviewIdx" value="${reviewVO.reviewIdx}">
+                <input type="hidden" name="itemIdx" value="${reviewVO.itemIdx}">
+                <input type="hidden" name="productIdx" value="${reviewVO.productIdx}">
 
-                <table border="1" style="border-collapse: collapse; width: 500px;">
-                    <tr>
-                        <td style="padding:10px; text-align:center; background-color:#f9f9f9;">별점</td>
-                        <td style="padding:10px;">
+                <table class="review-table"> <tr>
+                        <td class="label-cell">별점</td> <td>
                             <select name="rating"> 
-                                <option value="5">★★★★★ (5점)</option>
-                                <option value="4">★★★★☆ (4점)</option>
-                                <option value="3">★★★☆☆ (3점)</option>
-                                <option value="2">★★☆☆☆ (2점)</option>
-                                <option value="1">★☆☆☆☆ (1점)</option>
+                                <option value="5" ${reviewVO.rating == 5 ? 'selected' : ''}>★★★★★ (5점)</option>
+                                <option value="4" ${reviewVO.rating == 4 ? 'selected' : ''}>★★★★☆ (4점)</option>
+                                <option value="3" ${reviewVO.rating == 3 ? 'selected' : ''}>★★★☆☆ (3점)</option>
+                                <option value="2" ${reviewVO.rating == 2 ? 'selected' : ''}>★★☆☆☆ (2점)</option>
+                                <option value="1" ${reviewVO.rating == 1 ? 'selected' : ''}>★☆☆☆☆ (1점)</option>
                             </select>
                         </td>
                     </tr>
+                    
                     <tr>
-                        <td style="padding:10px; text-align:center; background-color:#f9f9f9;">후기 내용</td>
-                        <td style="padding:10px;">
-                            <textarea name="review" rows="10" cols="50" style="width:90%;" placeholder="상품 후기를 작성해주세요." required></textarea>
+                        <td class="label-cell">후기 내용</td>
+                        <td>
+                            <textarea name="review" rows="10" required>${reviewVO.review}</textarea>
                         </td>
                     </tr>
+                    
                     <tr>
-                        <td style="padding:10px; text-align:center; background-color:#f9f9f9;">사진 첨부 (최대 3장)</td>
-                        <td style="padding:10px;">
+                        <td class="label-cell">사진 수정<br><span style="font-weight:normal; font-size:11px;">(최대 3장)</span></td>
+                        <td>
+                            <c:if test="${not empty imgList}">
+                                <div style="margin-bottom: 12px; padding: 10px; background-color: #eef6ff; border-radius: 4px;">
+                                    <strong style="color: #0d6efd; font-size: 13px;">[알림] 기존에 등록된 사진:</strong>
+                                    <c:forEach var="img" items="${imgList}">
+                                        <p style="font-size: 12px; margin: 4px 0; color: #444;">📄 ${img.reviewImg}</p>
+                                    </c:forEach>
+                                </div>
+                            </c:if>
+                            
                             <input type="file" name="reviewFiles" id="reviewFiles" multiple accept="image/*">
-                            <p style="font-size: 0.8em; color: #666; margin-top: 5px;">
-                                * 사진은 최대 3장, 총 용량 10MB까지 가능합니다.
-                            </p>
+                            <span class="file-note">
+                                * 새 파일을 선택하면 기존 사진이 모두 교체됩니다.<br>
+                                * 변경하지 않으려면 파일을 선택하지 마세요. (최대 10MB)
+                            </span>
                         </td>
                     </tr>
+                    
                     <tr>
-                        <td colspan="2" align="center" style="padding:15px;">
-                            <button type="submit" style="padding:5px 20px; cursor:pointer;">저장하기</button>
-                            <button type="button" onclick="history.back()" style="padding:5px 20px; cursor:pointer;">취소</button>
+                        <td colspan="2" class="button-group"> <button type="submit" class="btn-save">수정완료</button>
+                            <button type="button" onclick="history.back()" class="btn-cancel">취소</button>
                         </td>
                     </tr>
                 </table>
@@ -52,7 +63,6 @@
         </div>
     </div>
 </section>
-
 <br>
 
 <script>

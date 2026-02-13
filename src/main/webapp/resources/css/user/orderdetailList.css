@@ -1,0 +1,95 @@
+/* 전체 섹션 레이아웃 - 중앙 정렬 핵심 */
+section {
+    max-width: 1000px;  /* 웹 기준 적정 너비 */
+    margin: 60px auto;  /* 상하 여백 60px, 좌우 자동(중앙 정렬) */
+    padding: 0 20px;
+    background-color: #ffffff;
+    text-align: center; /* 내부 인라인 요소들 중앙 정렬 */
+}
+
+h3 {
+    font-size: 26px;
+    font-weight: 600;
+    margin-bottom: 40px;
+    color: #212529;
+}
+
+/* 상단 주문 정보 테이블 (너비를 100%로 채우거나 조절 가능) */
+.info-table {
+    width: 100%;
+    margin: 0 auto 40px auto; /* 중앙 배치 */
+    border: 1px solid #dee2e6;
+    border-collapse: collapse;
+}
+
+.info-table td {
+    padding: 15px 25px;
+    border-bottom: 1px solid #f1f3f5;
+    text-align: left; /* 정보 내용은 왼쪽 정렬이 읽기 편함 */
+    font-size: 15px;
+    color: #495057;
+}
+
+.info-table td strong {
+    display: inline-block;
+    width: 120px; /* 라벨 너비 고정으로 줄맞춤 */
+    color: #212529;
+}
+
+/* 상품 리스트 테이블 */
+.item-table {
+    width: 100%;
+    margin: 0 auto; /* 중앙 배치 */
+    border-collapse: collapse;
+}
+
+.item-table thead th {
+    background-color: #f8f9fa;
+    border-top: 1px solid #dee2e6;
+    border-bottom: 1px solid #dee2e6;
+    padding: 15px;
+    font-size: 14px;
+    color: #212529;
+}
+
+.item-table tbody td {
+    padding: 20px 15px;
+    border-bottom: 1px solid #eee;
+    font-size: 15px;
+    vertical-align: middle;
+}
+
+/* 버튼 스타일 (기존과 동일하게 유지) */
+.btn-primary.btn-sm {
+    background-color: #0d6efd;
+    border: 1px solid #0d6efd;
+    color: #fff;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.btn-outline-secondary.btn-sm {
+    background-color: #fff;
+    border: 1px solid #ced4da;
+    color: #6c757d;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+/* 하단 합계 영역 */
+.item-table tfoot td {
+    padding: 30px 15px;
+    background-color: #fff;
+    border-top: 2px solid #212529; /* 하단 강조 라인 */
+}
+
+.item-table tfoot strong {
+    font-size: 24px;
+    color: #0d6efd;
+}
+
+/* 헬퍼 클래스 */
+.text-center { text-align: center; }
+.text-end { text-align: right; }

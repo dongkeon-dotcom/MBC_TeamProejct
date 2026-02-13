@@ -1,36 +1,83 @@
 @charset "UTF-8";
-/* 전체 레이아웃 */
 
-.mypage-section {
-  max-width: 600px;
-  margin: 50px auto;
-  background: #fff;
-  padding: 30px;
-  border-radius: 8px;
-  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+/* 1. 전체 섹션 레이아웃 및 중앙 정렬 */
+.mypage-wrapper {
+    width: 100%;
+    max-width: 1000px;
+    margin: 80px auto;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
-.mypage-section h1 {
-  text-align: center;
-  margin-bottom: 20px;
+/* 2. 상단 타이틀 및 이름 */
+.welcome-box {
+    margin-bottom: 50px;
+}
+.welcome-box h1 {
+    font-size: 18px;
+    color: #888;
+    margin-bottom: 10px;
+}
+.welcome-box .user-name {
+    font-size: 32px;
+    font-weight: 800;
+    color: #212529;
+}
+.welcome-box .user-name span {
+    color: #0d6efd;
 }
 
-.mypage-menu {
-  list-style: none;
-  padding: 0;
+/* 3. 메뉴 컨테이너 (동그라미 배치) */
+.menu-container {
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+    flex-wrap: wrap;
+    width: 100%;
 }
 
-.mypage-menu li {
-  margin: 15px 0;
+/* 4. 개별 메뉴 링크 */
+.menu-item {
+    text-decoration: none !important;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    transition: transform 0.2s ease;
 }
 
-.mypage-menu a {
-  text-decoration: none;
-  color: #0077FF;
-  font-weight: bold;
+/* 5. 동그라미 버튼 (핵심 스타일) */
+.circle-btn {
+    width: 120px !important;
+    height: 120px !important;
+    background-color: #ffffff !important;
+    border: 1px solid #dee2e6 !important;
+    border-radius: 50% !important; /* 무조건 동그랗게 */
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    margin-bottom: 15px;
+    font-size: 35px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+    transition: all 0.2s ease;
 }
 
-.mypage-menu a:hover {
-  color: #ff6600;
+/* 호버 효과 */
+.menu-item:hover {
+    transform: translateY(-10px);
+}
+.menu-item:hover .circle-btn {
+    background-color: #0d6efd !important;
+    border-color: #0d6efd !important;
+    box-shadow: 0 8px 20px rgba(13, 110, 253, 0.3);
 }
 
+.menu-text {
+    font-size: 16px;
+    font-weight: 600;
+    color: #495057;
+}
+.menu-item:hover .menu-text {
+    color: #0d6efd;
+}
