@@ -21,7 +21,7 @@
         </c:choose>
     </div>
 </c:if>
-
+<br>
 	
     <!-- 상품 리스트 -->
     <div class="product-grid">
