@@ -1,37 +1,43 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-	pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<%-- ✅ 소수점 제거 및 콤마 표시를 위한 태그 라이브러리 추가 --%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 
 <c:import url="/WEB-INF/view/include/top.jsp" />
-
-<link rel="stylesheet"
-	href="${path}/resources/css/userproduct/userproductdetail.css">
-<meta charset="UTF-8">
-<title>${product.productName} - 상세보기</title>
 <link rel="stylesheet" href="${path}/resources/css/userproduct/userproductdetail.css">
-
-
 <body align="center">
     <div class="product-detail-wrapper">
-        <div class="product-image">
-            <c:choose>
-                <%-- SQL에서 AS productMainImg로 수정했으므로 그대로 사용 --%>
-                <c:when test="${not empty product.productMainImg}">
-                    <img src="${path}/resources/images/ProductMainImg/${product.productMainImg}" 
-                         alt="${product.productName}">
-                </c:when>
-                <c:otherwise>
-                    <%-- 이미지가 없을 때 보여줄 기본 이미지나 텍스트 --%>
-                    <div class="no-image">
-                        <img src="${path}/resources/images/no-image.png" alt="이미지 준비중">
-                        <p>이미지 준비중</p>
-                    </div>
-                </c:otherwise>
-            </c:choose>
-        </div>
+       <div class="product-image">
+    <div class="main-img-container" style="position: relative; overflow: hidden;">
+        <%-- 좌우 화살표 버튼 --%>
+        <button type="button" class="btn-prev" onclick="changeSlide(-1)" style="position: absolute; left: 10px; top: 50%; transform: translateY(-50%); z-index: 10;">〈</button>
+        
+        <c:choose>
+            <c:when test="${not empty product.productMainImg}">
+                <%-- id="currentMainImg" 추가 --%>
+                <img id="currentMainImg" src="${path}/resources/images/ProductMainImg/${product.productMainImg}" 
+                     alt="${product.productName}" style="max-width: 100%; height: auto; display: block;">
+            </c:when>
+            <c:otherwise>
+                <img src="${path}/resources/images/no-image.png" alt="이미지 준비중">
+            </c:otherwise>
+        </c:choose>
+
+        <button type="button" class="btn-next" onclick="changeSlide(1)" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); z-index: 10;">〉</button>
+    </div>
+
+    <%-- 썸네일 리스트 (클릭 시 메인 이미지 변경) --%>
+    <div class="sub-images" style="margin-top: 20px; display: flex; gap: 5px; overflow-x: auto;">
+        <%-- 메인 이미지도 첫 번째 썸네일로 추가 (클릭해서 돌아올 수 있게) --%>
+        <img src="${path}/resources/images/ProductMainImg/${product.productMainImg}" 
+             class="thumb active" onclick="setMainImg(this.src)" style="width: 80px; height: 80px; cursor: pointer; border: 2px solid #333;">
+        
+        <c:forEach var="img" items="${subImgList}">
+            <img src="${path}/resources/images/ProductImg/${img.productImg}" 
+                 class="thumb" onclick="setMainImg(this.src)" style="width: 80px; height: 80px; cursor: pointer; border: 1px solid #eee;">
+        </c:forEach>
+    </div>
+</div>
 
         <div class="product-info">
             <p class="category-path">
@@ -49,7 +55,6 @@
                             </span>
                             <span class="discount-rate">${product.discountRate}% OFF</span>
                             <div class="discounted-price">
-                                <%-- 할인가 계산 로직 --%>
                                 <fmt:parseNumber var="dPrice" value="${product.price * (100 - product.discountRate) / 100}" integerOnly="true" />
                                 <fmt:formatNumber value="${dPrice}" pattern="#,###"/>원
                             </div>
@@ -76,7 +81,7 @@
                         <option value="${opt.optionIdx}" 
                                 data-color="${opt.color}" 
                                 data-size="${opt.size}">
-                            ${opt.color} / ${opt.size} <!-- (재고: ${opt.stock}) -->
+                            ${opt.color} / ${opt.size}
                         </option>
                     </c:forEach>
                 </select>
@@ -92,11 +97,8 @@
                             <th>삭제</th>
                         </tr>
                     </thead>
-                    <tbody>
-                        <%-- 스크립트(addOptionAuto)가 여기에 <tr>을 추가합니다 --%>
-                    </tbody>
+                    <tbody></tbody>
                 </table>
-                
                 <div class="total-amount-box">
                     <span>총 합계 금액</span>
                     <span id="totalAmount">0원</span>
@@ -106,10 +108,8 @@
             <div class="action-buttons">
                 <form id="buyForm" action="${path}/order/payment.do" method="post" onsubmit="return validateForm()">
                     <input type="hidden" name="productIdx" value="${product.productIdx}">
-                    <%-- 옵션 데이터는 JS에서 hidden input으로 자동 추가됨 --%>
                     <button type="submit" class="btn-buy-now">바로 구매하기</button>
                 </form>
-
                 <form id="cartForm" action="${path}/cart/add.do" method="post" onsubmit="return validateForm()">
                     <input type="hidden" name="productIdx" value="${product.productIdx}">
                     <button type="submit" class="btn-add-cart">장바구니 담기</button>
@@ -118,41 +118,47 @@
         </div>
     </div>
 
-<!-- /////////////////////////////////////////////////////////////////// -->
-    <div class="tab-menu" role="tablist">
+    <div class="tab-menu">
         <button class="tab-btn active" onclick="openTab('info', this)">상품정보</button>
         <button class="tab-btn" onclick="openTab('size', this)">사이즈 가이드</button>
         <button class="tab-btn" onclick="openTab('review', this)">리뷰 (${fn:length(reviewList)})</button>
     </div>
-<!-- /////////////////////////////////////////////////////////////////// -->
+
+    <%-- 탭 1: 상세 설명 및 설명 이미지 --%>
     <div id="info" class="tab-content active">
-        <div class="description-text">
-            ${product.productDesc}
+        <div class="description-text">${product.productDesc}</div>
+        <div class="desc-images">
+            <c:forEach var="descImg" items="${descImgList}">
+                <img src="${path}/resources/images/ProductDescImg/${descImg.productDescImg}" 
+                     style="max-width: 100%; display: block; margin: 10px auto;">
+            </c:forEach>
         </div>
     </div>
-<!-- /////////////////////////////////////////////////////////////////// -->
+
+    <%-- 탭 2: 사이즈 정보 이미지 --%>
     <div id="size" class="tab-content">
         <c:choose>
             <c:when test="${not empty product.productSizeImg}">
-                <img src="${path}/resources/images/ProductSizeImg/${product.productSizeImg}" alt="사이즈 정보">
+                <img src="${path}/resources/images/ProductSizeImg/${product.productSizeImg}" alt="사이즈 정보" style="max-width: 100%;">
             </c:when>
             <c:otherwise>
                 <p class="empty-msg">등록된 사이즈 정보 이미지가 없습니다.</p>
             </c:otherwise>
         </c:choose>
     </div>
-<!-- /////////////////////////////////////////////////////////////////// -->
+
+    <%-- 탭 3: 리뷰 --%>
     <div id="review" class="tab-content">
         <c:forEach var="r" items="${reviewList}">
             <div class="review-item">
                 <div class="review-header">
                     <span class="review-author">${r.userName}</span> 
                     <span class="review-stars">
-                        <c:forEach begin="1" end="${r.reviewRating}">★</c:forEach>
-                        <c:forEach begin="${r.reviewRating + 1}" end="5">☆</c:forEach>
+                        <c:forEach begin="1" end="${r.rating}">★</c:forEach>
+                        <c:forEach begin="${r.rating + 1}" end="5">☆</c:forEach>
                     </span>
                 </div>
-                <p class="review-body">${r.reviewDesc}</p>
+                <p class="review-body">${r.review}</p>
             </div>
         </c:forEach>
         <c:if test="${empty reviewList}">
@@ -160,7 +166,7 @@
         </c:if>
     </div>
 </body>
-
+<!-- ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
 <script>
 //✅ 구매/장바구니 전송 전 검증 함수
 function validateForm() {
@@ -300,7 +306,52 @@ function openTab(tabId, btn) {
 }
 
 
+// 이미지 슬라이드 스크립트 
 
+
+
+// 이미지 경로들을 배열로 수집
+let images = [];
+const mainImgElement = document.getElementById("currentMainImg");
+
+// 페이지 로드 시 이미지 배열 초기화
+window.onload = function() {
+    const thumbs = document.querySelectorAll(".sub-images img");
+    thumbs.forEach(img => images.push(img.src));
+};
+
+let currentIndex = 0;
+
+// 1. 직접 클릭해서 변경
+function setMainImg(src) {
+    mainImgElement.src = src;
+    currentIndex = images.indexOf(src);
+    updateThumbStyle();
+}
+
+// 2. 좌우 버튼으로 변경
+function changeSlide(direction) {
+    currentIndex += direction;
+    
+    // 처음과 끝 순환 처리
+    if (currentIndex < 0) currentIndex = images.length - 1;
+    if (currentIndex >= images.length) currentIndex = 0;
+    
+    mainImgElement.src = images[currentIndex];
+    updateThumbStyle();
+}
+
+// 썸네일 강조 표시 업데이트
+function updateThumbStyle() {
+    const thumbs = document.querySelectorAll(".sub-images img");
+    thumbs.forEach((img, index) => {
+        if(index === currentIndex) {
+            img.style.border = "2px solid #333";
+        } else {
+            img.style.border = "1px solid #eee";
+        }
+    });
+} 
 </script>
 
 <c:import url="/WEB-INF/view/include/bottom.jsp" />

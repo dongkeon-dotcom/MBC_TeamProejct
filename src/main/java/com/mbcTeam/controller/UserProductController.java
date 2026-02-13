@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.mbcTeam.product.ProductDescImgVO;
+import com.mbcTeam.product.ProductImgVO;
 import com.mbcTeam.product.ProductOptionVO;
 import com.mbcTeam.product.ProductService;
 import com.mbcTeam.product.ProductVO;
@@ -52,17 +54,29 @@ public class UserProductController {
 
     @GetMapping("/userproductdetail.do")
     public String userproductdetail(@RequestParam("productIdx") int productIdx, Model model) {
-    	System.out.println("/userproductdetail.DO");
-        // 상품 정보 조회
-        ProductVO product = service.detail(productIdx);
+        System.out.println("/userproductdetail.DO 호출 - 상품번호: " + productIdx);
+
+        // [중요] 기존 service.detail 대신, JOIN 없는 원본 데이터를 가져오는 메소드 사용
+        ProductVO vo = new ProductVO();
+        vo.setProductIdx(productIdx);
+        
+        // 1. 상품 상세 정보 (Products 테이블 단일 행 - 메인/사이즈 이미지 포함)
+        // adminProductEdit가 매퍼의 'EDIT_PRODUCT'를 호출하므로 이걸 쓰는 게 가장 정확합니다.
+        ProductVO product = service.adminProductEdit(vo); 
         model.addAttribute("product", product);
 
-        // 옵션 조회
-        List<ProductOptionVO> optionList = service.selectOptions(productIdx);
-        model.addAttribute("optionList", optionList);
+        // 2. 추가 이미지들 (ProductImg 테이블 리스트)
+        List<ProductImgVO> subImgList = service.adminProductEditImg(productIdx);
+        model.addAttribute("subImgList", subImgList);
 
-        // 리뷰 조회
+        // 3. 설명 이미지들 (ProductDescImg 테이블 리스트)
+        List<ProductDescImgVO> descImgList = service.adminProductEditDescImg(productIdx);
+        model.addAttribute("descImgList", descImgList);
+
+        // 4. 옵션 및 리뷰
+        List<ProductOptionVO> optionList = service.selectOptions(productIdx);
         List<ReviewVO> reviewList = service.selectReviews(productIdx);
+        model.addAttribute("optionList", optionList);
         model.addAttribute("reviewList", reviewList);
 
         return "userproduct/userproductdetail"; 
