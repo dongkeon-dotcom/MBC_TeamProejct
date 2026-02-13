@@ -16,6 +16,8 @@ public class CartVO {
     private String color;
     private String size;
     private String productMainImg; // 메인 이미지 파일명
+    
+    private int discountRate; // 장바구니 할인율 표기
 
   
         

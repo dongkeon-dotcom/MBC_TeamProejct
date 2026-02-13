@@ -61,5 +61,4 @@
     </div>
 </div>
 
-</section>
 <c:import url="/WEB-INF/view/include/bottom.jsp" />

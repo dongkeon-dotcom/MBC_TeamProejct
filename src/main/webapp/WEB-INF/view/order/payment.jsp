@@ -3,7 +3,7 @@
 <c:import url="/WEB-INF/view/include/top.jsp" />
 <link rel="stylesheet" href="${path}/resources/css/order/checkout.css">
 
-<section>
+
 <div class="checkout-container">
     <h2 class="checkout-title">주문서</h2>
 
@@ -65,7 +65,7 @@
         </button>
     </form>
 </div>
-</section>
+
 
 
 
