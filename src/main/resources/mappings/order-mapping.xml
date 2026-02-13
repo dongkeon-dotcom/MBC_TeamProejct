@@ -81,7 +81,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   <update id="updateOrder" parameterType="OrderVO">
     UPDATE Orders
     SET total_Price = #{totalPrice},
-        receiver = #{recevier},
+        receiver = #{receiver},
         delivery_Phone = #{deliveryPhone},
         address = #{address},
         extra_Address = #{extraAddress},
@@ -218,12 +218,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
    </update>
    
    
-	<update id="deductStock" parameterType="map">
-	    UPDATE ProductOption 
-	    SET stock = stock - #{quantity}
-	    WHERE optionIdx = #{optionIdx} 
-	      AND stock >= #{quantity}
-	</update>
+<update id="deductStock" parameterType="map">
+    UPDATE ProductOption 
+       SET stock = stock - #{quantity}
+     WHERE option_Idx = #{optionIdx}  AND stock >= #{quantity}
+</update>
    
    	
 </mapper>

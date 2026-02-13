@@ -15,4 +15,9 @@ public interface CartService {
     void deleteByUserId(long userIdx);
     void clearCart(long userIdx);
     
+    void removePurchasedItems(List<Long> cartIdxList);
+
+    void deleteSelectedCartItems(List<Long> cartIdxList);
+   
+    
 }

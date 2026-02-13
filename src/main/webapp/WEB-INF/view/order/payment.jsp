@@ -1,8 +1,8 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <c:import url="/WEB-INF/view/include/top.jsp" />
 <link rel="stylesheet" href="${path}/resources/css/order/checkout.css">
-
 
 <div class="checkout-container">
     <h2 class="checkout-title">주문서</h2>
@@ -34,39 +34,44 @@
             <div class="checkout-item">
                 <p><strong>${item.productName}</strong></p>
                 <p>옵션: ${item.color} / ${item.size} | 수량: ${item.quantity}개</p>
-                <p>가격: ${item.totalPrice}원</p>
+                <p>가격: <fmt:formatNumber value="${item.totalPrice}" pattern="#,###"/>원</p>
             </div>
         </c:forEach>
     </div>
 
     <div class="checkout-box checkout-summary" style="text-align: right;">
         <h3>결제 요약</h3>
-        <p style="font-size: 22px; color: #e60023; font-weight: bold;">최종 결제 금액: ${totalAmount}원</p>
+        <p style="font-size: 22px; color: #e60023; font-weight: bold;">
+            최종 결제 금액: <fmt:formatNumber value="${totalAmount}" pattern="#,###"/>원
+        </p>
     </div>
     
-    
-<div class="checkout-btn-wrapper">
-    <form id="orderForm" action="${path}/order/complete.do" method="post">
-        <c:forEach var="item" items="${orderItems}">
-            <input type="hidden" name="productIdx" value="${item.productIdx}">
-            <input type="hidden" name="optionIdxList" value="${item.optionIdx}"> 
-            <input type="hidden" name="quantityList" value="${item.quantity}">
-        </c:forEach>
+    <div class="checkout-btn-wrapper">
+        <form id="orderForm" action="${path}/order/complete.do" method="post">
+            
+            <c:forEach var="cIdx" items="${cartIdxList}">
+                <input type="hidden" name="cartIdxList" value="${cIdx}">
+            </c:forEach>
 
-        <input type="hidden" name="totalPrice" value="${totalAmount}">
-        <input type="hidden" name="receiver" value="${delivery.receiver}">
-        <input type="hidden" name="deliveryPhone" value="${delivery.deliveryPhone}">
-        <input type="hidden" name="address" value="${delivery.address}">
-        <input type="hidden" name="extraAddress" value="${delivery.extraAddress}">
-        <input type="hidden" name="zipcode" value="${delivery.zipcode}">
-        
-        <button type="button" class="checkout-btn" onclick="requestPayment()">
-            ${totalAmount}원 결제 하기
-        </button>
-    </form>
+            <c:forEach var="item" items="${orderItems}">
+                <input type="hidden" name="productIdx" value="${item.productIdx}">
+                <input type="hidden" name="optionIdxList" value="${item.optionIdx}"> 
+                <input type="hidden" name="quantityList" value="${item.quantity}">
+            </c:forEach>
+
+            <input type="hidden" name="totalPrice" value="${totalAmount}">
+            <input type="hidden" name="receiver" value="${delivery.receiver}">
+            <input type="hidden" name="deliveryPhone" value="${delivery.deliveryPhone}">
+            <input type="hidden" name="address" value="${delivery.address}">
+            <input type="hidden" name="extraAddress" value="${delivery.extraAddress}">
+            <input type="hidden" name="zipcode" value="${delivery.zipcode}">
+            
+            <button type="button" class="checkout-btn" onclick="requestPayment()">
+                <fmt:formatNumber value="${totalAmount}" pattern="#,###"/>원 결제 하기
+            </button>
+        </form>
+    </div>
 </div>
-
-</div> 
 
 
 <script src="https://cdn.portone.io/v2/browser-sdk.js"></script>

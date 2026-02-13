@@ -57,7 +57,7 @@
 
     <div class="btn-group">
         <a href="${path}/index.do" class="btn-main btn-home">쇼핑 계속하기</a>
-        <a href="${path}/order/myOrderList.do" class="btn-main btn-order">주문 내역 확인</a>
+        <a href="${path}/user/orderList.do" class="btn-main btn-order">주문 내역 확인</a>
     </div>
 </div>
 

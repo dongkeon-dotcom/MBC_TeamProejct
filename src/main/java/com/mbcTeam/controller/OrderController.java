@@ -50,7 +50,7 @@ public class OrderController {
     private CartService cartService;
 
     /**
-     * 1. 결제 페이지 이동 (장바구니 선택 구매 또는 상세페이지 바로구매)
+     * 1. 결제 페이지 이동
      */
     @PostMapping("/payment.do")
     public String paymentPage(
@@ -60,7 +60,6 @@ public class OrderController {
             @RequestParam(required = false, value = "cartIdxList") List<Long> cartIdxList, 
             Model model) {
 
-        // 로그인 사용자 확인
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if (auth == null || !auth.isAuthenticated() || "anonymousUser".equals(auth.getPrincipal())) {
             return "redirect:/user/login.do";
@@ -69,7 +68,6 @@ public class OrderController {
         UserVO loginUser = userService.getByEmail(auth.getName());
         model.addAttribute("loginUser", loginUser);
 
-        // 기본 배송지 정보 가져오기
         DeliveryVO delivery = null;
         List<DeliveryVO> addresses = dservice.getAddressList(loginUser.getUserIdx());
         if (addresses != null && !addresses.isEmpty()) {
@@ -129,40 +127,34 @@ public class OrderController {
         
         model.addAttribute("orderItems", orderItems);
         model.addAttribute("totalAmount", totalAmount);
-
+        model.addAttribute("cartIdxList", cartIdxList); 
+        
         return "order/payment";
     }
 
     /**
-     * 2. 결제 완료 및 DB 처리 (재고 차감 핵심 로직 포함)
-     */
-    /**
-     * 2. 결제 완료 및 DB 처리
-     */
-    /**
-     * 2. 결제 완료 및 DB 처리 (주문서 생성 및 재고 차감)
+     * 2. 주문 완료 처리 (재고 차감 및 장바구니 삭제)
      */
     @RequestMapping("/complete.do")
     public String completeOrder(
             @RequestParam(value="productIdx") List<Integer> productIdxList, 
             @RequestParam(value="optionIdxList") List<Integer> optionIdxList,
             @RequestParam(value="quantityList") List<Integer> quantityList,
+            @RequestParam(value="cartIdxList", required = false) List<Long> cartIdxList,
             @RequestParam(value="receiver") String receiver,
             @RequestParam(value="deliveryPhone") String deliveryPhone,
             @RequestParam(value="address") String address,
             @RequestParam(value="extraAddress") String extraAddress,
             @RequestParam(value="zipcode") String zipcode,
             Model model,
-            RedirectAttributes rttr) { // RedirectAttributes 정상 추가
+            RedirectAttributes rttr) {
 
-        // 1. 사용자 인증 확인
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if (auth == null || !auth.isAuthenticated() || "anonymousUser".equals(auth.getPrincipal())) {
             return "redirect:/user/login.do";
         }
         UserVO loginUser = userService.getByEmail(auth.getName());
 
-        // 2. 주문(Order) 정보 설정
         OrderVO order = new OrderVO();
         order.setUserIdx(loginUser.getUserIdx());
         order.setReceiver(receiver);
@@ -170,14 +162,12 @@ public class OrderController {
         order.setAddress(address);
         order.setExtraAddress(extraAddress);
         order.setZipcode(zipcode);
-        order.setStatus(0); // 결제완료 상태
+        order.setStatus(0);
 
         List<OrderItemVO> items = new ArrayList<>();
         int totalAmountForVerify = 0;
 
-        // 3. 주문 상세 아이템(OrderItem) 리스트 생성
         for (int i = 0; i < optionIdxList.size(); i++) {
-            // 리스트 인덱스 예외 방지 (단일 상품일 경우 productIdxList[0] 참조)
             int pIdx = (productIdxList.size() > i) ? productIdxList.get(i) : productIdxList.get(0);
             int oIdx = optionIdxList.get(i);
             int qty = quantityList.get(i);
@@ -185,7 +175,6 @@ public class OrderController {
             ProductVO product = productService.detail(pIdx);
             ProductOptionVO option = optionService.getOptionById(oIdx);
 
-            // 실시간 할인 적용가 계산 (보안상 서버에서 다시 계산)
             int discountedPrice = product.getDiscountRate() > 0
                     ? (int)Math.floor(product.getPrice() * (100 - product.getDiscountRate()) / 100.0)
                     : product.getPrice();
@@ -195,14 +184,19 @@ public class OrderController {
             OrderItemVO item = new OrderItemVO();
             item.setProductIdx(pIdx);
             item.setProductName(product.getProductName());
+            
+            // [에러 해결 포인트] 필수 카테고리 정보 세팅
             item.setCategory(product.getCategory());
             item.setSubCategory(product.getSubCategory());
-            item.setColor(option.getColor());
-            item.setSize(option.getSize());
+            
+            item.setOptionIdx(oIdx);
             item.setQuantity(qty);
             item.setPrice(discountedPrice);
-            item.setOptionIdx(oIdx);
             item.setStatus(0);
+            
+            // 옵션 텍스트 정보 추가 (선택사항)
+            item.setColor(option.getColor());
+            item.setSize(option.getSize());
             
             String mainImg = product.getProductMainImg();
             item.setProductMainImg((mainImg == null || mainImg.isEmpty()) ? "no_image.jpg" : mainImg);
@@ -210,27 +204,27 @@ public class OrderController {
         }
         order.setTotalPrice(totalAmountForVerify);
 
-        // 4. DB 트랜잭션 처리 (주문 저장 + 재고 차감 + 장바구니 비우기)
         try {
-            // 트랜잭션 범위 내에서 한 번에 처리
+            // 주문 정보 저장
             orderService.insertOrder(order, items);
-            cartService.clearCart(loginUser.getUserIdx());
+
+            // 장바구니에서 구매한 상품만 삭제
+            if (cartIdxList != null && !cartIdxList.isEmpty()) {
+                cartService.deleteSelectedCartItems(cartIdxList);
+            }
             
             model.addAttribute("order", order);
             model.addAttribute("items", items);
             
-            return "order/complete"; // 주문 완료 페이지로 이동
+            return "order/complete"; 
 
         } catch (RuntimeException e) {
-            // 재고 부족 등의 비즈니스 로직 예외 처리
             e.printStackTrace();
-            rttr.addFlashAttribute("errorMsg", e.getMessage()); // 리다이렉트 후에도 메시지 유지
+            rttr.addFlashAttribute("errorMsg", e.getMessage());
             return "redirect:/order/payment.do"; 
-            
         } catch (Exception e) {
-            // 일반 시스템 오류
             e.printStackTrace();
             return "redirect:/index.do?error=system";
         }
-    } 
-} 
+    }
+}

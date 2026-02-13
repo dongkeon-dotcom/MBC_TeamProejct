@@ -50,4 +50,26 @@ public class CartDaoImpl implements CartDao {
 	    mybatis.delete("CARTS.deleteByUserId", userIdx);
 	}
 	
+	@Override
+	public CartVO checkCartItem(CartVO cart) {
+	    return mybatis.selectOne("CARTS.checkCartItem", cart);
+	}
+
+	@Override
+	public int updateCartQuantity(CartVO cart) {
+	    return mybatis.update("CARTS.updateCartQuantity", cart);
+	}
+	
+	@Override
+    public void deleteSelectedCartItems(List<Long> cartIdxList) {
+        // "CARTS"는 XML의 namespace와 일치해야 합니다.
+        mybatis.delete("CARTS.deleteSelectedCartItems", cartIdxList);
+    }
+
+    // 만약 인터페이스(CartDao)에 deleteSelected라는 이름으로 등록되어 있다면 아래처럼 작성하세요.
+    @Override
+    public void deleteSelected(List<Long> cartIdxList) {
+        mybatis.delete("CARTS.deleteSelectedCartItems", cartIdxList);
+    }
+	
 }

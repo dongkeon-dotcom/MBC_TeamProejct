@@ -10,6 +10,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         INSERT INTO Carts (user_idx, product_idx, option_idx, quantity)
         VALUES (#{userIdx}, #{productIdx}, #{optionIdx}, #{quantity})
     </insert>
+    
+    
 
     <select id="selectCart" parameterType="long" resultType="com.mbcTeam.cart.CartVO">
         SELECT 
@@ -33,6 +35,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         SET quantity = #{quantity}
         WHERE cart_idx = #{cartIdx}
     </update>
+    
+    <update id="updateCartQuantity" parameterType="com.mbcTeam.cart.CartVO">
+    UPDATE Carts
+    SET quantity = quantity + #{quantity}
+    WHERE cart_idx = #{cartIdx}
+	</update>
+    
 
     <select id="getCartItem" parameterType="long" resultType="com.mbcTeam.cart.CartVO">
         SELECT 
@@ -52,13 +61,46 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         WHERE c.cart_idx = #{cartIdx}
     </select>
 
+
+	<select id="checkCartItem" parameterType="com.mbcTeam.cart.CartVO" resultType="com.mbcTeam.cart.CartVO">
+	    SELECT 
+	        cart_idx AS cartIdx, 
+	        quantity
+	    FROM Carts
+	    WHERE user_idx = #{userIdx}
+	      AND product_idx = #{productIdx}
+	      AND option_idx = #{optionIdx}
+	</select>
+	
+	
     <delete id="deleteCart" parameterType="long">
         DELETE FROM Carts WHERE cart_idx = #{cartIdx}
     </delete>
 
+
     <delete id="deleteByUserId" parameterType="long">
         DELETE FROM Carts WHERE user_idx = #{userIdx}
     </delete>
+
+
+
+    <delete id="deleteSelectedCartItems" parameterType="java.util.List">
+        DELETE FROM Carts 
+        WHERE cart_idx IN 
+        <foreach collection="list" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </delete>
+
+
+	<delete id="deleteSelected" parameterType="java.util.List">
+	    DELETE FROM cart 
+	    WHERE cartIdx IN 
+	    <foreach item="item" collection="list" open="(" separator="," close=")">
+	        #{item}
+	    </foreach>
+	</delete>
+
 
 </mapper>
 
