@@ -21,6 +21,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
 
 
+
+
   <!-- 주문 상세 등록 -->
 <insert id="insertOrderItem" parameterType="com.mbcTeam.order.OrderItemVO">
     INSERT INTO OrderItems ( 
@@ -216,6 +218,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
    </update>
    
    
+	<update id="deductStock" parameterType="map">
+	    UPDATE ProductOption 
+	    SET stock = stock - #{quantity}
+	    WHERE optionIdx = #{optionIdx} 
+	      AND stock >= #{quantity}
+	</update>
    
-   
+   	
 </mapper>

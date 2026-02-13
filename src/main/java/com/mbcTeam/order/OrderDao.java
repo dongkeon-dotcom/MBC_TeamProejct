@@ -12,5 +12,8 @@ public interface OrderDao {
     void delete(OrderVO vo);
     List<OrderVO> select(OrderVO vo);
     OrderVO selectOrderByOrderIdx(long orderIdx);
+    int deductStock(int optionIdx, int quantity); // 재고 차감 확인용
+    
+    
 }
 

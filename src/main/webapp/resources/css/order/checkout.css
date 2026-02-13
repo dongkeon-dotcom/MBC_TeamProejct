@@ -1,55 +1,88 @@
-/* 주문서 페이지 전체 배경색이 하단까지 침범하지 않도록 설정 */
+/* 1. 페이지 전체 배경 및 최소 높이 설정 */
 .checkout-section-wrapper {
     background-color: #fcfcfc;
-    padding: 20px 0;
+    padding: 20px 0 80px 0; /* 하단 푸터와의 물리적 거리를 위해 아래쪽 패딩 80px */
+    width: 100%;
+    min-height: 80vh; /* 화면이 작아도 푸터가 너무 빨리 올라오는 것을 방지 */
+    display: block;
+    box-sizing: border-box;
 }
 
+/* 2. 주문서 메인 컨테이너 */
 .checkout-container {
     max-width: 900px;
     margin: 40px auto;
-    padding: 25px;
+    padding: 30px;
     border: 1px solid #ddd;
     border-radius: 12px;
     background: #fff;
     font-family: 'Noto Sans KR', sans-serif;
     box-shadow: 0 4px 20px rgba(0,0,0,0.08);
-    
-    /* 하단 bottom.jsp와 섞이지 않도록 함 */
-    overflow: hidden; 
+
+    /* [중요] 푸터 침범 방지 및 화면 고정 해제 */
+    overflow: visible; 
     height: auto;
-    box-sizing: border-box;
+    position: relative;
+    display: block;
 }
 
+/* 3. 섹션 제목 스타일 */
 .checkout-title {
     text-align: center;
-    margin-bottom: 30px;
-    font-size: 28px;
+    margin-bottom: 40px;
+    font-size: 32px;
     font-weight: 700;
     color: #222;
 }
 
+/* 4. 정보 박스 (배송지, 주문상품 등) */
 .checkout-box {
     border: 1px solid #f0f0f0;
-    border-radius: 10px;
-    padding: 20px;
-    margin-bottom: 25px;
+    border-radius: 12px;
+    padding: 25px;
+    margin-bottom: 30px;
     background-color: #fafafa;
-    text-align: left; /* 하단이 중앙정렬이라도 여긴 왼쪽정렬 유지 */
+    text-align: left;
 }
 
-/* 결제 요약 강조 텍스트 */
+.checkout-box h4 {
+    font-size: 20px;
+    font-weight: 700;
+    margin-bottom: 20px;
+    color: #333;
+    border-left: 5px solid #f07376; /* 소제목 포인트 라인 */
+    padding-left: 12px;
+}
+
+/* 5. 텍스트 및 상세 항목 */
+.checkout-container p {
+    margin-bottom: 10px;
+    line-height: 1.6;
+    color: #555;
+    font-size: 16px;
+}
+
+/* 6. 결제 요약 강조 */
+.checkout-summary {
+    text-align: right;
+    border-top: 2px solid #eee;
+    padding-top: 20px;
+    margin-top: 20px;
+}
+
 .total-price-text {
-    font-size: 22px; 
-    color: #e60023; 
+    font-size: 26px;
+    color: #e60023;
     font-weight: bold;
-    margin: 0;
+    margin-top: 10px;
 }
 
-/* 버튼 래퍼 */
+/* 7. 버튼 및 폼 영역 */
 .checkout-btn-wrapper {
     width: 100%;
-    margin-top: 10px;
+    margin-top: 40px;
     padding-bottom: 10px;
+    clear: both; /* 플로팅 요소로 인한 겹침 방지 */
 }
 
 .checkout-btn {
@@ -57,18 +90,26 @@
     width: 100%;
     background-color: #f07376;
     color: #fff;
-    padding: 18px;
+    padding: 20px;
     border: none;
-    border-radius: 8px;
-    font-size: 20px;
+    border-radius: 10px;
+    font-size: 22px;
     font-weight: 700;
     cursor: pointer;
     transition: all 0.3s ease;
 }
 
-/* 하단 bottom.jsp에 영향을 줄 수 있는 전역 p, h4 태그 수정 금지 */
-.checkout-container p, 
-.checkout-container h4, 
-.checkout-container h3 {
-    /* container 내부에서만 적용되도록 클래스 경로 확인 */
+.checkout-btn:hover {
+    background-color: #d95d60;
+    transform: translateY(-2px); /* 호버 시 살짝 떠오르는 효과 */
+    box-shadow: 0 5px 15px rgba(240, 115, 118, 0.3);
+}
+
+/* 8. 하단 푸터 강제 분리를 위한 스타일 */
+footer {
+    position: relative;
+    width: 100%;
+    clear: both;
+    z-index: 100;
+    margin-top: 0; /* wrapper의 패딩으로 조절하므로 0 */
 }

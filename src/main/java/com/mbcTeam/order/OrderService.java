@@ -19,10 +19,6 @@ public interface OrderService {
 	    
 	    void insertOrder(OrderVO order, List<OrderItemVO> items);
 	    
-	  
-
-
-	  
 
 	
 }

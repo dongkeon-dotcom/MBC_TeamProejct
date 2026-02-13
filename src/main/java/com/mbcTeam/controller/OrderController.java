@@ -11,6 +11,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.mbcTeam.order.OrderService;
 import com.mbcTeam.order.OrderVO;
@@ -47,10 +48,10 @@ public class OrderController {
     
     @Autowired
     private CartService cartService;
-    
 
-    // 결제 페이지 이동 (여러 옵션 처리)
- // 결제 페이지 이동 (여러 옵션 처리)
+    /**
+     * 1. 결제 페이지 이동 (장바구니 선택 구매 또는 상세페이지 바로구매)
+     */
     @PostMapping("/payment.do")
     public String paymentPage(
             @RequestParam(required = false) Integer productIdx, 
@@ -59,17 +60,16 @@ public class OrderController {
             @RequestParam(required = false, value = "cartIdxList") List<Long> cartIdxList, 
             Model model) {
 
-        // 1. 로그인 사용자 확인 (Spring Security 활용)
+        // 로그인 사용자 확인
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if (auth == null || !auth.isAuthenticated() || "anonymousUser".equals(auth.getPrincipal())) {
             return "redirect:/user/login.do";
         }
         
-        // DB에서 최신 유저 정보(이메일 포함)를 가져와 모델에 추가
         UserVO loginUser = userService.getByEmail(auth.getName());
         model.addAttribute("loginUser", loginUser);
 
-        // 2. 배송지 정보 가져오기 (기본 배송지 우선순위)
+        // 기본 배송지 정보 가져오기
         DeliveryVO delivery = null;
         List<DeliveryVO> addresses = dservice.getAddressList(loginUser.getUserIdx());
         if (addresses != null && !addresses.isEmpty()) {
@@ -83,11 +83,10 @@ public class OrderController {
         List<OrderItemVO> orderItems = new ArrayList<>();
         int totalAmount = 0;
 
-        // --- Case A: 장바구니에서 선택 구매로 넘어온 경우 ---
+        // Case A: 장바구니 구매
         if (cartIdxList != null && !cartIdxList.isEmpty()) {
             for (Long cartIdx : cartIdxList) {
                 CartVO cart = cartService.getCartItem(cartIdx); 
-                
                 if (cart != null) {
                     OrderItemVO item = new OrderItemVO();
                     item.setProductIdx((int)cart.getProductIdx());
@@ -96,29 +95,24 @@ public class OrderController {
                     item.setColor(cart.getColor());
                     item.setSize(cart.getSize());
                     item.setQuantity(cart.getQuantity());
-                    item.setPrice(cart.getPrice()); // 이미 할인 적용된 개별 단가
+                    item.setPrice(cart.getPrice());
                     item.setTotalPrice(cart.getPrice() * cart.getQuantity());
-
                     orderItems.add(item);
                     totalAmount += item.getTotalPrice();
                 }
             }
         } 
-        // --- Case B: 상세페이지에서 '바로 구매하기'로 넘어온 경우 ---
+        // Case B: 바로 구매
         else if (productIdx != null && optionIdxList != null) {
             ProductVO product = productService.detail(productIdx);
-            
             for (int i = 0; i < optionIdxList.size(); i++) {
                 ProductOptionVO option = optionService.getOptionById(optionIdxList.get(i));
                 int quantity = quantityList.get(i);
-
-                // 가격 계산 (할인율 적용)
                 int basePrice = product.getPrice();
                 int discountedPrice = product.getDiscountRate() > 0
                         ? (int)Math.floor(basePrice * (100 - product.getDiscountRate()) / 100.0)
                         : basePrice;
-                int itemTotalPrice = discountedPrice * quantity;
-
+                
                 OrderItemVO item = new OrderItemVO();
                 item.setProductIdx(productIdx);
                 item.setProductName(product.getProductName());
@@ -127,22 +121,27 @@ public class OrderController {
                 item.setSize(option.getSize());
                 item.setQuantity(quantity);
                 item.setPrice(discountedPrice);
-                item.setTotalPrice(itemTotalPrice);
-
+                item.setTotalPrice(discountedPrice * quantity);
                 orderItems.add(item);
-                totalAmount += itemTotalPrice;
+                totalAmount += item.getTotalPrice();
             }
-            model.addAttribute("product", product); 
         }
-
-        // 3. 뷰 데이터 전달
+        
         model.addAttribute("orderItems", orderItems);
         model.addAttribute("totalAmount", totalAmount);
 
         return "order/payment";
     }
 
-    // 결제 완료 처리
+    /**
+     * 2. 결제 완료 및 DB 처리 (재고 차감 핵심 로직 포함)
+     */
+    /**
+     * 2. 결제 완료 및 DB 처리
+     */
+    /**
+     * 2. 결제 완료 및 DB 처리 (주문서 생성 및 재고 차감)
+     */
     @RequestMapping("/complete.do")
     public String completeOrder(
             @RequestParam(value="productIdx") List<Integer> productIdxList, 
@@ -153,7 +152,8 @@ public class OrderController {
             @RequestParam(value="address") String address,
             @RequestParam(value="extraAddress") String extraAddress,
             @RequestParam(value="zipcode") String zipcode,
-            Model model) {
+            Model model,
+            RedirectAttributes rttr) { // RedirectAttributes 정상 추가
 
         // 1. 사용자 인증 확인
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -162,7 +162,7 @@ public class OrderController {
         }
         UserVO loginUser = userService.getByEmail(auth.getName());
 
-        // 2. 주문(Orders) 객체 생성
+        // 2. 주문(Order) 정보 설정
         OrderVO order = new OrderVO();
         order.setUserIdx(loginUser.getUserIdx());
         order.setReceiver(receiver);
@@ -170,14 +170,14 @@ public class OrderController {
         order.setAddress(address);
         order.setExtraAddress(extraAddress);
         order.setZipcode(zipcode);
-        order.setStatus(0); // 주문 상태 (0: 결제완료)
+        order.setStatus(0); // 결제완료 상태
 
         List<OrderItemVO> items = new ArrayList<>();
-        int totalAmount = 0;
+        int totalAmountForVerify = 0;
 
-        // 3. 리스트 데이터 처리
+        // 3. 주문 상세 아이템(OrderItem) 리스트 생성
         for (int i = 0; i < optionIdxList.size(); i++) {
-            // 인덱스 안전 장치
+            // 리스트 인덱스 예외 방지 (단일 상품일 경우 productIdxList[0] 참조)
             int pIdx = (productIdxList.size() > i) ? productIdxList.get(i) : productIdxList.get(0);
             int oIdx = optionIdxList.get(i);
             int qty = quantityList.get(i);
@@ -185,11 +185,12 @@ public class OrderController {
             ProductVO product = productService.detail(pIdx);
             ProductOptionVO option = optionService.getOptionById(oIdx);
 
+            // 실시간 할인 적용가 계산 (보안상 서버에서 다시 계산)
             int discountedPrice = product.getDiscountRate() > 0
                     ? (int)Math.floor(product.getPrice() * (100 - product.getDiscountRate()) / 100.0)
                     : product.getPrice();
             
-            totalAmount += (discountedPrice * qty);
+            totalAmountForVerify += (discountedPrice * qty);
 
             OrderItemVO item = new OrderItemVO();
             item.setProductIdx(pIdx);
@@ -200,32 +201,36 @@ public class OrderController {
             item.setSize(option.getSize());
             item.setQuantity(qty);
             item.setPrice(discountedPrice);
-            item.setDiscountRate(product.getDiscountRate());
             item.setOptionIdx(oIdx);
-            item.setStatus(0); // 상세 항목 상태값 추가
-
-            // 이미지 NULL 방지
+            item.setStatus(0);
+            
             String mainImg = product.getProductMainImg();
             item.setProductMainImg((mainImg == null || mainImg.isEmpty()) ? "no_image.jpg" : mainImg);
-            
             items.add(item);
         }
+        order.setTotalPrice(totalAmountForVerify);
 
-        order.setTotalPrice(totalAmount);
-
-        // 4. DB 저장 및 장바구니 비우기
+        // 4. DB 트랜잭션 처리 (주문 저장 + 재고 차감 + 장바구니 비우기)
         try {
+            // 트랜잭션 범위 내에서 한 번에 처리
             orderService.insertOrder(order, items);
-            cartService.clearCart(loginUser.getUserIdx()); 
-        } catch (Exception e) {
-            e.printStackTrace();
-            return "redirect:/order/payment.do?error=db";
-        }
+            cartService.clearCart(loginUser.getUserIdx());
+            
+            model.addAttribute("order", order);
+            model.addAttribute("items", items);
+            
+            return "order/complete"; // 주문 완료 페이지로 이동
 
-        // 5. 결과 전달
-        model.addAttribute("order", order);
-        model.addAttribute("items", items);
-        
-        return "order/complete";
-    }
-}
+        } catch (RuntimeException e) {
+            // 재고 부족 등의 비즈니스 로직 예외 처리
+            e.printStackTrace();
+            rttr.addFlashAttribute("errorMsg", e.getMessage()); // 리다이렉트 후에도 메시지 유지
+            return "redirect:/order/payment.do"; 
+            
+        } catch (Exception e) {
+            // 일반 시스템 오류
+            e.printStackTrace();
+            return "redirect:/index.do?error=system";
+        }
+    } 
+} 

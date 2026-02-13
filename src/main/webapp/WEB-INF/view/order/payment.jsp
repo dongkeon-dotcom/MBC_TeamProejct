@@ -66,7 +66,7 @@
     </form>
 </div>
 
-
+</div> 
 
 
 <script src="https://cdn.portone.io/v2/browser-sdk.js"></script>
@@ -130,4 +130,4 @@ async function requestPayment() {
 
 
 
-<c:import url="/WEB-INF/view/include/bottom.jsp" />
+  <c:import url="/WEB-INF/view/include/bottom.jsp" />

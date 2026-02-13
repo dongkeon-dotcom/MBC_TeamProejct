@@ -52,7 +52,14 @@ public class OrderDaoImpl implements OrderDao {
 	}
 
 
-
+	@Override
+	public int deductStock(int optionIdx, int quantity) {
+	    java.util.Map<String, Object> map = new java.util.HashMap<>();
+	    map.put("optionIdx", optionIdx);
+	    map.put("quantity", quantity);
+	    // 쿼리 실행 후 영향을 받은 행(row)의 수를 반환 (성공하면 1, 재고부족 시 0)
+	    return mybatis.update("ORDER.deductStock", map);
+	}
 
 
 }
