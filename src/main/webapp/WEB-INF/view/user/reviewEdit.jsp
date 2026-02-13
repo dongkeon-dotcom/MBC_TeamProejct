@@ -1,7 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <c:import url="/WEB-INF/view/include/top.jsp" />
-
+<link href="${path}/resources/css/user/review.css" rel="stylesheet">
 <section class="container mt-5">
     <div class="product-detail">
         <div align="center">
@@ -10,9 +10,7 @@
             <br>
             
             <form action="${path}/user/reviewUpdate.do" method="post" enctype="multipart/form-data" onsubmit="return validateForm()">
-                <div style="color:red; font-size: 0.8em; margin-bottom: 10px;">
-                    디버그용: 리뷰번호 - ${reviewVO.reviewIdx} / 주문번호 - ${orderIdx}
-                </div>
+               
 
                 <input type="hidden" name="orderIdx" value="${orderIdx}">
                 <input type="hidden" name="reviewIdx" value="${reviewVO.reviewIdx}">

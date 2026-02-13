@@ -1,0 +1,113 @@
+/* 전체 섹션 레이아웃 */
+.review-wrapper {
+    max-width: 800px; /* 폼이 너무 넓지 않게 조절 */
+    margin: 60px auto;
+    padding: 0 20px;
+    background-color: #ffffff;
+}
+
+.review-wrapper h2 {
+    font-size: 24px;
+    font-weight: 600;
+    margin-bottom: 30px;
+    color: #212529;
+    text-align: center;
+}
+
+/* 리뷰 폼 테이블 */
+.review-table {
+    width: 100%;
+    max-width: 600px; /* 테이블 너비 고정 */
+    margin: 0 auto;
+    border-collapse: collapse;
+    border-top: 2px solid #212529; /* 상단 강조선 */
+}
+
+.review-table td {
+    padding: 15px;
+    border-bottom: 1px solid #dee2e6;
+    font-size: 14px;
+    vertical-align: middle;
+}
+
+/* 왼쪽 라벨 칸 */
+.label-cell {
+    width: 150px;
+    background-color: #f8f9fa;
+    color: #495057;
+    font-weight: 600;
+    text-align: center;
+}
+
+/* 입력 요소들 (Select, Textarea, File) */
+.review-table select,
+.review-table textarea,
+.review-table input[type="file"] {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+    font-size: 14px;
+    box-sizing: border-box;
+}
+
+/* 포커스 효과 (Bootstrap Blue) */
+.review-table select:focus,
+.review-table textarea:focus {
+    border-color: #86b7fe;
+    outline: 0;
+    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+}
+
+.review-table textarea {
+    resize: none; /* 크기 조절 막기 */
+    font-family: inherit;
+}
+
+/* 안내 문구 */
+.file-note {
+    font-size: 12px;
+    color: #6c757d;
+    margin-top: 8px;
+    display: block;
+}
+
+/* 버튼 영역 */
+.button-group {
+    padding: 30px 0 !important;
+    text-align: center;
+    border-bottom: none !important;
+}
+
+/* 저장 버튼 (Primary Blue) */
+.btn-save {
+    padding: 10px 30px;
+    background-color: #0d6efd;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    font-size: 15px;
+    font-weight: 500;
+    cursor: pointer;
+    margin-right: 10px;
+}
+
+.btn-save:hover {
+    background-color: #0b5ed7;
+}
+
+/* 취소 버튼 (Secondary Gray) */
+.btn-cancel {
+    padding: 10px 30px;
+    background-color: #6c757d;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    font-size: 15px;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+.btn-cancel:hover {
+    background-color: #5a6268;
+}

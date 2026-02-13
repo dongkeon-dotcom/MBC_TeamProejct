@@ -122,29 +122,7 @@ MemberMapper memberMapper;
 	 }
 	 
 	
-	@GetMapping(value = "/list.do")
-	public String list(UserVO vo, Model model) {
-		System.out.println("/LIST.DO");
-
-		return "user/list";
-	}
-
-
-
-	@GetMapping(value = "/form.do")
-	public String form(UserVO vo, Model model) {
-		System.out.println("/FORM.DO");
-		return "user/form";
-	}
-
-	@GetMapping(value = "/formOK.do")
-	public String formOK(UserVO vo, Model model) {
-		System.out.println("/FORMOK.DO");
-		service.insert(vo);
-		return "user/list";
-
-	}
-
+	
 	@GetMapping(value = "/mypage.do")
 	public String mypage(Model model) {
 	    // 1. 소셜/일반 로그인 구분해서 유저 정보를 가져오는 메서드 호출

@@ -1,84 +1,151 @@
-@charset "UTF-8";
-/* 전체 레이아웃 */
-
-
-body {
-  font-family: 'Noto Sans KR', sans-serif;
-  background-color: #f9f9f9;
-  margin: 0;
-  padding: 0;
+/* 전체 배경 및 중앙 정렬 (데스크탑 기준 여유로운 여백) */
+.login-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 70vh; /* 화면 높이에 맞춰 중앙 배치 */
+    padding: 50px 0;
+   
 }
 
-/* 로그인 박스 */
-.login-form {
-  max-width: 360px;
-  margin: 80px auto;
-  padding: 40px 30px;
-  background: #fff;
-  border: 1px solid #e0e0e0;
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+/* 로그인 카드 박스 (Web에서 안정감 있는 400px 고정) */
+.login-container {
+    width: 400px; 
+    padding: 40px;
+    background: #ffffff;
+    border: 0px solid #dee2e6; /* Bootstrap border */
+    border-radius: 0px;
+   /* box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075); Bootstrap shadow-sm */}
+
+.login-container h1 {
+    font-size: 24px;
+    font-weight: 600;
+    margin-bottom: 30px;
+    color: #212529;
+    text-align: center;
 }
 
-/* 제목 */
-.login-title {
-  text-align: center;
-  font-size: 22px;
-  font-weight: 600;
-  margin-bottom: 25px;
-  color: #333;
+/* 테이블 레이아웃 */
+.login-table {
+    width: 100%;
 }
 
-/* 입력 필드 */
-.login-form input {
-  width: 100%;
-  padding: 12px 14px;
-  margin-bottom: 15px;
-  border: 1px solid #ddd;
-  border-radius: 6px;
-  font-size: 14px;
-  transition: border-color 0.2s ease;
+.login-table td {
+    padding-bottom: 5px;
+    font-size: 14px;
+    color: #495057;
+    text-align: left;
 }
 
-.login-form input:focus {
-  border-color: #000;
-  outline: none;
+/* Bootstrap 스타일 Input */
+.login-table input[type="text"],
+.login-table input[type="password"] {
+    width: 100%;
+    padding: 10px 12px;
+    margin-bottom: 15px;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+    font-size: 15px;
+    box-sizing: border-box;
 }
 
-/* 버튼 */
-.login-btn {
-  width: 100%;
-  padding: 12px;
-  background: #000;
-  border: none;
-  border-radius: 6px;
-  color: #fff;
-  font-size: 15px;
-  font-weight: bold;
-  cursor: pointer;
-  transition: background 0.2s ease;
+/* Input Focus (Bootstrap Blue) */
+.login-table input:focus {
+    border-color: #86b7fe;
+    outline: 0;
+    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
 }
 
-.login-btn:hover {
-  background: #333;
+/* 로그인 버튼 (Bootstrap Primary) */
+.btn-login {
+    width: 100%;
+    padding: 12px;
+    background-color: #0d6efd; 
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+    margin-top: 10px;
 }
 
-/* 옵션 영역 */
-.login-options {
-
-  display: flex;
-  justify-content: space-between;
-  font-size: 13px;
-  color: #666;
-  margin-top: 15px;
+.btn-login:hover {
+    background-color: #0b5ed7;
 }
 
-.login-options a {
-	
-  text-decoration: none;
-  color: #666;
+/* 구분선 (또는) */
+.divider-container {
+    position: relative;
+    margin: 30px 0;
+    border-top: 1px solid #dee2e6;
 }
 
-.login-options a:hover {
-  text-decoration: underline;
+.divider-container span {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: #fff;
+    padding: 0 10px;
+    color: #6c757d;
+    font-size: 13px;
+}
+
+/* ✅ 소셜 버튼 고유 색상 유지 */
+.social-login-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.social-login-buttons a {
+    display: block;
+    width: 100%;
+    padding: 12px;
+    text-align: center;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 600;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+/* 구글: 화이트 */
+.btn-google { 
+    background-color: #ffffff; 
+    color: #000000; 
+    border: 1px solid #ddd !important; 
+}
+/* 네이버: 그린 */
+.btn-naver { 
+    background-color: #03C75A !important; 
+    color: #ffffff !important; 
+}
+/* 카카오: 옐로우 */
+.btn-kakao { 
+    background-color: #FEE500 !important; 
+    color: #3C1E1E !important; 
+}
+
+/* 하단 안내 */
+.join-guide {
+    margin-top: 25px;
+    text-align: center;
+    font-size: 14px;
+    color: #6c757d;
+}
+
+.btn-join {
+    background: none;
+    border: none;
+    color: #0d6efd;
+    font-weight: 600;
+    text-decoration: none;
+    cursor: pointer;
+    margin-left: 8px;
+}
+
+.btn-join:hover {
+    text-decoration: underline;
 }

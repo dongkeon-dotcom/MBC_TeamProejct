@@ -18,7 +18,6 @@
 <link href="${path}/resources/css/top.css" rel="stylesheet">
 </head>
 
-
 <body>
 	<!-- ===== 상단바 ===== -->
 	<header class="top-header">

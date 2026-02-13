@@ -1,0 +1,122 @@
+/* 전체 섹션 레이아웃 */
+.order-list-wrapper {
+    max-width: 1000px;
+    margin: 50px auto;
+    padding: 0 20px;
+    background-color: #ffffff;
+}
+
+.order-list-wrapper h2 {
+    font-size: 24px;
+    font-weight: 600;
+    margin-bottom: 30px;
+    color: #212529;
+    text-align: center;
+}
+
+/* 조회 기간 설정 박스 (로그인 컨테이너 느낌 반영) */
+.search-box {
+    padding: 10px;
+    background: #ffffff;
+    border: 0px solid #dee2e6; /* 로그인 입력창 테두리와 통일 */
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1px;
+}
+
+.search-box strong {
+    font-size: 14px;
+    color: #495057;
+}
+
+.search-box input[type="date"] {
+    padding: 4px 6px;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+    font-size: 14px;
+    color: #495057;
+}
+
+/* 조회 버튼 (로그인 버튼과 동일한 Bootstrap Blue) */
+.btn-search {
+    padding: 8px 20px;
+    background-color: #0d6efd;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.btn-search:hover {
+    background-color: #0b5ed7;
+}
+
+/* 주문 테이블 스타일 */
+.order-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 30px;
+}
+
+.order-table th {
+    background-color: #f8f9fa;
+    border-top: 1px solid #dee2e6;
+    border-bottom: 1px solid #dee2e6;
+    padding: 15px;
+    font-size: 14px;
+    color: #212529;
+    text-align: center;
+}
+
+.order-table td {
+    padding: 15px;
+    border-bottom: 1px solid #eee;
+    font-size: 15px;
+    color: #495057;
+    text-align: center;
+}
+
+/* 상세보기 링크 (로그인 하단 회원가입 링크 스타일과 통일) */
+.order-table .page-link-detail {
+    color: #0d6efd;
+    font-weight: 600;
+    text-decoration: none;
+    font-size: 13px;
+}
+
+.order-table .page-link-detail:hover {
+    text-decoration: underline;
+}
+
+/* 페이지네이션 (웹 전용 깔끔한 스타일) */
+.pagination-container {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 30px;
+}
+
+.pagination-container .page-link {
+    padding: 6px 14px;
+    border: 1px solid #dee2e6;
+    color: #495057;
+    text-decoration: none;
+    font-size: 14px;
+    border-radius: 4px;
+}
+
+.pagination-container .page-link:hover {
+    background-color: #f8f9fa;
+}
+
+.pagination-container .page-link.active {
+    background-color: #0d6efd;
+    color: white;
+    border-color: #0d6efd;
+    font-weight: 600;
+}

@@ -4,25 +4,22 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <c:import url="/WEB-INF/view/include/top.jsp" />
 
+<link href="${path}/resources/css/delivery/delivery.css" rel="stylesheet">
 <!-- 커스터머 주소목록 관리    -->
 
-<section>
-    <br>
+<section class="address-wrapper">
     <div align="center">
-       <h3> 주소관리  </h3>
-  
-<!-- 체크 박스 이름 전화번호 주소지 주소지 삭제 버튼  -->
-       
+        <h3>주소 관리</h3>
 
-    <table> 
+        <table class="address-table"> 
             <thead>
                 <tr> 
                     <th><input type="checkbox" id="selectAll" onclick="toggleSelectAll()"></th> 
                     <th>배송지명</th>
-                    <th>기본배송유무 </th> 
+                    <th>기본배송</th> 
                     <th>수령인</th> 
                     <th>전화번호</th> 
-                    <th>주소</th> 
+                    <th style="width: 40%;">주소</th> 
                     <th>삭제</th>
                 </tr>
             </thead>
@@ -32,36 +29,40 @@
                     <td>
                         <input type="checkbox" name="selectedIdx" value="${m.deliveryIdx}" class="chk">
                     </td>
+                    <td class="fw-bold">${m.deliveryName}</td>
                     <td>
-                        ${m.deliveryName}</td>
-                         
-                    <td>${m.defaultAddress ? '<span style="color:red;">[기본]</span>' : ''}</td>
-                    <td>${m.receiver}</td> <td>${m.deliveryPhone}</td> 
-                    <td align="left">
-                       <a href="${path}/delivery/addrEdit.do?deliveryIdx=${m.deliveryIdx}"> (${m.zipcode}) ${m.address} ${m.extraAddress} </a>
+                        <c:if test="${m.defaultAddress}">
+                            <span class="badge-default">[기본]</span>
+                        </c:if>
+                    </td>
+                    <td>${m.receiver}</td> 
+                    <td>${m.deliveryPhone}</td> 
+                    <td class="addr-text">
+                       <a href="${path}/delivery/addrEdit.do?deliveryIdx=${m.deliveryIdx}">
+                           (${m.zipcode}) ${m.address} ${m.extraAddress}
+                       </a>
                     </td> 
                     <td>
-                        <input type="button" onClick="addressDel('${m.deliveryIdx}')" value="삭제">
+                        <button type="button" class="btn-del-sm" onClick="addressDel('${m.deliveryIdx}')">삭제</button>
                     </td>
                 </tr>
                 </c:forEach>
                 
                 <c:if test="${empty addressList}">
                     <tr>
-                        <td colspan="6">등록된 배송지가 없습니다.</td>
+                        <td colspan="7" style="padding: 100px 0; color: #999;">등록된 배송지가 없습니다.</td>
                     </tr>
                 </c:if>
             </tbody>
         </table>
-        <button type="button" onclick="setDefaultAddr()">기본배송지로 설정</button>
-   <button type="button" onclick="addrDel()">선택사항 삭제</button> 
-   <button type="button" onclick="AddADDR()">주소 추가 </button>
-    
-     
-     
+
+        <div class="addr-actions">
+            <button type="button" class="btn-addr-sub" onclick="setDefaultAddr()">기본배송지로 설정</button>
+            <button type="button" class="btn-addr-sub" onclick="addrDel()">선택 삭제</button> 
+            <button type="button" class="btn-addr-main" onclick="AddADDR()">+ 새 주소 추가</button>
+        </div>
     </div>
 </section>
-
 <script>
 
 function setDefaultAddr() {

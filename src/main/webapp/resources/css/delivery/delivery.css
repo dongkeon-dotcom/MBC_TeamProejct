@@ -1,0 +1,107 @@
+/* [1] 공통 요소 스타일 (모든 페이지 공통) */
+.address-wrapper, .address-edit-wrapper {
+    margin: 60px auto;
+    padding: 0 20px;
+}
+
+/* 제목 공통 */
+.address-wrapper h3, .address-edit-wrapper h2 {
+    font-weight: 600;
+    margin-bottom: 40px;
+    color: #212529;
+    text-align: center;
+}
+.address-wrapper h3 { font-size: 26px; }
+.address-edit-wrapper h2 { font-size: 24px; margin-bottom: 30px; }
+
+/* 테이블 기본 공통 */
+.address-table, .edit-table {
+    width: 100%;
+    border-collapse: collapse;
+    border-top: 2px solid #212529;
+}
+
+/* 헤더(th) 공통 */
+.address-table th, .edit-table th {
+    background-color: #f8f9fa;
+    color: #495057;
+    font-size: 14px;
+    text-align: center;
+    border-bottom: 1px solid #dee2e6;
+    padding: 15px;
+}
+
+/* 셀(td) 공통 */
+.address-table td, .edit-table td {
+    padding: 15px;
+    border-bottom: 1px solid #eee;
+    font-size: 14px;
+    color: #212529;
+    vertical-align: middle;
+}
+
+/* [2] 버튼 스타일 통합 (색상 및 효과 통일) */
+/* 메인 푸른색 버튼 */
+.btn-addr-main, .btn-zipcode, .btn-submit {
+    background-color: #0d6efd !important;
+    color: #fff !important;
+    border: none !important;
+    border-radius: 4px !important;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+.btn-addr-main:hover, .btn-zipcode:hover, .btn-submit:hover {
+    background-color: #0b5ed7 !important;
+}
+
+/* 서브 회색 버튼 */
+.btn-addr-sub, .btn-cancel {
+    background-color: #6c757d !important;
+    color: #fff !important;
+    border: none !important;
+    border-radius: 4px !important;
+    cursor: pointer;
+}
+.btn-addr-sub:hover, .btn-cancel:hover {
+    background-color: #5a6268 !important;
+}
+
+/* 입력창 포커스 광채 효과 */
+input[type="text"]:focus {
+    border-color: #86b7fe !important;
+    outline: 0 !important;
+    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25) !important;
+}
+
+/* [3] 각 페이지별 개별 스타일 */
+
+/* 주소 목록 페이지 전용 */
+.address-wrapper { max-width: 1100px; }
+.address-table td { text-align: center; }
+.address-table td.addr-text { text-align: left; padding-left: 20px; }
+.address-table td.addr-text a { color: #212529; text-decoration: none; font-weight: 500; }
+.address-table td.addr-text a:hover { color: #0d6efd; text-decoration: underline; }
+
+.addr-actions { margin-top: 20px; display: flex; justify-content: center; gap: 10px; }
+.btn-addr-main, .btn-addr-sub { padding: 10px 20px; font-size: 14px; }
+
+/* 배송지 수정 페이지 전용 */
+.address-edit-wrapper { max-width: 600px; }
+.edit-table th { width: 30%; }
+.edit-table td { border-bottom: 1px solid #dee2e6; }
+.edit-table input[type="text"] { 
+    width: 100%; padding: 10px 12px; border: 1px solid #ced4da; 
+    border-radius: 4px; box-sizing: border-box; 
+}
+.edit-table input[readonly] { background-color: #e9ecef; }
+
+.button-group { margin-top: 30px; display: flex; justify-content: center; gap: 10px; }
+.btn-submit, .btn-cancel { padding: 12px 30px; font-size: 15px; }
+
+/* 기타 포인트 요소 */
+.badge-default { color: #dc3545; font-weight: 600; font-size: 12px; }
+.btn-del-sm { 
+    padding: 5px 10px; background-color: #fff; border: 1px solid #ced4da; 
+    color: #6c757d; border-radius: 4px; font-size: 12px; cursor: pointer; 
+}
+.btn-del-sm:hover { color: #dc3545; border-color: #dc3545; background-color: #f8f9fa; }

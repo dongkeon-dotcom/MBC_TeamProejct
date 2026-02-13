@@ -1,0 +1,133 @@
+/* 전체 섹션 레이아웃 */
+.member-wrapper {
+    max-width: 800px;
+    margin: 60px auto;
+    padding: 0 20px;
+}
+
+.member-wrapper h1 {
+    font-size: 26px;
+    font-weight: 600;
+    margin-bottom: 40px;
+    color: #212529;
+    text-align: center;
+}
+
+/* 정보 수정 테이블 */
+.member-table {
+    width: 100%;
+    max-width: 600px;
+    margin: 0 auto;
+    border-collapse: collapse;
+    border-top: 2px solid #212529;
+}
+
+.member-table td {
+    padding: 15px;
+    border-bottom: 1px solid #dee2e6;
+    font-size: 14px;
+    vertical-align: middle;
+}
+
+/* 왼쪽 라벨 칸 */
+.label-cell {
+    width: 140px;
+    background-color: #f8f9fa;
+    color: #495057;
+    font-weight: 600;
+    text-align: center;
+}
+
+/* 입력창 스타일 (로그인 페이지와 통일) */
+.member-table input[type="text"],
+.member-table input[type="password"],
+.member-table select {
+    padding: 10px 12px;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+    font-size: 14px;
+    box-sizing: border-box;
+}
+
+/* 읽기 전용 배경색 */
+.member-table input[readonly] {
+    background-color: #e9ecef !important;
+    border-color: #dee2e6;
+    color: #6c757d;
+}
+
+/* 포커스 효과 */
+.member-table input:focus:not([readonly]),
+.member-table select:focus {
+    border-color: #86b7fe;
+    outline: 0;
+    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+}
+
+/* 전화번호 칸 정렬 */
+.phone-group {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.phone-group input {
+    flex: 1;
+}
+
+/* 주소 섹션 버튼 */
+.btn-addr {
+    padding: 6px 12px;
+    background-color: #fff;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+    font-size: 13px;
+    cursor: pointer;
+}
+
+.btn-addr:hover {
+    background-color: #f8f9fa;
+}
+
+/* 하단 버튼 그룹 */
+.button-group {
+    padding: 40px 0 !important;
+    text-align: center;
+    border-bottom: none !important;
+}
+
+/* 수정 버튼 (Primary) */
+.btn-update {
+    width: 120px;
+    height: 45px;
+    background-color: #0d6efd;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.btn-update:hover {
+    background-color: #0b5ed7;
+}
+
+/* 뒤로가기 버튼 (Gray) */
+.btn-back {
+    width: 120px;
+    height: 45px;
+    background-color: #6c757d;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    margin-left: 10px;
+}
+
+.btn-back:hover {
+    background-color: #5a6268;
+}
