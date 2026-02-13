@@ -222,3 +222,25 @@
     display: block;
 }
 
+
+/*이미지 슬라이드버튼을 위한 부분*/
+
+.btn-prev, .btn-next {
+    background: rgba(255, 255, 255, 0.7);
+    border: none;
+    font-size: 24px;
+    padding: 10px;
+    cursor: pointer;
+    border-radius: 50%;
+    transition: background 0.3s;
+}
+.btn-prev:hover, .btn-next:hover {
+    background: rgba(255, 255, 255, 1);
+}
+.sub-images img {
+    object-fit: cover; /* 이미지가 찌그러지지 않게 */
+}
+
+
+
+
