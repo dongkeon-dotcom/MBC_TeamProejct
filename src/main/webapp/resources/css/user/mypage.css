@@ -26,7 +26,8 @@
     color: #212529;
 }
 .welcome-box .user-name span {
-    color: #0d6efd;
+    color: #c7c0b8;
+
 }
 
 /* 3. 메뉴 컨테이너 (동그라미 배치) */
@@ -68,10 +69,11 @@
     transform: translateY(-10px);
 }
 .menu-item:hover .circle-btn {
-    background-color: #0d6efd !important;
-    border-color: #0d6efd !important;
+    background-color: #c7c0b8 !important;
+    border-color: #c7c0b8 !important;
     box-shadow: 0 8px 20px rgba(13, 110, 253, 0.3);
 }
+
 
 .menu-text {
     font-size: 16px;
@@ -79,5 +81,5 @@
     color: #495057;
 }
 .menu-item:hover .menu-text {
-    color: #0d6efd;
+    color: #c7c0b8;
 }
