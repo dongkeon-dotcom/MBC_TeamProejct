@@ -52,18 +52,23 @@
             </tbody>
         </table>
 
-        <div class="pagination-container">
-            <c:if test="${startPage > 1}">
-                <a href="..." class="page-link">&laquo; 이전</a>
-            </c:if>
-            <c:forEach var="i" begin="${startPage}" end="${endPage}">
-                <a href="..." class="page-link ${i == page ? 'active' : ''}">${i}</a>
-            </c:forEach>
-            <c:if test="${endPage < totalPage}">
-                <a href="..." class="page-link">다음 &raquo;</a>
-            </c:if>
-        </div>
-    </div>
+       <div class="pagination-container">
+    <c:if test="${startPage > 1}">
+        <a href="?page=${startPage - 1}&startDate=${startDate}&endDate=${endDate}" class="page-link">&laquo; 이전</a>
+    </c:if>
+
+    <c:forEach var="i" begin="${startPage}" end="${endPage}">
+        <a href="?page=${i}&startDate=${startDate}&endDate=${endDate}" 
+           class="page-link ${i == page ? 'active' : ''}">${i}</a>
+    </c:forEach>
+
+    <c:if test="${endPage < totalPage}">
+        <a href="?page=${endPage + 1}&startDate=${startDate}&endDate=${endDate}" class="page-link">다음 &raquo;</a>
+    </c:if>
+</div>
+
+</div>
+
 </section>
 
 
