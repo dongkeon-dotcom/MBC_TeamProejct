@@ -62,8 +62,7 @@ MemberMapper memberMapper;
 	
 	@Autowired
 	private ReviewService rservice;
-	@Autowired
-    private DeliveryService dservice;
+
 	
 	
 	@Autowired
@@ -347,20 +346,27 @@ MemberMapper memberMapper;
         int pageSize = 10;
         int offset = (page - 1) * pageSize;
         
+        // 데이터 조회
         List<OrderedVO> orderli = oservice.selectOrderedList(login.getUserIdx(), startDate, endDate, offset, pageSize);
         int totalCount = oservice.countOrderedList(login.getUserIdx(), startDate, endDate);
 
-        // 페이징 계산 로직 (기존과 동일)
+        // 페이징 계산
         int totalPage = (int) Math.ceil((double) totalCount / pageSize);
         int startPage = ((page - 1) / 5) * 5 + 1;
         int endPage = Math.min(startPage + 4, totalPage);
         if (endPage == 0) endPage = 1;
 
+        // 모델 담기
         model.addAttribute("orderli", orderli);
-        model.addAttribute("currentPage", page);
+        model.addAttribute("page", page);        // JSP의 ${page}와 이름 맞춤
         model.addAttribute("totalPage", totalPage);
         model.addAttribute("startPage", startPage);
         model.addAttribute("endPage", endPage);
+        
+        // ✅ 검색 조건 유지 (이걸 넣어줘야 페이지 넘길 때 날짜가 안 풀려요)
+        model.addAttribute("startDate", startDate);
+        model.addAttribute("endDate", endDate);
+
         return "user/orderList";
     }
   //후기 페이지로 이동을 위한컨트롤러 
