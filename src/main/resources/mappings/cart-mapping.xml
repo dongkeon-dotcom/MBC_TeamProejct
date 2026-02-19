@@ -63,15 +63,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	        p.product_main_img AS productMainImg,
 	        p.price AS originPrice, 
 	        p.discount_rate AS discountRate,
-	
 	        CASE 
 	            WHEN p.discount_rate > 0 
 	            THEN TRUNCATE((p.price * (100 - p.discount_rate) / 100) / 10, 0) * 10
 	            ELSE p.price 
 	        END AS price,
 	        o.color,
-	        o.size
-	    FROM Carts c
+	        o.size,
+	        o.stock  FROM Carts c
 	    JOIN Products p ON c.product_idx = p.product_idx
 	    JOIN ProductOption o ON c.option_idx = o.option_idx
 	    WHERE c.cart_idx = #{cartIdx}
@@ -107,15 +106,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             #{item}
         </foreach>
     </delete>
-
-
-	<delete id="deleteSelected" parameterType="java.util.List">
-	    DELETE FROM cart 
-	    WHERE cartIdx IN 
-	    <foreach item="item" collection="list" open="(" separator="," close=")">
-	        #{item}
-	    </foreach>
-	</delete>
 
 
 </mapper>

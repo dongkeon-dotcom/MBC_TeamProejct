@@ -104,6 +104,7 @@
             </div>
         </div>
 
+
         <%-- [기능] 하단 탭 메뉴 (정보/사이즈/리뷰) --%>
         <div class="tab-menu">
             <button class="tab-btn active" onclick="openTab('info', this)">상품정보</button>

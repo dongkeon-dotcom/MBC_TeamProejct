@@ -116,7 +116,12 @@ public class CartController {
         cart.setQuantity(quantity);
         cartService.updateCart(cart);
         
+        
+        System.out.println(">>> 수량 변경 요청됨 - cartIdx: " + cartIdx + ", qty: " + quantity);
+        
         return "redirect:/cart/cartlist.do";
+        
+        
     }
 
     

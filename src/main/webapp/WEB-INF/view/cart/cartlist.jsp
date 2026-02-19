@@ -64,22 +64,21 @@
                                     <div class="option-text">[옵션: ${item.color} / ${item.size}]</div>
                                 </td>
                                 <td>
-								    <div class="qty-wrapper">
-								        <input type="number" id="qty_${item.cartIdx}" 
-								               value="${item.quantity}" 
-								               min="1" 
-								               max="${item.stock}" 
-								               data-stock="${item.stock}" 
-								               class="qty-input" 
-								               ${item.stock <= 0 ? 'disabled' : ''}>
-								        <button type="button" class="btn-update" onclick="updateQty(${item.cartIdx})">변경</button>
-								    </div>
-								    <div class="stock-info" style="font-size: 11px; color: #888; margin-top: 4px;">
-								        (남은재고: ${item.stock}개)
-								    </div>
-								</td>
+                                    <div class="qty-wrapper">
+                                        <input type="number" id="qty_${item.cartIdx}" 
+                                               value="${item.quantity}" 
+                                               min="1" 
+                                               max="${item.stock}" 
+                                               data-stock="${item.stock}" 
+                                               class="qty-input" 
+                                               ${item.stock <= 0 ? 'disabled' : ''}>
+                                        <button type="button" class="btn-update" onclick="updateQty(${item.cartIdx})">변경</button>
+                                    </div>
+                                    <div class="stock-info" style="font-size: 11px; color: #888; margin-top: 4px;">
+                                        (남은재고: ${item.stock}개)
+                                    </div>
+                                </td>
                                 <td class="price-cell">
-                                    <%-- 역산 로직 제거: DB에서 가져온 originPrice(정가)를 직접 사용 --%>
                                     <c:if test="${item.originPrice > item.price}">
                                         <span class="original-price"><fmt:formatNumber value="${item.originPrice * item.quantity}" pattern="#,###"/>원</span>
                                     </c:if>
@@ -112,7 +111,7 @@
                 </div>
                 <div class="total-row">
                     <span class="total-label">배송비</span>
-                    <span class="total-value">무료배송</span>
+                    <span class="total-value" id="deliveryFeeDisplay">무료배송</span>
                 </div>
                 <hr class="total-divider">
                 <div class="total-row final">
@@ -127,28 +126,53 @@
 
 <script>
 /**
- * 1. 실시간 총 금액 계산
- * 파싱이나 역산 없이 data 속성에 저장된 순수 숫자만 사용하여 계산함
+ * 1. 실시간 총 금액 및 배송비 계산
  */
 function updateTotalPrice() {
     const checkboxes = document.querySelectorAll('.chk:checked:not(:disabled)');
     let totalBase = 0;   // 총 정가 합계
-    let totalFinal = 0;  // 총 할인가 합계
+    let totalFinal = 0;  // 총 할인가(실제 결제할 상품가) 합계
 
     checkboxes.forEach(cb => {
-        const unitPrice = parseInt(cb.dataset.price);     // 할인가 단가
-        const unitOrigin = parseInt(cb.dataset.origin);   // 정가 단가
+        const unitPrice = parseInt(cb.dataset.price);
+        const unitOrigin = parseInt(cb.dataset.origin);
         const quantity = parseInt(cb.dataset.quantity);
 
         totalBase += (unitOrigin * quantity);
         totalFinal += (unitPrice * quantity);
     });
 
+    // --- 배송비 계산 로직 ---
+    let deliveryFee = 0;
+    const deliveryDisplay = document.getElementById('deliveryFeeDisplay');
+    
+    // 선택한 상품이 있고, 실 결제금액이 50,000원 미만인 경우 3,000원 부과
+    if (totalFinal > 0 && totalFinal < 50000) {
+        deliveryFee = 3000;
+    }
+
+    const grandTotal = totalFinal + deliveryFee;
+
+    // 화면 업데이트
     document.getElementById('basePriceDisplay').innerText = totalBase.toLocaleString();
     document.getElementById('discountDisplay').innerText = (totalBase - totalFinal).toLocaleString();
-    document.getElementById('totalPriceDisplay').innerText = totalFinal.toLocaleString();
     
-    // 전체 선택 체크박스 상태 업데이트
+    if (deliveryDisplay) {
+        if (totalFinal === 0) {
+            deliveryDisplay.innerText = "0원";
+            deliveryDisplay.style.color = "#333";
+        } else if (deliveryFee === 0) {
+            deliveryDisplay.innerText = "무료배송";
+            deliveryDisplay.style.color = "#3498db"; // 무료일 때 강조색
+        } else {
+            deliveryDisplay.innerText = deliveryFee.toLocaleString() + "원";
+            deliveryDisplay.style.color = "#333";
+        }
+    }
+
+    document.getElementById('totalPriceDisplay').innerText = grandTotal.toLocaleString();
+    
+    // 전체 선택 상태 업데이트
     const allEnabled = document.querySelectorAll('.chk:not(:disabled)');
     const selectAllCb = document.getElementById('selectAll');
     if(selectAllCb) {
@@ -173,27 +197,39 @@ function toggleSelectAll() {
  function updateQty(cartIdx) {
 	    const qtyInput = document.getElementById('qty_' + cartIdx);
 	    const qty = parseInt(qtyInput.value);
-	    const stock = parseInt(qtyInput.dataset.stock); // JSP에서 넣은 재고값 가져오기
-
-	    // 1. 기본 유효성 체크
+	    const stock = parseInt(qtyInput.dataset.stock);
+	    
+	    console.log("전송 데이터 확인:", cartIdx, qty); // 여기에 값이 잘 나오는지 확인!
+	    
 	    if (isNaN(qty) || qty < 1) {
 	        alert("최소 수량은 1개입니다.");
 	        qtyInput.value = 1;
 	        return;
 	    }
 	    
-	    // 2. [핵심] 재고 수량 체크
 	    if (qty > stock) {
-	        alert("죄송합니다. 현재 남은 재고는 " + stock + "개입니다.\n재고를 초과하여 주문할 수 없습니다.");
-	        qtyInput.value = stock; // 입력값을 최대 재고량으로 리셋
+	        alert("현재 남은 재고는 " + stock + "개입니다.");
+	        qtyInput.value = stock;
 	        return;
 	    }
 	    
-	    // 3. 검증 통과 시 서버 전송
 	    if(confirm("수량을 " + qty + "개로 변경하시겠습니까?")) {
+	        // [수정 포인트] 체크박스의 dataset에 현재 입력한 수량을 동기화
+	        // 이렇게 해야 updateTotalPrice()가 정확한 금액을 계산합니다.
+	        const checkbox = document.querySelector(`.chk[value="${cartIdx}"]`);
+	        if(checkbox) {
+	            checkbox.dataset.quantity = qty;
+	        }
+
+	        // 합계 금액 함수를 호출하여 화면상 금액을 먼저 변경
+	        updateTotalPrice();
+
+	        // 그 후 서버에 저장 (이 함수가 실행되면 결국 페이지는 새로고침됩니다)
 	        sendPost('${path}/cart/update.do', {
 	            cartIdx: cartIdx,
 	            quantity: qty
+	            
+	            
 	        });
 	    }
 	}
@@ -238,35 +274,42 @@ function goToCheckout() {
 /**
  * [공통] 동적 Form 생성 및 전송 함수
  */
-function sendPost(url, params) {
-    const form = document.createElement('form');
-    form.method = 'POST';
-    form.action = url;
-    
-    for (const key in params) {
-        if (params.hasOwnProperty(key)) {
-            const input = document.createElement('input');
-            input.type = 'hidden';
-            input.name = key;
-            input.value = params[key];
-            form.appendChild(input);
-        }
-    }
-    
-    document.body.appendChild(form);
-    form.submit();
-}
+ function sendPost(url, params) {
+	    const form = document.createElement('form');
+	    form.method = 'POST';
+	    form.action = url;
+	    
+	    // 1. CSRF 토큰 추가 (Security 환경 필수)
+	    const csrfParam = "${_csrf.parameterName}";
+	    const csrfToken = "${_csrf.token}";
+	    
+	    if (csrfParam && csrfToken) {
+	        const input = document.createElement('input');
+	        input.type = 'hidden';
+	        input.name = csrfParam;
+	        input.value = csrfToken;
+	        form.appendChild(input);
+	    }
 
-// 페이지 로드 시 초기 합계 계산
+	    // 2. 파라미터 추가 (cartIdx, quantity 등)
+	    for (const key in params) {
+	        if (params.hasOwnProperty(key)) {
+	            const input = document.createElement('input');
+	            input.type = 'hidden';
+	            input.name = key;
+	            input.value = params[key];
+	            form.appendChild(input);
+	        }
+	    }
+	    
+	    document.body.appendChild(form);
+	    form.submit();
+	}
+
+
 window.onload = function() {
     updateTotalPrice();
 };
-
-
-
-
-
-
 </script>
 
 <c:import url="/WEB-INF/view/include/bottom.jsp" />

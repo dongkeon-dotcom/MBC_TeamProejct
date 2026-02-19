@@ -182,3 +182,19 @@ h2.section-title {
   /* 안쪽으로 그림자 효과를 주어 깊이감 표현 */
   box-shadow: inset 0 0 8px rgba(0,0,0,0.05);
 }
+
+.no-image-full {
+  width: 100%;
+  height: 500px;
+  background: linear-gradient(135deg, #f0f0f0, #e0e0e0);
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #666;
+  font-size: 1.1rem;
+  font-weight: 500;
+  letter-spacing: 1px;
+  /* 안쪽으로 그림자 효과를 주어 깊이감 표현 */
+  box-shadow: inset 0 0 8px rgba(0,0,0,0.05);
+}
