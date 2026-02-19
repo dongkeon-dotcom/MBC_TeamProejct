@@ -5,14 +5,14 @@
 
 <section class="review-wrapper"> <div class="product-detail">
         <div align="center">
-            <h2>상품 후기 수정</h2>
+            <h2>상품 후기 작성 </h2>
             <p>작성하신 후기를 수정하실 수 있습니다.</p>
             
-            <form action="${path}/user/reviewUpdate.do" method="post" enctype="multipart/form-data" onsubmit="return validateForm()">
-                <input type="hidden" name="orderIdx" value="${orderIdx}">
-                <input type="hidden" name="reviewIdx" value="${reviewVO.reviewIdx}">
-                <input type="hidden" name="itemIdx" value="${reviewVO.itemIdx}">
-                <input type="hidden" name="productIdx" value="${reviewVO.productIdx}">
+            <form action="${path}/user/reviewInsert.do" method="post" enctype="multipart/form-data" onsubmit="return validateForm()">
+              <input type="hidden" name="orderIdx" value="${not empty orderIdx ? orderIdx : reviewVO.orderIdx}">
+<input type="hidden" name="reviewIdx" value="${not empty reviewVO.reviewIdx ? reviewVO.reviewIdx : 0}">
+<input type="hidden" name="itemIdx" value="${not empty itemIdx ? itemIdx : reviewVO.itemIdx}">
+<input type="hidden" name="productIdx" value="${not empty productIdx ? productIdx : reviewVO.productIdx}">
 
                 <table class="review-table"> <tr>
                         <td class="label-cell">별점</td> <td>
@@ -54,7 +54,7 @@
                     </tr>
                     
                     <tr>
-                        <td colspan="2" class="button-group"> <button type="submit" class="btn-save">수정완료</button>
+                        <td colspan="2" class="button-group"> <button type="submit" class="btn-save">작성완료</button>
                             <button type="button" onclick="history.back()" class="btn-cancel">취소</button>
                         </td>
                     </tr>

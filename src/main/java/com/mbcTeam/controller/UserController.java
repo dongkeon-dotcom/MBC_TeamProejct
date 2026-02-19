@@ -62,8 +62,7 @@ MemberMapper memberMapper;
 	
 	@Autowired
 	private ReviewService rservice;
-	@Autowired
-    private DeliveryService dservice;
+
 	
 	
 	@Autowired
@@ -184,24 +183,45 @@ MemberMapper memberMapper;
         
         return "redirect:/user/mypage.do";
     }
- // 3. 주문 상세 내역
+    
+    
     @GetMapping(value = "/orderDetailList.do")
     public String orderDetailList(@RequestParam("orderIdx") long orderIdx, Model model) {
         UserVO login = getLoginUser();
         if (login == null) return "redirect:/user/login.do";
 
+        // 1. 기존 데이터 조회
         OrderedVO order = oservice.selectOrderedByOrderIdx(orderIdx);
         List<OrderItemedVO> detailList = oservice.selectOrderedItems(orderIdx);
         List<ReviewVO> myReviews = rservice.getReviewListByUserIdx(login.getUserIdx());
 
-        // 본인 확인 보안 체크
+        // 2. 본인 확인 보안 체크
         if (order != null && order.getUserIdx() != login.getUserIdx()) {
             return "redirect:/user/orderList.do";
         }
 
+        // ⭐ 3. Map 생성 (상품Idx와 리뷰Idx 매칭)
+        // Key: itemIdx (Long), Value: reviewIdx (Long)
+        Map<Long, Long> reviewMap = new HashMap<>();
+
+        for (OrderItemedVO item : detailList) {
+            long itemIdx = item.getItemIdx();
+            long foundReviewIdx = 0; // 기본값: 리뷰 없음(0)
+
+            for (ReviewVO review : myReviews) {
+                if (review.getItemIdx() == itemIdx) {
+                    foundReviewIdx = review.getReviewIdx();
+                    break;
+                }
+            }
+            reviewMap.put(itemIdx, foundReviewIdx);
+        }
+
+        // 4. Model에 담기
         model.addAttribute("order", order);
         model.addAttribute("detailList", detailList);
-        model.addAttribute("myReviews", myReviews);
+        model.addAttribute("reviewMap", reviewMap); // JSP에서 사용할 맵
+
         return "user/orderDetailList";
     }
 	
@@ -347,30 +367,46 @@ MemberMapper memberMapper;
         int pageSize = 10;
         int offset = (page - 1) * pageSize;
         
+        // 데이터 조회
         List<OrderedVO> orderli = oservice.selectOrderedList(login.getUserIdx(), startDate, endDate, offset, pageSize);
         int totalCount = oservice.countOrderedList(login.getUserIdx(), startDate, endDate);
 
-        // 페이징 계산 로직 (기존과 동일)
+        // 페이징 계산
         int totalPage = (int) Math.ceil((double) totalCount / pageSize);
         int startPage = ((page - 1) / 5) * 5 + 1;
         int endPage = Math.min(startPage + 4, totalPage);
         if (endPage == 0) endPage = 1;
 
+        // 모델 담기
         model.addAttribute("orderli", orderli);
-        model.addAttribute("currentPage", page);
+        model.addAttribute("page", page);        // JSP의 ${page}와 이름 맞춤
         model.addAttribute("totalPage", totalPage);
         model.addAttribute("startPage", startPage);
         model.addAttribute("endPage", endPage);
+        
+        // ✅ 검색 조건 유지 (이걸 넣어줘야 페이지 넘길 때 날짜가 안 풀려요)
+        model.addAttribute("startDate", startDate);
+        model.addAttribute("endDate", endDate);
+
         return "user/orderList";
     }
   //후기 페이지로 이동을 위한컨트롤러 
     
-	@GetMapping(value = "/review.do")
-	public String review(UserVO vo, Model model) {
-		System.out.println("/review.DO");
 
-		return "user/review";
-	}
+    @GetMapping(value = "/review.do")
+    public String review(
+            @RequestParam("productIdx") long productIdx, 
+            @RequestParam("orderIdx") long orderIdx, 
+            @RequestParam("itemIdx") long itemIdx, 
+            Model model) {
+        
+        // 이 이름들이 JSP의 ${itemIdx} 등과 일치해야 함!
+        model.addAttribute("productIdx", productIdx);
+        model.addAttribute("orderIdx", orderIdx);
+        model.addAttribute("itemIdx", itemIdx);
+
+        return "user/review";
+    }
     
 	// 5. 리뷰 등록 처리
     @PostMapping("/reviewInsert.do")
@@ -378,38 +414,73 @@ MemberMapper memberMapper;
             @RequestParam(value="reviewFiles", required=false) MultipartFile[] files, 
             @RequestParam("orderIdx") int orderIdx, 
             HttpServletRequest request) throws Exception {
-    	System.out.println("아이템 인덱스 확인: " + vo.getItemIdx());
+        
+        System.out.println("=== 리뷰 등록 프로세스 시작 ===");
+        System.out.println("아이템 인덱스 확인: " + vo.getItemIdx());
+        
         UserVO loginMember = getLoginUser();
         if (loginMember == null) return "redirect:/user/login.do";
 
+        // 작성자 정보 셋팅
         vo.setUserIdx(loginMember.getUserIdx());
         vo.setUserName(loginMember.getUserName());
 
+        // 1. 리뷰 본문 저장
         int result = rservice.insertReview(vo);
+        
+        // ★ [중요] 본문 저장 후 생성된 PK(reviewIdx) 확인
+        System.out.println("★ 1. 본문 저장 결과(result): " + result);
+        System.out.println("★ 2. 생성된 리뷰 번호(reviewIdx): " + vo.getReviewIdx());
 
+        // 2. 파일 업로드 및 이미지 DB 저장 로직
         if(result > 0 && files != null) {
-            String uploadPath = request.getSession().getServletContext().getRealPath("/resources/images/");
+            System.out.println("★ 3. 전송된 파일 개수: " + files.length);
+            
+            // 경로 설정 (Reviews 폴더가 없으면 자동 생성)
+            String uploadPath = request.getSession().getServletContext().getRealPath("/resources/images/Reviews/");
             File dir = new File(uploadPath);
-            if (!dir.exists()) dir.mkdirs();
+            if (!dir.exists()) {
+                dir.mkdirs();
+                System.out.println("★ 경로가 없어 폴더를 생성했습니다: " + uploadPath);
+            }
 
             int saveCount = 0;
             for (MultipartFile file : files) {
                 if (!file.isEmpty() && saveCount < 3) {
+                    // 파일명 중복 방지 (UUID)
                     String originalName = file.getOriginalFilename();
                     String ext = originalName.substring(originalName.lastIndexOf("."));
                     String saveName = UUID.randomUUID().toString() + ext;
+                    
+                    // 실제 서버 디렉토리에 파일 물리적 저장
                     file.transferTo(new File(uploadPath + File.separator + saveName));
 
+                    // 3. ReviewImage 테이블에 저장할 정보 셋팅
                     ReviewImageVO imgVO = new ReviewImageVO();
-                    imgVO.setReviewIdx(vo.getReviewIdx());
+                    imgVO.setReviewIdx(vo.getReviewIdx()); // 본문 저장 후 채워진 PK 사용
                     imgVO.setReviewImg(saveName); 
-                    rservice.insertReviewImg(imgVO);
+                    
+                    System.out.println("★ 4. 이미지 DB 저장 시도 [" + (saveCount+1) + "번째]");
+                    System.out.println("   - 리뷰번호: " + imgVO.getReviewIdx());
+                    System.out.println("   - 저장파일명: " + imgVO.getReviewImg());
+                    
+                    // DB Insert 실행
+                    int imgResult = rservice.insertReviewImg(imgVO);
+                    System.out.println("   - 이미지 DB 저장 결과(1이면 성공): " + imgResult);
+                    
                     saveCount++;
                 }
             }
+            System.out.println("★ 최종 이미지 저장 성공 개수: " + saveCount);
+        } else {
+            System.out.println("★ 이미지 업로드 조건 미충족 (결과값 0이거나 파일이 없음)");
         }
+        
+        System.out.println("=== 리뷰 등록 프로세스 종료 ===");
         return "redirect:/user/orderDetailList.do?orderIdx=" + orderIdx;
     }
+    
+    
     @GetMapping(value = "/reviewEdit.do")
     public String reviewEdit(@RequestParam("reviewIdx") long reviewIdx, 
                              @RequestParam("orderIdx") long orderIdx, // 1. 여기서 orderIdx를 꼭 받아야 합니다!
@@ -450,7 +521,7 @@ MemberMapper memberMapper;
 	        rservice.deleteReviewImgs(vo.getReviewIdx()); 
 	        
 	        // 실제 서버 내 저장 경로 찾기 (session 사용)
-	        String uploadPath = session.getServletContext().getRealPath("/resources/upload/");
+	        String uploadPath = session.getServletContext().getRealPath("/resources/images/Reviews/");
 	        
 	        for (MultipartFile file : files) {
 	            if (!file.isEmpty()) {

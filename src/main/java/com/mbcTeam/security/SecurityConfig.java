@@ -85,9 +85,20 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 
             // 2. 권한 설정
             http.authorizeRequests()
-                .antMatchers("/**").permitAll()
-                .anyRequest().permitAll()
-                .and()
+            // [Admin 전용] 관리자 페이지는 ADMIN 롤만 접근 가능
+            .antMatchers("/admin/**").hasRole("ADMIN")
+
+            // [User 전용] 장바구니, 주문, 결제 등은 로그인한 유저(USER, ADMIN)만 가능
+            // Guest(로그인 안 한 사용자)는 아래 주소로 접근 시 로그인 페이지로 튕김
+            .antMatchers("/cart/**", "/order/**","/delivery/**", "/user/reivew.do", "/user/member.do", "/user/orderList.do", "/user/orderDetailList.do").hasAnyRole("USER", "ADMIN")
+
+            // [공통] 상품 목록, 상세 페이지, 로그인/회원가입 등은 누구나 접근 가능
+            .antMatchers("/", "/index.do", "/user/login.jsp", "/user/login.do", "/user/member.do", "/userproduct/**", "/resources/**").permitAll()
+
+            // 그 외 나머지는 인증된 사용자만 (선택 사항)
+            // .anyRequest().authenticated() 
+            .anyRequest().permitAll() // 일단 개발 편의를 위해 나머지는 열어둠
+            .and()
 
             // 3. 일반 폼 로그인 설정
             .formLogin()

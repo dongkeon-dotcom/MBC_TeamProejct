@@ -32,38 +32,42 @@
             </tr>
         </thead>
         <tbody>
-            <c:forEach var="item" items="${detailList}">
-                <tr>
-                    <td class="text-center">
-                        <img src="${path}/resources/images/ProductMainImg/${item.productMainImg}" class="product-img" style="width:80px; height:80px; object-fit:cover;">
-                    </td>
-                    <td>
-                        <div class="fw-bold">${item.productName}</div>
-                        <div class="text-secondary small">옵션: ${item.color} / ${item.size}</div>
-                    </td>
-                    <td class="text-center">${item.quantity}개</td>
-                    <td class="text-end fw-bold">
-                        <fmt:formatNumber value="${item.price * item.quantity}" />원
-                    </td>
-                    <td class="text-center">
-                        <c:set var="thisItemReviewIdx" value="0" />
-                        <c:forEach var="rev" items="${myReviews}">
-                            <c:if test="${rev.itemIdx == item.itemIdx}">
-                                <c:set var="thisItemReviewIdx" value="${rev.reviewIdx}" />
-                            </c:if>
-                        </c:forEach>
+           <c:forEach var="item" items="${detailList}">
+    <tr>
+        <td class="text-center">
+            <a href="${path}/userproduct/userproductdetail.do?productIdx=${item.productIdx}">
+                <img src="${path}/resources/images/ProductMainImg/${item.productMainImg}" 
+                     class="product-img" 
+                     style="width:80px; height:80px; object-fit:cover; cursor:pointer;">
+            </a>
+        </td>
+        <td>
+            <div class="fw-bold">${item.productName}</div>
+            <div class="text-secondary small">옵션: ${item.color} / ${item.size}</div>
+        </td>
+        <td class="text-center">${item.quantity}개</td>
+        <td class="text-end fw-bold">
+            <fmt:formatNumber value="${item.price * item.quantity}" />원
+        </td>
+        <td class="text-center">
+            <%-- ⭐ 컨트롤러에서 보낸 reviewMap에서 현재 아이템의 리뷰 번호를 바로 꺼냅니다. --%>
+            <c:set var="rIdx" value="${reviewMap[item.itemIdx]}" />
 
-                        <c:choose>
-                            <c:when test="${thisItemReviewIdx != 0}">
-                                <button type="button" class="btn btn-outline-secondary btn-sm" onclick="editReview('${thisItemReviewIdx}', '${order.orderIdx}')">후기수정</button>
-                            </c:when>
-                            <c:otherwise>
-                                <button type="button" class="btn btn-primary btn-sm" onclick="review('${item.productIdx}', '${order.orderIdx}', '${item.itemIdx}')">후기쓰기</button>
-                            </c:otherwise>
-                        </c:choose>
-                    </td>
-                </tr>
-            </c:forEach>
+            <c:choose>
+                <%-- 리뷰 번호(rIdx)가 존재하고 0이 아니면 수정 버튼 --%>
+                <c:when test="${not empty rIdx && rIdx != 0}">
+                    <button type="button" class="btn btn-outline-secondary btn-sm" 
+                            onclick="editReview('${rIdx}', '${order.orderIdx}')">후기수정</button>
+                </c:when>
+                <%-- 그 외엔 후기쓰기 버튼 --%>
+                <c:otherwise>
+                    <button type="button" class="btn btn-primary btn-sm" 
+                            onclick="review('${item.productIdx}', '${order.orderIdx}', '${item.itemIdx}')">후기쓰기</button>
+                </c:otherwise>
+            </c:choose>
+        </td>
+    </tr>
+</c:forEach>
         </tbody>
         <tfoot>
             <tr>
