@@ -64,12 +64,20 @@
                                     <div class="option-text">[옵션: ${item.color} / ${item.size}]</div>
                                 </td>
                                 <td>
-                                    <div class="qty-wrapper">
-                                        <input type="number" id="qty_${item.cartIdx}" value="${item.quantity}" 
-                                               min="1" class="qty-input" ${item.stock <= 0 ? 'disabled' : ''}>
-                                        <button type="button" class="btn-update" onclick="updateQty(${item.cartIdx})">변경</button>
-                                    </div>
-                                </td>
+								    <div class="qty-wrapper">
+								        <input type="number" id="qty_${item.cartIdx}" 
+								               value="${item.quantity}" 
+								               min="1" 
+								               max="${item.stock}" 
+								               data-stock="${item.stock}" 
+								               class="qty-input" 
+								               ${item.stock <= 0 ? 'disabled' : ''}>
+								        <button type="button" class="btn-update" onclick="updateQty(${item.cartIdx})">변경</button>
+								    </div>
+								    <div class="stock-info" style="font-size: 11px; color: #888; margin-top: 4px;">
+								        (남은재고: ${item.stock}개)
+								    </div>
+								</td>
                                 <td class="price-cell">
                                     <%-- 역산 로직 제거: DB에서 가져온 originPrice(정가)를 직접 사용 --%>
                                     <c:if test="${item.originPrice > item.price}">
@@ -162,19 +170,33 @@ function toggleSelectAll() {
 /**
  * 3. 수량 변경 (POST 전송)
  */
-function updateQty(cartIdx) {
-    const qty = document.getElementById('qty_' + cartIdx).value;
-    if (qty < 1) {
-        alert("최소 수량은 1개입니다.");
-        return;
-    }
-    
-    // 유틸리티 함수(sendPost)를 사용하여 폼 전송
-    sendPost('${path}/cart/update.do', {
-        cartIdx: cartIdx,
-        quantity: qty
-    });
-}
+ function updateQty(cartIdx) {
+	    const qtyInput = document.getElementById('qty_' + cartIdx);
+	    const qty = parseInt(qtyInput.value);
+	    const stock = parseInt(qtyInput.dataset.stock); // JSP에서 넣은 재고값 가져오기
+
+	    // 1. 기본 유효성 체크
+	    if (isNaN(qty) || qty < 1) {
+	        alert("최소 수량은 1개입니다.");
+	        qtyInput.value = 1;
+	        return;
+	    }
+	    
+	    // 2. [핵심] 재고 수량 체크
+	    if (qty > stock) {
+	        alert("죄송합니다. 현재 남은 재고는 " + stock + "개입니다.\n재고를 초과하여 주문할 수 없습니다.");
+	        qtyInput.value = stock; // 입력값을 최대 재고량으로 리셋
+	        return;
+	    }
+	    
+	    // 3. 검증 통과 시 서버 전송
+	    if(confirm("수량을 " + qty + "개로 변경하시겠습니까?")) {
+	        sendPost('${path}/cart/update.do', {
+	            cartIdx: cartIdx,
+	            quantity: qty
+	        });
+	    }
+	}
 
 /**
  * 4. 개별 상품 삭제
@@ -239,6 +261,12 @@ function sendPost(url, params) {
 window.onload = function() {
     updateTotalPrice();
 };
+
+
+
+
+
+
 </script>
 
 <c:import url="/WEB-INF/view/include/bottom.jsp" />

@@ -1,11 +1,14 @@
 package com.mbcTeam.controller;
 
-import org.springframework.beans.factory.annotation.Autowired; 
+import org.springframework.beans.factory.annotation.Autowired;  
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+
 
 import com.mbcTeam.cart.CartService;
 import com.mbcTeam.cart.CartVO;
@@ -90,22 +93,33 @@ public class CartController {
     
     @PostMapping("/update.do")
     public String updateCart(@RequestParam long cartIdx,
-                             @RequestParam int quantity) {
-        // 1. 로그인 체크 (시큐리티 활용)
+                             @RequestParam int quantity,
+                             RedirectAttributes rttr) { // 경고 메시지 전달용
         UserVO loginUser = getLoginUser();
         if (loginUser == null) {
             return "redirect:/user/login.do";
         }
 
-        // 2. 수량 업데이트 실행
+        // 1. 해당 장바구니 아이템의 현재 정보(재고 포함)를 DB에서 조회
+        CartVO currentItem = cartService.getCartItem(cartIdx);
+        
+        // 2. 서버 측 재고 검증
+        if (quantity > currentItem.getStock()) {
+            // RedirectAttributes를 사용하여 알림 메시지 전달
+            rttr.addFlashAttribute("errorMsg", "재고가 부족하여 수량을 변경할 수 없습니다.");
+            return "redirect:/cart/cartlist.do";
+        }
+
+        // 3. 업데이트 실행
         CartVO cart = new CartVO();
         cart.setCartIdx(cartIdx);
         cart.setQuantity(quantity);
-
         cartService.updateCart(cart);
+        
         return "redirect:/cart/cartlist.do";
     }
 
+    
     @PostMapping("/delete.do")
     public String deleteCart(@RequestParam long cartIdx) {
         UserVO loginUser = getLoginUser();

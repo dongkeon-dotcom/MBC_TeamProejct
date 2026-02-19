@@ -1,40 +1,175 @@
 @charset "UTF-8";
 
-/* 기본 레이아웃 */
-body {
-  background-color: #f8f9fa;
-  font-family: 'Noto Sans KR', sans-serif;
+/* =========================================
+   1. [기본 스타일] 
+   페이지 전체의 폰트, 배경색 및 스크롤 설정
+   ========================================= */
+body { 
+    background-color: #fff; 
+    font-family: 'Noto Sans KR', sans-serif; 
+    margin: 0; 
+    padding: 0; 
+    /* 슬라이더 확대 효과 시 가로 스크롤 생김 방지 */
+    overflow-x: hidden; 
 }
 
-h2 {
-  font-weight: bold;
-  margin-bottom: 1.5rem;
-  color: #333;
+/* 각 섹션의 제목 스타일 (예: SALE ITEMS) */
+h2.section-title { 
+    font-size: 26px; 
+    font-weight: 800; 
+    color: #222; 
+    margin-bottom: 0; 
 }
 
-/* Navbar */
-.navbar {
-  background-color: #343a40;
-}
-.navbar-brand, .nav-link {
-  color: #fff !important;
-}
-.nav-link:hover {
-  color: #ffc107 !important;
+/* =========================================
+   2. [상단 추천 상품 멀티 슬라이더] 
+   Slick 라이브러리를 활용한 메인 비주얼 영역
+   ========================================= */
+
+/* 슬라이더 전체를 감싸는 섹션 (여백 및 위치 설정) */
+.main-recommend-section {
+    width: 100%;
+    min-height: 500px; /* 로딩 전 레이아웃 무너짐 방지용 최소 높이 */
+    margin-bottom: 80px;
+    position: relative;
 }
 
-/* 공통 이미지 규격 */
-.product-img, .card-img-top, .carousel-item img {
-  width: 100%;
-  height: 250px;          /* 고정 높이 */
-  object-fit: cover;      /* 비율 유지하며 꽉 채우기 */
-  border-radius: 10px;
+/* [최적화] 슬라이더 초기화 전, 이미지가 세로로 길게 나열되는 현상 방지 */
+.recommended-slick:not(.slick-initialized) {
+    display: flex;
+    overflow: hidden;
+    height: 680px;
 }
 
-/* 이미지 준비중 박스 */
+/* 각 슬라이드 아이템 사이의 여백 */
+.slick-item { padding: 0 12px; outline: none; }
+
+/* 이미지와 텍스트를 담는 카드 컨테이너 */
+.visual-card {
+    position: relative;
+    height: 680px;
+    background-color: #f4f4f4;
+    overflow: hidden; /* 이미지 확대 시 카드 밖으로 나가지 않게 설정 */
+}
+
+/* 배경 상품 이미지 설정 */
+.bg-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* 사진 비율 유지하며 꽉 채우기 */
+    transition: transform 0.8s ease; /* 호버 시 부드러운 확대 효과 */
+}
+
+/* 마우스 호버 시 이미지 확대 (줌 인 효과) */
+.visual-card:hover .bg-img { transform: scale(1.05); }
+
+
+/* 이미지 위를 덮는 검은색 그라데이션 및 텍스트 배치 */
+.info-overlay {
+    position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+    /* 아래쪽으로 갈수록 어두워지는 그라데이션 (흰 글씨 가독성 확보) */
+    background: linear-gradient(to bottom, transparent 60%, rgba(0,0,0,0.4) 100%);
+    display: flex; 
+    align-items: flex-end; /* 텍스트를 카드 하단에 배치 */
+    justify-content: center;
+    padding-bottom: 100px; 
+    text-align: center; 
+    color: #fff;
+}
+
+/* 브랜드명 또는 작은 태그 스타일 */
+.brand-tag { font-size: 13px; letter-spacing: 2px; margin-bottom: 8px; opacity: 0.8; }
+
+/* 상품명 큰 제목 스타일 */
+.product-title { font-size: 30px; font-weight: 700; margin-bottom: 25px; }
+
+/* 이미지 속 "SHOP NOW" 버튼 스타일 */
+.shop-now-btn {
+    display: inline-block; 
+    padding: 12px 35px; 
+    background: #fff; 
+    color: #000;
+    border-radius: 50px; /* 둥근 버튼 디자인 */
+    font-size: 13px; 
+    font-weight: 600; 
+    text-decoration: none;
+}
+
+/* [숫자 카운터] 슬라이더 하단 중앙의 페이지 번호 표시 (1 / 8) */
+.custom-counter {
+    position: absolute; bottom: 40px; left: 50%; transform: translateX(-50%);
+    z-index: 10; 
+    background: rgba(0,0,0,0.4); 
+    color: #fff;
+    padding: 6px 20px; 
+    border-radius: 30px; 
+    font-size: 14px;
+}
+.custom-counter::after { content: ' >'; opacity: 0.7; }
+
+/* [슬라이더 화살표] 좌우 이동 버튼 위치 및 아이콘 크기 설정 */
+.slick-prev, .slick-next { width: 50px; height: 50px; z-index: 100; }
+.slick-prev { left: 40px; }
+.slick-next { right: 40px; }
+.slick-prev:before, .slick-next:before { font-size: 45px; color: #fff; opacity: 0.8; }
+
+
+/* =========================================
+   3. [하단 세일 상품 리스트] 
+   4열 그리드 형태의 상품 리스트 영역
+   ========================================= */
+
+/* 카테고리 필터링 버튼 영역 */
+.category-filters { display: flex; gap: 10px; }
+.filter-btn { border: none; background: none; font-size: 14px; color: #999; cursor: pointer; font-weight: 500; }
+
+/* 활성화된 필터 버튼 (밑줄 효과) */
+.filter-btn.active { color: #000; font-weight: 700; border-bottom: 2px solid #000; }
+
+/* 상품 이미지 확대 효과용 래퍼 */
+.img-zoom-wrapper { position: relative; overflow: hidden; background: #f9f9f9; }
+
+
+/* 리스트 상품 이미지 규격 설정 */
+.card-img-top { 
+    width: 100%; 
+    height: 380px; 
+    object-fit: cover; 
+    transition: 0.5s; 
+}
+
+/* 리스트 상품 이미지 호버 확대 */
+.product-card-item:hover .card-img-top { transform: scale(1.06); }
+
+
+
+/* 상품 정보(이름, 가격, 평점) 텍스트 스타일 */
+.item-name { font-size: 18px; font-weight: 500; margin-top: 15px; color: #333; }
+
+/* 원가 (취소선 효과) */
+.original-price { color: #bbb; text-decoration: line-through; font-size: 15px; margin-right: 8px; }
+
+/* 실판매가 (할인가) 강조 스타일 */
+.sale-price {   
+  color: #ff0000;       
+  font-size: 17px;
+  font-weight: 500; }
+
+
+/* 평점 별표 및 리뷰 수 스타일 */
+.item-rating {   
+  font-size: 14px;
+  color: #ff9800;
+  margin-top: 6px;
+  text-align: center; 
+}
+
+.item-rating .count { color: #ff8000; margin-left: 5px; }
+
+/* [이미지 준비중] 이미지가 없을 때 나타나는 배경 박스 */
 .no-image {
   width: 100%;
-  height: 250px;
+  height: 380px;
   background: linear-gradient(135deg, #f0f0f0, #e0e0e0);
   border-radius: 10px;
   display: flex;
@@ -44,77 +179,6 @@ h2 {
   font-size: 1.1rem;
   font-weight: 500;
   letter-spacing: 1px;
+  /* 안쪽으로 그림자 효과를 주어 깊이감 표현 */
   box-shadow: inset 0 0 8px rgba(0,0,0,0.05);
-}
-
-/* 카드 본문 */
-.card-body {
-  min-height: 140px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-}
-
-/* 상품명 */
-.card-title, .product-name {
-  font-weight: bold;
-  font-size: 15px;
-  margin: 8px 0;
-  color: #333;
-  text-align: center;
-}
-
-
-/* 가격 영역 */
-.product-price {
-  margin: 8px 0;
-  font-size: 15px;
-  text-align: center;
-}
-
-/* 원가 (취소선 표시) */
-.original-price {
-  text-decoration: line-through;
-  color: #888;
-  font-size: 14px;
-  margin-right: 6px;
-}
-
-/* 할인된 가격 */
-.discounted-price {
-  color: #e60023;        /* 빨간색 강조 */
-  font-weight: bold;
-  font-size: 16px;
-  margin-right: 6px;
-}
-
-/* 할인율 퍼센트 */
-.product-price span:last-child {
-  color: #007bff;        /* 파란색 */
-  font-size: 13px;
-  font-weight: 500;
-}
-
-
-
-
-/* 별점 표시 */
-.product-rating {
-  font-size: 14px;
-  color: #ff9800;
-  margin-top: 6px;
-  text-align: center;
-}
-
-.product-rating .rating-text {
-  color: #ff9800;
-  font-size: 13px;
-  margin-left: 6px;
-}
-
-
-/* 카테고리 버튼 활성화 */
-.category-btn.active {
-  background-color: #343a40;
-  color: #fff;
 }

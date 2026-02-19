@@ -4,99 +4,76 @@
 
 <c:import url="/WEB-INF/view/include/top.jsp" />
 
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css"/>
+<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick-theme.css"/>
 <link href="${path}/resources/css/main.css" rel="stylesheet">
 
-<section class="container mt-4">
-    <h2 class="text-center mb-4">추천 상품</h2>
-    <c:if test="${empty recommendedProducts}">
-        <p class="text-center">추천 상품 데이터가 없습니다.</p>
-    </c:if>
-
+<section class="main-recommend-section">
     <c:if test="${not empty recommendedProducts}">
-        <div id="recommendedCarousel" class="carousel slide" data-bs-ride="carousel" data-bs-interval="4000">
-            <div class="carousel-indicators">
-                <c:forEach var="p" items="${recommendedProducts}" varStatus="status">
-                    <button type="button" data-bs-target="#recommendedCarousel"
-                        data-bs-slide-to="${status.index}"
-                        class="${status.index == 0 ? 'active' : ''}"
-                        aria-current="${status.index == 0 ? 'true' : 'false'}"></button>
+        <div class="slider-container">
+            <div class="recommended-slick">
+                <c:forEach var="p" items="${recommendedProducts}">
+                    <div class="slick-item">
+                        <div class="visual-card">
+                            <a href="${path}/userproduct/userproductdetail.do?productIdx=${p.productIdx}">
+                                <c:choose>
+                                    <c:when test="${not empty p.productMainImg}">
+                                        <img src="${path}/resources/images/ProductMainImg/${p.productMainImg}" class="bg-img">
+                                    </c:when>
+                                    <c:otherwise>
+                                        <div class="no-image-full">이미지 준비중</div>
+                                    </c:otherwise>
+                                </c:choose>
+
+                            </a>
+                        </div>
+                    </div>
                 </c:forEach>
             </div>
+            <div class="custom-counter">
+                <span class="current">1</span> / <span class="total">0</span>
+            </div>
+        </div>
+    </c:if>
+</section>
 
-            <div class="carousel-inner">
-                <c:forEach var="p" items="${recommendedProducts}" varStatus="status">
-                    <div class="carousel-item ${status.index == 0 ? 'active' : ''}">
-                        <a href="${path}/userproduct/userproductdetail.do?productIdx=${p.productIdx}" class="carousel-link"> 
+<section class="container mt-5 mb-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="section-title">SALE ITEMS</h2>
+    </div>
+
+    <div class="row product-grid">
+        <c:if test="${empty saleProducts}">
+            <p class="text-center w-100 py-5">세일 상품 데이터가 없습니다.</p>
+        </c:if>
+
+        <c:forEach var="p" items="${saleProducts}">
+            <div class="col-md-3 col-6 mb-4 product-card-item" data-category="${p.category}">
+                <div class="card h-100 border-0">
+                    <div class="img-zoom-wrapper">
+                        <a href="${path}/userproduct/userproductdetail.do?productIdx=${p.productIdx}">
                             <c:choose>
                                 <c:when test="${not empty p.productMainImg}">
-                                    <img src="${path}/resources/images/ProductMainImg/${p.productMainImg}" class="product-img" alt="${p.productName}">
+                                    <img src="${path}/resources/images/ProductMainImg/${p.productMainImg}" class="card-img-top" alt="${p.productName}">
                                 </c:when>
                                 <c:otherwise>
                                     <div class="no-image">이미지 준비중</div>
                                 </c:otherwise>
                             </c:choose>
                         </a>
-                        <div class="carousel-caption d-none d-md-block">
-                            <h5>${p.productName}</h5>
-                        </div>
+                       
                     </div>
-                </c:forEach>
-            </div>
 
-            <button class="carousel-control-prev" type="button" data-bs-target="#recommendedCarousel" data-bs-slide="prev">
-                <span class="carousel-control-prev-icon"></span>
-            </button>
-            <button class="carousel-control-next" type="button" data-bs-target="#recommendedCarousel" data-bs-slide="next">
-                <span class="carousel-control-next-icon"></span>
-            </button>
-        </div>
-    </c:if>
-
-    <br><br>
-
-    <div class="text-center mb-3">
-        <div class="btn-group" role="group">
-            <button type="button" class="btn btn-outline-dark category-btn active" data-category="ALL">#ALL</button>
-            <button type="button" class="btn btn-outline-dark category-btn" data-category="OUTER">#OUTER</button>
-            <button type="button" class="btn btn-outline-dark category-btn" data-category="TOP">#TOP</button>
-            <button type="button" class="btn btn-outline-dark category-btn" data-category="BOTTOM">#BOTTOM</button>
-            <button type="button" class="btn btn-outline-dark category-btn" data-category="DRESS">#DRESS</button>
-            <button type="button" class="btn btn-outline-dark category-btn" data-category="ETC">#ETC</button>
-        </div>
-    </div>
-
-    <div class="row">
-        <c:if test="${empty saleProducts}">
-            <p class="text-center">세일 상품 데이터가 없습니다.</p>
-        </c:if>
-
-        <c:forEach var="p" items="${saleProducts}">
-            <div class="col-md-3 mb-4 product-card" data-category="${p.category}">
-                <div class="card h-100 shadow-sm">
-                    <a href="${path}/userproduct/userproductdetail.do?productIdx=${p.productIdx}">
-                        <c:choose>
-                            <c:when test="${not empty p.productMainImg}">
-                                <img src="${path}/resources/images/ProductMainImg/${p.productMainImg}" 
-                                     class="product-img" alt="${p.productName}">
-                            </c:when>
-                            <c:otherwise>
-                                <div class="no-image">이미지 준비중</div>
-                            </c:otherwise>
-                        </c:choose>
-                    </a>
-
-                    <div class="card-body text-center">
-                        <h5 class="card-title">${p.productName}</h5>
-
-                        <div class="product-price-container">
+                    <div class="card-body px-0 text-center">
+                        <h5 class="item-name">${p.productName}</h5>
+                        <div class="item-price-box">
                             <c:choose>
                                 <c:when test="${not empty p.discountRate and p.discountRate > 0}">
                                     <p class="product-price">
                                         <span class="original-price" style="text-decoration: line-through; color: #bbb; font-size: 0.9em;">
                                             <fmt:formatNumber value="${p.price}" pattern="#,###"/>원
                                         </span>
-                                        <br>
+                                        
                                         <span class="discounted-price" style="font-weight: bold; color: #e74c3c;">
                                             <%-- 할인가 계산 후 소수점 제거 --%>
                                             <fmt:parseNumber var="discountPrice" value="${p.price * (100 - p.discountRate) / 100}" integerOnly="true" />
@@ -112,8 +89,7 @@
                                 </c:otherwise>
                             </c:choose>
                         </div>
-
-                        <div class="product-rating">
+                       <div class="product-rating">
                             <span style="color: #f1c40f;">
                                 <c:forEach begin="1" end="5" var="i">
                                     <c:choose>
@@ -134,20 +110,44 @@
     </div>
 </section>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.js"></script>
+
 <script>
-/* 세일 상품 필터링 */
-document.querySelectorAll('.category-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-        const category = btn.getAttribute('data-category');
-        document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        document.querySelectorAll('.product-card').forEach(card => {
-            if (category === 'ALL' || card.getAttribute('data-category') === category) {
-                card.style.display = "";
-            } else {
-                card.style.display = "none";
-            }
+$(document).ready(function(){
+    var $slick = $('.recommended-slick');
+
+    // 슬라이더 초기화 및 숫자 업데이트
+    $slick.on('init reInit afterChange', function (event, slick, currentSlide) {
+        var i = (currentSlide ? currentSlide : 0) + 1;
+        $('.custom-counter .current').text(i);
+        $('.custom-counter .total').text(slick.slideCount);
+    });
+
+    $slick.slick({
+        infinite: true,
+        slidesToShow: 3,
+        centerMode: true,
+        centerPadding: '120px', // 좌우 이미지 걸침 정도
+        autoplay: true,
+        arrows: true,
+        draggable: true,
+        swipeToSlide: true,
+        responsive: [
+            { breakpoint: 1200, settings: { slidesToShow: 2, centerPadding: '60px' } },
+            { breakpoint: 768, settings: { slidesToShow: 1, centerPadding: '40px' } }
+        ]
+    });
+
+    // 필터 기능
+    $('.filter-btn').click(function(){
+        $('.filter-btn').removeClass('active');
+        $(this).addClass('active');
+        var cat = $(this).data('category');
+        
+        $('.product-card-item').each(function(){
+            if(cat === 'ALL' || $(this).data('category') === cat) $(this).fadeIn();
+            else $(this).hide();
         });
     });
 });
