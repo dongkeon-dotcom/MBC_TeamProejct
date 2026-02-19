@@ -21,7 +21,8 @@ public class CartVO {
 
   
     private int stock;
-       
-
     
+    private int originPrice;      	
+    
+     
 }

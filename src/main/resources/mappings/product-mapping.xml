@@ -377,16 +377,23 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	
 	<!-- 세일 상품 조회 -->
 	<select id="GET_SALE_PRODUCTS" resultType="com.mbcTeam.product.ProductVO">
-	    SELECT product_idx AS productIdx,
-	           product_name AS productName,
-	           price,
-	           product_main_img AS productMainImg,
-	           discount_rate AS discountRate
-	    FROM Products
-	    WHERE discount_rate > 0
-	    ORDER BY product_idx DESC
+	    SELECT 
+	        p.product_idx AS productIdx,
+	        p.product_name AS productName,
+	        p.category AS category,
+	        p.price,
+	        p.product_main_img AS productMainImg,
+	        p.discount_rate AS discountRate,
+	        IFNULL(ROUND(AVG(r.rating)), 0) as avgRating,
+	        COUNT(r.product_Idx) as reviewCount
+	    FROM Products p
+	    LEFT JOIN Reviews r ON p.product_Idx = r.product_Idx
+	    WHERE p.discount_rate > 0
+	    GROUP BY 
+	        p.product_idx, p.product_name, p.category, p.price, 
+	        p.product_main_img, p.discount_rate
+	    ORDER BY p.product_idx DESC
 	</select>
-
 	<!-- 상품 검색 카테고리 포함 -->
 	<select id="SEARCH_PRODUCTS" parameterType="string" resultType="ProductVO">
 	    SELECT

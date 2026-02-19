@@ -45,7 +45,20 @@ public class ProductVO {
 	private Integer avgRating; // 평균 평점
 	private Integer reviewCount; // 리뷰 개수
 	
-	
+	public int getDiscountedPrice() {
+	    // 할인율이 0이거나 없을 때 (할인이 안 들어가는 상품)
+	    if (this.discountRate <= 0) {
+	        // 원본 가격(price)을 10으로 나누고 다시 10을 곱해 1원 단위를 강제로 0으로 만듭니다.
+	        return (this.price / 10) * 10; 
+	    }
+	    
+	    // 할인율이 있을 때 (기존 로직)
+	    double discountMultiplier = (100 - this.discountRate) / 100.0;
+	    int calculatedPrice = (int)(this.price * discountMultiplier);
+	    
+	    // 계산된 할인가에서도 1원 단위를 절삭
+	    return (calculatedPrice / 10) * 10;
+	}
 
 	
 	

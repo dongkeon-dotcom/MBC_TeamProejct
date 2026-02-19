@@ -86,6 +86,14 @@ public class OrderController {
             for (Long cartIdx : cartIdxList) {
                 CartVO cart = cartService.getCartItem(cartIdx); 
                 if (cart != null) {
+                    // [중요] DB의 cart.getPrice() 대신 상품 정보를 다시 조회하여 정확한 할인가 계산
+                    ProductVO product = productService.detail((int)cart.getProductIdx());
+                    
+                    int basePrice = product.getPrice();
+                    int discountedPrice = product.getDiscountRate() > 0
+                            ? (int)Math.floor(basePrice * (100 - product.getDiscountRate()) / 1000.0) * 10 // 10원 단위 절삭
+                            : basePrice;
+
                     OrderItemVO item = new OrderItemVO();
                     item.setProductIdx((int)cart.getProductIdx());
                     item.setProductName(cart.getProductName());
@@ -93,13 +101,16 @@ public class OrderController {
                     item.setColor(cart.getColor());
                     item.setSize(cart.getSize());
                     item.setQuantity(cart.getQuantity());
-                    item.setPrice(cart.getPrice());
-                    item.setTotalPrice(cart.getPrice() * cart.getQuantity());
+                    
+                    // 계산된 정확한 단가 세팅
+                    item.setPrice(discountedPrice);
+                    item.setTotalPrice(discountedPrice * cart.getQuantity());
+                    
                     orderItems.add(item);
                     totalAmount += item.getTotalPrice();
                 }
             }
-        } 
+        }
         // Case B: 바로 구매
         else if (productIdx != null && optionIdxList != null) {
             ProductVO product = productService.detail(productIdx);

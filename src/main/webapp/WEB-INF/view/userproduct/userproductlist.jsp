@@ -1,6 +1,8 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+
 <c:import url="/WEB-INF/view/include/top.jsp" />
 
 
@@ -9,7 +11,7 @@
 	
 <!-- 검색 결과 안내 -->
 <c:if test="${not empty searchKeyword}">
-    <div class="search-result-info text-center mb-3">
+    <div class="search-result-info text-center mb-4">
         <c:choose>
             <c:when test="${resultCount > 0}">
                 <strong>"${searchKeyword}"</strong> 검색 결과: 
@@ -43,23 +45,38 @@
                 <div class="product-info">
                     <p class="product-name">${p.productName}</p>
 
-                    <!-- 가격/할인 표시 -->
+                    <%-- [기능] 가격 표시: 할인 여부와 상관없이 모든 금액에 절삭 로직 및 콤마 적용 --%>
                     <c:choose>
+                        <%-- 1. 할인율이 있는 경우 --%>
                         <c:when test="${not empty p.discountRate and p.discountRate > 0}">
                             <p class="product-price">
-                                <span class="original-price">${p.price}원</span>
-                                <span class="discounted-price">
-                                    ${p.price - (p.price * p.discountRate / 100)}원
-                                </span>
+                                <%-- 원가 표시 (취소선 및 콤마) --%>
+                                <span class="original-price">
+                                    <fmt:formatNumber value="${p.price}" pattern="#,###" />원
+                                </span> 
+                                <%-- 할인가 표시 (VO의 getDiscountedPrice 메서드로 10원 단위 절삭) --%>
+                                <span class="discounted-price"> 
+                                    <fmt:formatNumber value="${p.discountedPrice}" pattern="#,###" />원
+                                </span> 
                                 <span class="product-discount">${p.discountRate}%</span>
                             </p>
                         </c:when>
+                        
+                        <%-- 2. 할인이 없는 상품인 경우 --%>
                         <c:otherwise>
-                            <p class="product-price">${p.price}원</p>
+                            <p class="product-price">
+                                <%-- 
+                                    정가 상품도 p.discountedPrice를 호출하여 
+                                    10원 단위 절삭(price / 10 * 10)을 동일하게 적용 
+                                --%>
+                                <fmt:formatNumber value="${p.discountedPrice}" pattern="#,###" />원
+                            </p>
                         </c:otherwise>
                     </c:choose>
 
-                    <!-- 리뷰/별점 -->
+
+
+					<!-- 리뷰/별점 -->
                     <div class="product-rating">
                         <c:forEach begin="1" end="5" var="i">
                             <c:choose>
