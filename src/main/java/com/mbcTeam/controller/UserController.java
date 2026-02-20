@@ -408,6 +408,7 @@ MemberMapper memberMapper;
         return "user/review";
     }
     
+    
 	// 5. 리뷰 등록 처리
     @PostMapping("/reviewInsert.do")
     public String reviewInsert(ReviewVO vo, 
@@ -504,51 +505,61 @@ MemberMapper memberMapper;
 	
 	// 2. 실제 수정 실행 (DB 업데이트)
 
-	@RequestMapping(value = "/reviewUpdate.do", method = RequestMethod.POST)
-	public String reviewUpdate(ReviewVO vo, 
-	                           @RequestParam(value="reviewFiles", required=false) List<MultipartFile> files, 
-	                           @RequestParam("orderIdx") long orderIdx, // VO에 없으므로 직접 받음
-	                           HttpSession session) { // request 대신 session 사용
+    
+    @RequestMapping(value = "/reviewUpdate.do", method = RequestMethod.POST)
+    public String reviewUpdate(ReviewVO vo, 
+                               @RequestParam(value="reviewFiles", required=false) List<MultipartFile> files, 
+                               @RequestParam("orderIdx") long orderIdx, 
+                               HttpSession session) {
 
-	    // 1. 텍스트 정보 업데이트 (내용, 별점 등)
-	    rservice.updateReview(vo);
-	    
-	    // 2. 사진 교체 로직 (파일이 새로 들어왔을 때만 기존 사진 삭제)
-	    if (files != null && !files.isEmpty() && !files.get(0).isEmpty()) {
-	        
-	        // [필수] 기존 DB에 등록된 이미지 정보 삭제
-	        // rservice에 해당 메서드가 있는지 확인하세요!
-	        rservice.deleteReviewImgs(vo.getReviewIdx()); 
-	        
-	        // 실제 서버 내 저장 경로 찾기 (session 사용)
-	        String uploadPath = session.getServletContext().getRealPath("/resources/images/Reviews/");
-	        
-	        for (MultipartFile file : files) {
-	            if (!file.isEmpty()) {
-	                String saveFileName = System.currentTimeMillis() + "_" + file.getOriginalFilename();
-	                
-	                try {
-	                    // 서버 폴더에 실제 파일 저장
-	                    file.transferTo(new File(uploadPath, saveFileName));
-	                    
-	                    // DB에 새 이미지 정보 저장 (기존에 있던 REVIEWINSERTIMG 쿼리 활용)
-	                    ReviewImageVO imgVO = new ReviewImageVO();
-	                    imgVO.setReviewIdx(vo.getReviewIdx());
-	                    imgVO.setReviewImg(saveFileName);
-	                    
-	                    rservice.insertReviewImg(imgVO); // REVIEWINSERTIMG 호출
-	                    
-	                } catch (Exception e) {
-	                    System.out.println("사진 저장 중 오류: " + e.getMessage());
-	                }
-	            }
-	        }
-	    }
-	    
-	    // 3. 리다이렉트 (파라미터로 받은 orderIdx를 직접 사용)
-	    return "redirect:/user/orderDetailList.do?orderIdx=" + orderIdx;
-	}
-	}
+        // 1. 텍스트 정보 업데이트 (내용, 별점 등)
+        rservice.updateReview(vo);
+        
+        // 2. 사진 교체 로직 (파일이 새로 들어왔을 때만 실행)
+        if (files != null && !files.isEmpty() && !files.get(0).isEmpty()) {
+            
+            // 실제 파일을 지우기 위해 기존 파일 정보를 DB에서 가져오기 
+            List<ReviewImageVO> oldImages = rservice.getReviewImages(vo.getReviewIdx());
+            String uploadPath = session.getServletContext().getRealPath("/resources/images/Reviews/");
+
+            //  서버 폴더에서 물리적 파일 삭제 실행
+            if (oldImages != null) {
+                for (ReviewImageVO oldImg : oldImages) {
+                    File fileToDelete = new File(uploadPath, oldImg.getReviewImg());
+                    if (fileToDelete.exists()) {
+                        fileToDelete.delete(); // 하드디스크에서 파일 삭제!
+                        System.out.println("기존 파일 삭제 완료: " + oldImg.getReviewImg());
+                    }
+                }
+            }
+
+            // 기존 DB 레코드 삭제 
+            rservice.deleteReviewImgs(vo.getReviewIdx()); 
+            
+            // 새 파일 저장 및 DB 등록 
+            for (MultipartFile file : files) {
+                if (!file.isEmpty()) {
+                    String saveFileName = System.currentTimeMillis() + "_" + file.getOriginalFilename();
+                    try {
+                        file.transferTo(new File(uploadPath, saveFileName));
+                        
+                        ReviewImageVO imgVO = new ReviewImageVO();
+                        imgVO.setReviewIdx(vo.getReviewIdx());
+                        imgVO.setReviewImg(saveFileName);
+                        
+                        rservice.insertReviewImg(imgVO);
+                    } catch (Exception e) {
+                        System.out.println("사진 저장 중 오류: " + e.getMessage());
+                    }
+                }
+            }
+        }
+        
+        return "redirect:/user/orderDetailList.do?orderIdx=" + orderIdx;
+    }
+	
+	
+}
 
 	
 	

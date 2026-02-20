@@ -24,4 +24,6 @@ public interface ReviewService {
     int deleteReviewImgs(long reviewIdx);
     
     List<ReviewImageVO> getReviewImages(long reviewIdx);
+    
+    public List<ReviewVO> getReviewListByProduct(long productIdx);
 }

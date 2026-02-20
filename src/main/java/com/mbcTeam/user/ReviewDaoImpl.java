@@ -53,5 +53,10 @@ public class ReviewDaoImpl implements ReviewDao {
 		// TODO Auto-generated method stub
 		return mybatis.selectList("REVIEW.getReviewImages", reviewIdx);
 	}
-
+	
+	@Override
+    public List<ReviewVO> getReviewListByProduct(long productIdx) {
+        // XML mapper의 <select id="getReviewListByProduct">를 호출
+        return mybatis.selectList("REVIEW.getReviewListByProduct", productIdx);
+    }
 }

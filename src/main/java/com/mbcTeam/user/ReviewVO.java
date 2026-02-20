@@ -1,5 +1,7 @@
 package com.mbcTeam.user;
 
+import java.util.List; 
+
 import lombok.Data;
 
 @Data
@@ -19,4 +21,9 @@ public class ReviewVO {
 	private String color; // JOIN해서 가져올 컬러
     private String size;  // JOIN해서 가져올 사이즈
     private long itemIdx; // 가져와야지... 후기쓰려면 /.....
+    
+    private List<ReviewImageVO> reviewImages;
+    
+    
+    
 }
