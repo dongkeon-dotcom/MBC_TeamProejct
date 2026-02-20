@@ -46,9 +46,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </update>
     
     <update id="updateCartQuantity" parameterType="com.mbcTeam.cart.CartVO">
-    UPDATE Carts
-    SET quantity = quantity + #{quantity}
-    WHERE cart_idx = #{cartIdx}
+    UPDATE Carts c
+    SET c.quantity = c.quantity + #{quantity}
+    WHERE c.cart_idx = #{cartIdx}
+    	AND(
+    		SELECT po.stock
+    		FROM ProductOption po
+    		WHERE po.option_idx = c.option_idx    	    
+    	) >= (c.quantity + #{quantity})
 	</update>
     
 

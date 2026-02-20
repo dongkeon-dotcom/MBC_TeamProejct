@@ -85,6 +85,13 @@ async function requestPayment() {
         alert("결제할 금액이 없습니다.");
         return;
     }
+    
+    if(${empty delivery}){
+    	if(confirm("배송 정보가 없습니다. 배송지 등록 페이지로 이동하시겠습니까?")){
+    		location.href="${path}/delivery/addressList.do";
+    	}
+    	return;	
+    }
 
     // 고객 정보 (loginUser 데이터가 확실히 넘어오는지 확인)
     const customerEmail = "${not empty loginUser.id ? loginUser.id : 'test@example.com'}";
