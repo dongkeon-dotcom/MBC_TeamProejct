@@ -284,6 +284,54 @@ function addRow() {
             });
         });
     }
+ 
+ 
+ // 이미지 압축 함수 (Promise 반환)
+    function compressImage(file) {
+        return new Promise((resolve) => {
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = (event) => {
+                const img = new Image();
+                img.src = event.target.result;
+                img.onload = () => {
+                    const canvas = document.createElement('canvas');
+                    let width = img.width;
+                    let height = img.height;
+
+                    // 1. 최대 해상도 설정 (예: 가로 1200px 기준 비율 유지)
+                    const maxWidth = 1200;
+                    if (width > maxWidth) {
+                        height = (maxWidth * height) / width;
+                        width = maxWidth;
+                    }
+
+                    canvas.width = width;
+                    canvas.height = height;
+
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0, width, height);
+
+                    // 2. 품질 설정 (0.7은 70% 품질, JPEG 형식으로 압축)
+                    const dataUrl = canvas.toDataURL('image/jpeg', 0.7);
+                    
+                    // DataURL을 File 객체로 변환
+                    const byteString = atob(dataUrl.split(',')[1]);
+                    const mimeString = dataUrl.split(',')[0].split(':')[1].split(';')[0];
+                    const ab = new ArrayBuffer(byteString.length);
+                    const ia = new Uint8Array(ab);
+                    for (let i = 0; i < byteString.length; i++) {
+                        ia[i] = byteString.charCodeAt(i);
+                    }
+                    const blob = new Blob([ab], { type: mimeString });
+                    const compressedFile = new File([blob], file.name, { type: mimeString });
+                    
+                    resolve(compressedFile);
+                };
+            };
+        });
+    }
+ 
  // 3. 이미지 업로드 핵심 함수 (새로 추가됨 - 버튼 동작의 핵심)
 function triggerFileSelect(containerId) {
     const container = document.getElementById(containerId);
@@ -313,11 +361,15 @@ function triggerFileSelect(containerId) {
         input.multiple = true;
     }
 
-    input.onchange = e => {
+    input.onchange = async e => {
         const files = e.target.files;
         if (!files || files.length === 0) return; // 선택 취소 시 대응
 
         for (let file of files) {
+        	
+        	//압축 compressImage 실행
+        	const compressedFile = await compressImage(file);
+        	
             const nowCount = container.querySelectorAll('.input-group').length;
             if (nowCount >= limit) {
                 alert("해당 항목은 최대 " + limit + "장까지만 등록 가능합니다.");
@@ -325,7 +377,7 @@ function triggerFileSelect(containerId) {
             }
 
             const dataTransfer = new DataTransfer();
-            dataTransfer.items.add(file);
+            dataTransfer.items.add(compressedFile);
             
             const newFileInput = document.createElement('input');
             newFileInput.type = 'file';
@@ -345,7 +397,7 @@ function triggerFileSelect(containerId) {
                 <button type="button" class="btn btn-danger btn-sm px-3" style="height: 48px;" onclick="removeFileItem(this)">삭제</button>
             `;
 
-            fileWrapper.querySelector('.name-display').value = file.name;
+            fileWrapper.querySelector('.name-display').value = compressedFile.name;
 
             const reader = new FileReader();
             reader.onload = function(event) {
@@ -355,7 +407,7 @@ function triggerFileSelect(containerId) {
                 imgTag.style.display = 'block';
                 iconTag.style.display = 'none';
             };
-            reader.readAsDataURL(file);
+            reader.readAsDataURL(compressedFile);
 
             fileWrapper.appendChild(newFileInput); 
             container.appendChild(fileWrapper);
