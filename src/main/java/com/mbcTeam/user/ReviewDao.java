@@ -24,4 +24,6 @@ public interface ReviewDao {
     int deleteReviewImgs(long reviewIdx);
     
     List<ReviewImageVO> getReviewImages(long reviewIdx);
+    
+    List<ReviewVO> getReviewListByProduct(long productIdx); 
 }

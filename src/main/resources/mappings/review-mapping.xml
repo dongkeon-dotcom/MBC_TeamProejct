@@ -67,5 +67,23 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     WHERE review_Idx = #{reviewIdx}
 </select>
 
+
+<select id="getReviewListByProduct" parameterType="long" resultType="com.mbcTeam.user.ReviewVO">
+    SELECT 
+        r.review_Idx AS reviewIdx,
+        r.product_Idx AS productIdx,
+        r.user_Name AS userName,
+        r.review,
+        r.Rating AS rating,
+        r.Reg_Date AS regDate,
+        r.item_Idx AS itemIdx,
+        oi.color AS color,   oi.size AS size      FROM Reviews r
+    INNER JOIN OrderItems oi ON r.item_Idx = oi.item_Idx
+    WHERE r.product_Idx = #{productIdx} AND r.is_Hide = 0
+    ORDER BY r.Reg_Date DESC
+</select>
+
+
+
 </mapper>
 

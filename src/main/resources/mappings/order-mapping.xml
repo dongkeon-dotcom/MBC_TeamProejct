@@ -145,6 +145,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	FROM Orders
 	WHERE user_idx= #{userIdx};
 	</select>
+	
+	
 	<select id="GET_USER_DETAIL_ORDER_ITEMS" parameterType="Long" resultType="UserPurchaseDTO">
 	SELECT
 		oi.product_Idx,

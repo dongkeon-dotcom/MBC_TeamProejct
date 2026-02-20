@@ -52,4 +52,8 @@ public class ReviewServiceImpl implements ReviewService {
 		return rdao.getReviewImages(reviewIdx);
 	}
 	
+	@Override
+    public List<ReviewVO> getReviewListByProduct(long productIdx) {
+        return rdao.getReviewListByProduct(productIdx);
+    }
 }

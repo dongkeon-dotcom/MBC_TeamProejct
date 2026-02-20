@@ -130,20 +130,57 @@
             </c:choose>
         </div>
 
+
         <div id="review" class="tab-content">
-            <c:forEach var="r" items="${reviewList}">
-                <div class="review-item">
-                    <div class="review-header">
-                        <span class="review-author">${r.userName}</span> 
-                        <span class="review-stars">
-                            <c:forEach begin="1" end="${r.rating}">★</c:forEach>
-                            <c:forEach begin="${r.rating + 1}" end="5">☆</c:forEach>
-                        </span>
-                    </div>
-                    <p class="review-body">${r.review}</p>
-                </div>
-            </c:forEach>
-        </div>
+            <c:choose>
+                <c:when test="${not empty reviewList}">
+                    <c:forEach var="r" items="${reviewList}">
+                        <div class="review_item">
+                            <div class="review_header_container">
+                                
+                                <div class="user_info_box">
+                                    <div class="user_name_date">
+									    <strong>${r.userName}</strong>
+									    
+									    
+									    <fmt:parseDate value="${r.regDate}" var="parsedDate" pattern="yyyy-MM-dd HH:mm:ss" />
+									    
+									    <%-- 2. 변환된 객체를 원하는 형식으로 출력 --%>
+									    <span class="reg_date"><fmt:formatDate value="${parsedDate}" pattern="yy.MM.dd"/></span>
+									</div>
+                                    <div class="star-rating-box">
+                                        <c:forEach begin="1" end="5" var="i">
+                                            <span class="star ${i <= r.rating ? 'filled' : ''}">★</span>
+                                        </c:forEach>
+                                        <span class="rating_num">${r.rating}</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="review_option_wrapper">
+                                <div class="option_row">
+                                    <span class="option_label">구매옵션</span>
+                                    <span class="option_value">${r.color} / ${r.size}</span>
+                                </div>
+                            </div>
+                            <c:if test="${not empty r.reviewImages}">
+                                <div class="review_photos_container">
+                                    <c:forEach var="img" items="${r.reviewImages}">
+                                        <img src="${pageContext.request.contextPath}/resources/images/Reviews/${img.reviewImg}" 
+                                             class="review_thumb_img" onclick="openImageModal(this.src)">
+                                    </c:forEach>
+                                </div>
+                            </c:if>
+                            <div class="review_content_text">${r.review}</div>
+                        </div>
+                    </c:forEach>
+                </c:when>
+                <c:otherwise>
+                    <div class="empty-review">작성된 리뷰가 없습니다.</div>
+                </c:otherwise>
+            </c:choose>
+        </div> <%-- #review 끝 --%>
+        
+        
     </div>
 </div>
 

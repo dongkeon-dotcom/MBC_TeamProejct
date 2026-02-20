@@ -266,6 +266,143 @@ body {
     display: block;
 }
 
+/* [8] 리뷰 스타일 (이미지 참고하여 고급스럽게 수정) */
+
+/* 리뷰 아이템 전체 */
+.review_item {
+    padding: 30px 10px;
+    border-bottom: 1px solid #f2f2f2;
+    text-align: left;
+}
+
+/* 사용자 프로필 및 정보 영역 */
+.review_header_container {
+    display: flex;
+    align-items: center;
+    margin-bottom: 18px;
+}
+
+.user_profile_img img {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    margin-right: 12px;
+    background-color: #f0f0f0;
+    object-fit: cover;
+}
+
+.user_info_box {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.user_name_date {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.user_name_date strong {
+    font-size: 15px;
+    color: #333;
+    font-weight: 600;
+}
+
+.reg_date {
+    font-size: 13px;
+    color: #999;
+}
+
+/* 별점 시각화 (황금색 별) */
+.star-rating-box {
+    display: flex;
+    align-items: center;
+    gap: 1px;
+}
+
+.star {
+    font-size: 14px;
+    color: #e0e0e0; /* 빈 별 */
+}
+
+.star.filled {
+    color: #FF9600; /* 채워진 별 - 사진과 같은 진한 황금색 */
+}
+
+.rating_num {
+    font-size: 14px;
+    font-weight: 700;
+    color: #333;
+    margin-left: 5px;
+}
+
+/* 구매 옵션 박스 (회색 둥근 배경) */
+.review_option_wrapper {
+    background-color: #f7f7f7;
+    padding: 15px 20px;
+    border-radius: 6px;
+    margin-bottom: 20px;
+}
+
+.option_row {
+    font-size: 13px;
+    display: flex;
+    gap: 15px;
+}
+
+.option_label {
+    color: #888;
+    min-width: 50px;
+}
+
+.option_value {
+    color: #444;
+    font-weight: 500;
+}
+
+/* 리뷰 텍스트 본문 */
+.review_content_text {
+    font-size: 15px;
+    color: #333;
+    line-height: 1.7;
+    margin-top: 15px;
+    margin-bottom: 20px;
+    white-space: pre-wrap; /* 줄바꿈 적용 */
+}
+
+/* 리뷰 첨부 사진 (가로 정렬) */
+.review_photos_container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+.review_thumb_img {
+    width: 130px;
+    height: 130px;
+    object-fit: cover;
+    border-radius: 8px;
+    cursor: pointer;
+    border: 1px solid #eee;
+    transition: transform 0.2s ease-in-out;
+}
+
+.review_thumb_img:hover {
+    transform: scale(1.02);
+    border-color: #ddd;
+}
+
+/* 빈 리뷰 상태 */
+.empty-review {
+    padding: 100px 0;
+    text-align: center;
+    color: #bbb;
+    font-size: 15px;
+}
+
+
 /* [7] 푸터 고정 */
 footer, .footer, #footer {
     width: 100%;
@@ -284,3 +421,5 @@ footer, .footer, #footer {
 .review-author { font-weight: bold; margin-right: 15px; }
 .review-stars { color: #fbc02d; }
 .empty-msg { text-align: center; color: #999; padding: 50px 0; }
+
+
