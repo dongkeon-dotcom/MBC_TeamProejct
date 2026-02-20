@@ -430,36 +430,56 @@ function updateSubCategories() {
     }
  // 3. 이미지 업로드 핵심 함수 (새로 추가됨 - 버튼 동작의 핵심)
 function triggerFileSelect(containerId) {
-	 
-const container = document.getElementById(containerId);
+    const container = document.getElementById(containerId);
     
     // 1. 개수 제한 체크
     const currentCount = container.querySelectorAll('.input-group').length;
-    let limit = 10; // 기본값 10장
+    let limit = 5; 
     
     if (containerId === 'mainFileList' || containerId === 'sizeFileList') {
-        limit = 1; // 대표이미지와 상품사이즈는 1장으로 제한
+        limit = 1; 
     }
 
     if (currentCount >= limit) {
         alert("해당 항목은 최대 " + limit +"장까지만 등록 가능합니다.");
         return;
     }
-	 
+
+    // [중요] input 생성 루틴
     const input = document.createElement('input');
     input.type = 'file';
     input.name = getParamName(containerId);
     input.style.display = 'none';
-    input.accept = "image/*"; // 이미지 파일만 선택 가능하게 제한
+    input.accept = "image/*";
     
+    // 다중 선택 설정
+    if (limit > 1) {
+        input.multiple = true;
+    }
+
     input.onchange = e => {
-        const file = e.target.files[0];
-        if (file) {
-            const container = document.getElementById(containerId);
+        const files = e.target.files;
+        if (!files || files.length === 0) return; // 선택 취소 시 대응
+
+        for (let file of files) {
+            const nowCount = container.querySelectorAll('.input-group').length;
+            if (nowCount >= limit) {
+                alert("해당 항목은 최대 " + limit + "장까지만 등록 가능합니다.");
+                break;
+            }
+
+            const dataTransfer = new DataTransfer();
+            dataTransfer.items.add(file);
+            
+            const newFileInput = document.createElement('input');
+            newFileInput.type = 'file';
+            newFileInput.name = getParamName(containerId);
+            newFileInput.style.display = 'none';
+            newFileInput.files = dataTransfer.files;
+
             const fileWrapper = document.createElement('div');
             fileWrapper.className = 'input-group mb-2 shadow-sm align-items-center flex-nowrap'; 
 
-            // 1. 기본 구조 생성 (이미지가 들어갈 공간 확보)
             fileWrapper.innerHTML = `
                 <span class="input-group-text bg-light p-1">
                     <img class="img-preview" src="" style="width: 40px; height: 40px; object-fit: cover; display: none; border-radius: 4px;">
@@ -469,21 +489,19 @@ const container = document.getElementById(containerId);
                 <button type="button" class="btn btn-danger btn-sm px-3" style="height: 48px;" onclick="removeFileItem(this)">삭제</button>
             `;
 
-            // 2. 파일명 주입
             fileWrapper.querySelector('.name-display').value = file.name;
 
-            // 3. FileReader를 이용한 썸네일 생성 로직
             const reader = new FileReader();
             reader.onload = function(event) {
                 const imgTag = fileWrapper.querySelector('.img-preview');
                 const iconTag = fileWrapper.querySelector('.no-img-icon');
-                imgTag.src = event.target.result; // 읽어온 이미지 데이터 주입
-                imgTag.style.display = 'block';   // 이미지 보이기
-                iconTag.style.display = 'none';    // 아이콘 숨기기
+                imgTag.src = event.target.result;
+                imgTag.style.display = 'block';
+                iconTag.style.display = 'none';
             };
-            reader.readAsDataURL(file); // 파일을 읽기 시작
+            reader.readAsDataURL(file);
 
-            fileWrapper.appendChild(input); 
+            fileWrapper.appendChild(newFileInput); 
             container.appendChild(fileWrapper);
         }
     };
@@ -556,6 +574,26 @@ function validateOptions() {
 
 // 폼 전송 이벤트 연결
 function handleFormSubmit(e) {
+	
+	const maxSize = 20 * 1024 * 1024;
+	let totalSize = 0 ;
+	
+	const allFileInputs = document.querySelectorAll('input[type="file"]');
+	
+	allFileInputs.forEach(input =>{
+		if(input.files && input.files.length >0){
+			for (let i=0;i<input.files.length; i++){
+				totalSize += input.files[i].size;
+			}
+		}
+	});
+	
+	if(totalSize > maxSize){
+		alert("등록하려는 모든 이미지의 총 용량이 너무 큽니다.\n"+
+				"최대 용량: " + (maxSize /1024/1024).toFixed(0) + "MB\n"+
+				"현재 용량: " + (totalSize /1024/1024).toFixed(2) + "MB");
+		return false;		
+	}
 	
 	// 카테고리 체크
 	const category = document.getElementById('category').value.trim();
