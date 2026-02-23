@@ -35,6 +35,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             #{isRecommended}
         )
     </insert>
+    
+    <delete id="DELETE_PRODUCT" parameterType = "int">
+   		DELETE FROM Products  WHERE product_idx = #{value}   	
+   	</delete>
 
     <!-- 상품 이미지 등록 -->
     <insert id="INSERT_PRODUCT_IMG"
@@ -170,10 +174,29 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     	WHERE product_idx = #{value}
     </select>
     
+    <select id="SELECT_IMGS" parameterType="int" resultType="int">
+    	SELECT product_Img_Idx
+    	FROM ProductImg
+    	WHERE product_Idx = #{value}    
+    </select>
+    
+    <select id="SELECT_DESC_IMGS" parameterType="int" resultType="int">
+    	SELECT product_Desc_Img_Idx
+    	FROM ProductDescImg
+    	WHERE product_Idx = #{value}    
+    </select>
+    
+    <select id="SELECT_OPTIONS" parameterType="int" resultType="int">
+    	SELECT option_Idx
+    	FROM ProductOption
+    	WHERE product_Idx = #{value}
+    </select>    
+    
     <select id="SELECT_ONE_IMG" parameterType="int" resultType="ProductImgVO">
     	SELECT * FROM ProductImg
     	WHERE product_Img_Idx = #{value}
     </select>
+
     
     <select id="SELECT_ONE_DESC_IMG" parameterType="int" resultType="ProductDescImgVO">
     	SELECT * FROM ProductDescImg
@@ -226,7 +249,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			stock = #{stock}
 		WHERE option_Idx = #{optionIdx}   	
    	</update>
-
+   
 
     <!-- 전체 상품 조회 -->
     <select id="SELECT_ALL_PRODUCTS"

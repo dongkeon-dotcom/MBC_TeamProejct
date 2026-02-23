@@ -5,6 +5,7 @@ import java.util.List;
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.mbcTeam.product.ProductVO;
 import com.mbcTeam.shop.DeliveryVO;
@@ -88,6 +89,13 @@ public class UserDaoImpl implements UserDao {
 	public DeliveryVO getDelivery(long userIdx) {
 		// TODO Auto-generated me'thod stub
 		return mybatis.selectOne("USER.getDelivery",userIdx);
+	}
+	@Transactional // 이게 있어야 DB에 영구 저장됩니다.
+	@Override
+	public void updateIsDeleted(String userId) {
+		System.out.println("======> MyBatis 실행 직전 ID: " + userId);
+		mybatis.update("USER.updateIsDeleted", userId);
+	
 	}
 
 

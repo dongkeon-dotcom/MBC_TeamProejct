@@ -107,6 +107,8 @@
                 </div>
             </div>
         </c:forEach>
+        
+        
     </div>
 </section>
 
@@ -151,6 +153,25 @@ $(document).ready(function(){
         });
     });
 });
+</script>
+
+<script>
+    // 페이지 로드 시 실행
+    $(document).ready(function() {
+        // 1. URL 파라미터에 status=withdrawn 이 있는 경우 (컨트롤러에서 보낸 경우)
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.get('status') === 'withdrawn') {
+            alert("탈퇴 처리가 완료되었습니다. 그동안 이용해주셔서 감사합니다.");
+            // 주소창에서 파라미터 제거 (새로고침 시 또 뜨지 않게 하기 위함)
+            window.history.replaceState({}, document.title, window.location.pathname);
+        }
+        
+        // 2. 만약 FlashAttribute(msg)를 사용한 경우
+        const msg = "${msg}";
+        if (msg !== "") {
+            alert(msg);
+        }
+    });
 </script>
 
 <c:import url="/WEB-INF/view/include/bottom.jsp" />

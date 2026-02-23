@@ -96,21 +96,21 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             password   = #{password}
         WHERE user_Idx = #{userIdx}
     </update>
-
+<!--  이메일 아이디 중복처리  -->
 <select id="GET_USER_BY_ID" parameterType="String" resultType="com.mbcTeam.user.UserVO">
-        SELECT  
-            user_Idx      AS userIdx,
-            id, 
-            password, 
-            user_Name     AS userName,
-            user_Phone    AS userPhone,
-            user_Role     AS userRole, 
-            is_easy_login AS easyLogin,
-            login_type    AS loginType,  is_deleted    AS deleted,
-            reg_Date      AS regDate
-        FROM users 
-        WHERE id = #{id} AND is_deleted = 0
-    </select>
+    SELECT  
+        user_Idx      AS userIdx,
+        id            AS id,
+        password      AS password,
+        user_Name     AS userName,
+        user_Phone    AS userPhone,
+        user_Role     AS userRole, 
+        is_easy_login AS easyLogin,
+        login_type    AS loginType,  
+        is_deleted    AS isDeleted,  reg_Date      AS regDate
+    FROM users 
+    WHERE id = #{id}
+</select>
 
 <!-- 마이페이지 회원정보 수정에서 주소를 가져오기 위한 매퍼  -->
 <select id="getDelivery" parameterType="long" resultType="com.mbcTeam.shop.DeliveryVO">
@@ -149,6 +149,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 <select id="getUserManagement" resultType="UserManagementDTO">
 	select
 		u.reg_date,
+		u.is_deleted,
 		u.user_idx,
 		u.id,
 		u.user_phone,
@@ -187,6 +188,18 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		users
 	where user_idx=#{userIdx}
 </select>
+   
+  <!--  회원 탈퇴 숨김 처리  -->  
+ <update id="updateIsDeleted" parameterType="String">
+    UPDATE users 
+    SET is_deleted = 1 
+    WHERE id = #{userId} 
+   
+</update>
+
+
+
+
 
 
 </mapper>

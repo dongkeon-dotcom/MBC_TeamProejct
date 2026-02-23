@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.mbcTeam.product.ProductVO;
 import com.mbcTeam.shop.DeliveryVO;
@@ -84,6 +85,12 @@ public class UserServiceImpl implements UserService  {
 	public DeliveryVO getDelivery(long userIdx) {
 		// TODO Auto-generated method stub
 		return dao.getDelivery(userIdx);
+	}
+	@Transactional // 이게 있어야 DB에 영구 저장됩니다.
+	@Override
+	public void updateIsDeleted(String userId) {
+		// TODO Auto-generated method stub
+		dao.updateIsDeleted(userId);
 	}
 
 	

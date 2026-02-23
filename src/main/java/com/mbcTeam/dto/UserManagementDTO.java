@@ -11,6 +11,7 @@ public class UserManagementDTO {
 	private String userName;
 	private String fullAddress;
 	private int totalSpent;
+	private int isDeleted;
 	
 	//검색용 데이터
 	private String search;		//검색 항목

@@ -25,7 +25,7 @@ public interface ProductDao {
     ProductDescImgVO adminOneDescImg(int productDescImgIdx);
     void updateImgOrder(ProductImgVO vo);
     void updateDescImgOrder(ProductDescImgVO vo);
-    void updateOption(ProductOptionVO vo);
+    void updateOption(ProductOptionVO vo);    
     
     int imgCount(int productIdx);
     int descImgCount(int productIdx);
@@ -34,10 +34,14 @@ public interface ProductDao {
     void deleteDescImg(int productDescImgIdx);
     void deleteOption(int optionIdx);
     
+    List<Integer> getProductImgIdxList(int productIdx);
+    List<Integer> getProductDescImgIdxList(int productIdx);
+    List<Integer> getProductOptionIdxList(int productIdx);
+    
     int  totalCount(ProductVO vo); //제품 전체 갯수
     
     void update(ProductVO vo); // 상품 수정
-    void delete(ProductVO vo); // 상품 삭제
+    void delete(int productIdx); // 상품 삭제
 
     List<ProductVO> select(ProductVO vo); // 조건 조회
     ProductVO edit(ProductVO vo); // 관리자 상품 수정용 조회

@@ -44,14 +44,13 @@ public class AdminController {
 
 	@Autowired
 	private ProductService productService;
-	
+
 	@Autowired
 	private OrderService orderService;
-	
+
 	@Autowired
 	private GeminiService geminiService;
-	
-	
+
 	@Autowired
 	private ServletContext servletContext; // 프로젝트 내부 경로 접근용
 
@@ -61,16 +60,13 @@ public class AdminController {
 	public void init() {
 		imgPath = servletContext.getRealPath("/resources/images/");
 	}
-	
-	
+
 	// 상품 등록 폼 이동
 	@GetMapping("/productAddForm.do")
 	public String productAddForm() {
 		System.out.println("/productAddForm.DO");
 		return "admin/productAddForm";
 	}
-	
-
 
 	@Transactional
 	@PostMapping("/productAddFormOK.do")
@@ -80,7 +76,7 @@ public class AdminController {
 		// 1. 전달받은 값 이외의 값 세팅
 		vo.setRegDate(LocalDateTime.now().toString());
 		vo.setDiscountRate(0);
-		vo.setRecommended(false); 
+		vo.setRecommended(false);
 
 		// 2. 제품 대표 이미지 처리
 		MultipartFile mainFile = vo.getProductMainImgfile();
@@ -163,18 +159,16 @@ public class AdminController {
 
 		return "redirect:/admin/adminProductList.do";
 	}
-	
+
 	@GetMapping("/adminProductList.do")
-	public String ProductList(
-			@RequestParam(value = "search", defaultValue = "code", required = false) String search,
+	public String ProductList(@RequestParam(value = "search", defaultValue = "code", required = false) String search,
 			@RequestParam(value = "keyword", defaultValue = "", required = false) String keyword,
-			@RequestParam(value = "recommendedFilter", defaultValue="all", required = false ) String recommendedFilter,
-			@RequestParam(value = "discountFilter", defaultValue="all", required = false) String discountFilter,			
-			ProductVO vo,
-			Model model) {
+			@RequestParam(value = "recommendedFilter", defaultValue = "all", required = false) String recommendedFilter,
+			@RequestParam(value = "discountFilter", defaultValue = "all", required = false) String discountFilter,
+			ProductVO vo, Model model) {
 		System.out.println("/adminProductList.DO");
-		//System.out.println("테스트: " + search);
-		//System.out.println("테스트: " + keyword);
+		// System.out.println("테스트: " + search);
+		// System.out.println("테스트: " + keyword);
 		vo.setSearch(search);
 		vo.setKeyword(keyword);
 		vo.setRecommendedFilter(recommendedFilter);
@@ -218,7 +212,6 @@ public class AdminController {
 		model.addAttribute("keyword", vo.getKeyword());
 		model.addAttribute("recommendedFilter", vo.getRecommendedFilter());
 		model.addAttribute("discountFilter", vo.getDiscountFilter());
-		
 
 //		System.out.println("************************************************");
 //		System.out.println("startIdx: " + vo.getStartIdx());
@@ -228,7 +221,6 @@ public class AdminController {
 
 		return "admin/productList";
 	}
-
 
 	@GetMapping(value = "/adminProductEdit.do")
 	public String adminProductEdit(Model model, ProductVO vo) {
@@ -241,7 +233,7 @@ public class AdminController {
 
 		return "admin/productEdit";
 	}
-	
+
 	@Transactional
 	@PostMapping(value = "/adminProductEditOK.do")
 	public String adminProductEditOK(Model model, ProductVO vo, ProductRequestDTO dto) throws Exception {
@@ -284,7 +276,7 @@ public class AdminController {
 		vo.setProductSizeImg(sizeFileName);
 		productService.update(vo);
 
-		//이미지 제거, Order 재정렬, 등록
+		// 이미지 제거, Order 재정렬, 등록
 		if (dto.getDeleteImgIdx() != null) {
 			for (Integer imgIdx : dto.getDeleteImgIdx()) {
 				ProductImgVO oldImg = productService.adminOneImg(imgIdx);
@@ -300,13 +292,12 @@ public class AdminController {
 		int imgCount = productService.imgCount(productIdx);
 		for (int i = 0; i < imgCount; i++) {
 			ProductImgVO orderUpdateIVO = new ProductImgVO();
-			orderUpdateIVO.setProductImgOrder(i+1);
+			orderUpdateIVO.setProductImgOrder(i + 1);
 			orderUpdateIVO.setProductImgIdx(dto.getExistingImgIdx().get(i));
-			
+
 			productService.updateImgOrder(orderUpdateIVO);
 		}
-		
-		
+
 		if (dto.getProductImgList() != null) {
 			for (int i = 0; i < dto.getProductImgList().size(); i++) {
 				ProductImgVO ivo = new ProductImgVO();
@@ -341,9 +332,9 @@ public class AdminController {
 		int descImgCount = productService.descImgCount(productIdx);
 		for (int i = 0; i < descImgCount; i++) {
 			ProductDescImgVO orderUpdateDIVO = new ProductDescImgVO();
-			orderUpdateDIVO.setProductDescImgOrder(i+1);
+			orderUpdateDIVO.setProductDescImgOrder(i + 1);
 			orderUpdateDIVO.setProductDescImgIdx(dto.getExistingDescImgIdx().get(i));
-			
+
 			productService.updateDescImgOrder(orderUpdateDIVO);
 		}
 
@@ -366,30 +357,84 @@ public class AdminController {
 				productService.insertDescImg(divo);
 			}
 		}
-		
-		//옵션처리
+
+		// 옵션처리
 		if (dto.getDeleteOptionIdx() != null) {
 			for (Integer optionIdx : dto.getDeleteOptionIdx()) {
 				productService.deleteOption(optionIdx);
 			}
 		}
-		
-		if(dto.getProductOptionList() != null) {
-			for(ProductOptionVO ovo: dto.getProductOptionList()) {
-				if(ovo.getOptionIdx() == 0) {
-					//OptionIdx가 없으면 신규(insert)
+
+		if (dto.getProductOptionList() != null) {
+			for (ProductOptionVO ovo : dto.getProductOptionList()) {
+				if (ovo.getOptionIdx() == 0) {
+					// OptionIdx가 없으면 신규(insert)
 					ovo.setProductIdx(productIdx);
 					productService.insertOption(ovo);
-				}else {
-					//OptionIdx가 있으면 기존꺼(update)
+				} else {
+					// OptionIdx가 있으면 기존꺼(update)
 					productService.updateOption(ovo);
 				}
 			}
-		}		
+		}
 
 		return "redirect:/admin/adminProductList.do";
 	}
-	
+
+	@Transactional
+	@PostMapping(value = "/adminProductDeleteOK.do")
+	public String adminProductDeleteOK(ProductVO vo) throws Exception {
+		System.out.println("adminProductDeleteOK: " + vo);
+		ProductVO delData = productService.adminProductEdit(vo);
+		int productIdx = vo.getProductIdx();
+
+		// 제품 메인 이미지 제거
+		String uploadMainDir = imgPath + "ProductMainImg";
+		File oldMainFile = new File(uploadMainDir + File.separator + delData.getProductMainImg());
+		if (oldMainFile.exists()) {
+			oldMainFile.delete();
+		}
+
+		// 제품 사이즈 이미지 제거
+		String uploadSizeDir = imgPath + "ProductSizeImg";
+		File oldSizeFile = new File(uploadSizeDir + File.separator + delData.getProductSizeImg());
+		if (oldSizeFile.exists()) {
+			oldSizeFile.delete();
+		}
+
+		// 이미지 제거
+		for (Integer imgIdx : productService.getProductImgIdxList(productIdx)) {
+			ProductImgVO oldImg = productService.adminOneImg(imgIdx);
+			String imgDir = imgPath + "ProductImg";
+			File file = new File(imgDir + File.separator + oldImg.getProductImg());
+			if (file.exists()) {
+				file.delete();
+			}
+			productService.deleteImg(imgIdx);
+		}
+
+		// 상세 이미지 제거
+		for (Integer descImgIdx : productService.getProductDescImgIdxList(productIdx)) {
+			ProductDescImgVO oldDescImg = productService.adminOneDescImg(descImgIdx);
+			String descImgDir = imgPath + "ProductDescImg";
+			File file = new File(descImgDir + File.separator + oldDescImg.getProductDescImg());
+			if (file.exists()) {
+				file.delete();
+			}
+			productService.deleteDescImg(descImgIdx);
+		}
+
+		// 옵션제거
+		for (Integer optionIdx : productService.getProductOptionIdxList(productIdx)) {
+			productService.deleteOption(optionIdx);
+		}
+		
+		//상품 제거
+		productService.delete(productIdx);
+
+		return "redirect:/admin/adminProductList.do";
+	}
+
 	@ResponseBody
 	@PostMapping("/adminUpdateStatus.do")
 	public String adminUpdateProductStatus(ProductVO vo) throws Exception {
@@ -398,15 +443,15 @@ public class AdminController {
 		return "T";
 
 	}
-	
+
 	@ResponseBody
 	@PostMapping("updateOrderStatus.do")
-	public String updateOrderStatus(OrderManagementDTO dto) throws Exception{
+	public String updateOrderStatus(OrderManagementDTO dto) throws Exception {
 		System.out.println("******************************************");
-		System.out.println("DTO: "+ dto);
-		
+		System.out.println("DTO: " + dto);
+
 		service.adminUpdateOrderStatus(dto);
-		
+
 		return "success";
 	}
 
@@ -529,8 +574,8 @@ public class AdminController {
 			@RequestParam(value = "search", defaultValue = "orderId", required = false) String search,
 			@RequestParam(value = "keyword", defaultValue = "", required = false) String keyword,
 			@RequestParam(value = "startDate", defaultValue = "", required = false) String startDate,
-			@RequestParam(value = "endDate", defaultValue = "", required = false) String endDate,
-			Model model, OrderManagementDTO dto) {
+			@RequestParam(value = "endDate", defaultValue = "", required = false) String endDate, Model model,
+			OrderManagementDTO dto) {
 
 		System.out.println("**********************************************");
 		System.out.println("Search: " + search);
@@ -542,7 +587,7 @@ public class AdminController {
 		dto.setKeyword(keyword);
 		dto.setStartDate(startDate);
 		dto.setEndDate(endDate);
-		
+
 		int pageSize = 10;
 		int pageListSize = 10;
 

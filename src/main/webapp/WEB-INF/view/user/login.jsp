@@ -71,21 +71,27 @@
         </div>
     </div>
 </div>
-<c:import url="/WEB-INF/view/include/bottom.jsp" />
 
 <script>
     window.onload = function() {
-        // 1. URL에서 파라미터 추출
+        // 현재 URL 확인용 로그
+        console.log("Current URL Params:", window.location.search);
+
         const urlParams = new URLSearchParams(window.location.search);
-        const errorMsg = urlParams.get('exception');
         
-        // 2. exception 파라미터가 있으면 alert 띄우기
+        // 1. 로그인 실패 시 (FailureHandler에서 보낸 메시지)
+        let errorMsg = urlParams.get('exception');
         if (errorMsg) {
-            // URLEncoder로 인코딩된 메시지를 다시 한글로 변환하여 출력
-            alert(decodeURIComponent(errorMsg));
-            
-            // 3. (선택) 알림 확인 후 주소창의 에러 파라미터를 제거하여 새로고침 시 중복 팝업 방지
+            alert(decodeURIComponent(errorMsg.replace(/\+/g, ' '))); // + 기호 공백 치환 처리
+            window.history.replaceState({}, document.title, window.location.pathname);
+        }
+
+        // 2. 회원탈퇴 버튼 클릭 직후 (Controller에서 보낸 메시지)
+        let status = urlParams.get('status');
+        if (status === 'withdrawn') {
+            alert("회원 탈퇴가 정상적으로 처리되었습니다.");
             window.history.replaceState({}, document.title, window.location.pathname);
         }
     }
 </script>
+<c:import url="/WEB-INF/view/include/bottom.jsp" />

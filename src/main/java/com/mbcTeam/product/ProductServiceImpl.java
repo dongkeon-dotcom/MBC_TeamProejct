@@ -39,8 +39,8 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public void delete(ProductVO vo) {
-        dao.delete(vo);
+    public void delete(int productIdx) {
+        dao.delete(productIdx);
     }
 
     @Override
@@ -191,6 +191,21 @@ public class ProductServiceImpl implements ProductService {
 	@Override
 	public List<ProductVO> searchProducts(String keyword) {
 	    return dao.searchProducts(keyword);
+	}
+
+	@Override
+	public List<Integer> getProductImgIdxList(int productIdx) {
+		return dao.getProductImgIdxList(productIdx);
+	}
+
+	@Override
+	public List<Integer> getProductDescImgIdxList(int productIdx) {
+		return dao.getProductDescImgIdxList(productIdx);
+	}
+
+	@Override
+	public List<Integer> getProductOptionIdxList(int productIdx) {
+		return dao.getProductOptionIdxList(productIdx);
 	}
 
 
