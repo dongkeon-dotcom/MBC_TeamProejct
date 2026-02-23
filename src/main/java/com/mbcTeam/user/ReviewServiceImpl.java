@@ -56,4 +56,10 @@ public class ReviewServiceImpl implements ReviewService {
     public List<ReviewVO> getReviewListByProduct(long productIdx) {
         return rdao.getReviewListByProduct(productIdx);
     }
+
+	@Override
+	public int hideReview(long reviewIdx) {
+		// TODO Auto-generated method stub
+		return rdao.hideReview(reviewIdx);
+	}
 }

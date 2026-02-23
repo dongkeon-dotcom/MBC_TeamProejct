@@ -558,6 +558,17 @@ MemberMapper memberMapper;
         return "redirect:/user/orderDetailList.do?orderIdx=" + orderIdx;
     }
 	
+    
+    @GetMapping("/reviewDelete.do")
+    public String reviewDelete(@RequestParam("reviewIdx") long reviewIdx,
+                               @RequestParam("orderIdx") String orderIdx) { // 파라미터로 직접 수신
+        
+        // 1. 리뷰 숨김 처리 (is_hide = 1)
+       rservice.hideReview(reviewIdx);
+        
+        // 2. 전달받은 orderIdx를 사용하여 주문 상세 페이지로 리다이렉트
+        return "redirect:/user/orderDetailList.do?orderIdx=" + orderIdx;
+    }
 	
 }
 

@@ -58,23 +58,25 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   <!-- 주문 상세 조회 -->
   <select id="selectOrderItems" parameterType="long" resultType="OrderItemVO">
     SELECT 
-        item_Idx AS itemIdx,
-        order_Idx AS orderIdx,
-        product_Idx AS productIdx,
-        category,
-        subCategory,
-        product_Name AS productName,
-        price,
-        discount_rate AS discountRate,
-        color,
-        size,
-        quantity,
-        product_main_img AS productMainImg
-    FROM OrderItems
-    WHERE order_Idx = #{orderIdx}
-  </select>
-
-
+        oi.item_Idx AS itemIdx,
+        oi.order_Idx AS orderIdx,
+        oi.product_Idx AS productIdx,
+        oi.category,
+        oi.subCategory,
+        oi.product_Name AS productName,
+        oi.price,
+        oi.discount_rate AS discountRate,
+        oi.color,
+        oi.size,
+        oi.quantity,
+        oi.product_main_img AS productMainImg,
+        (SELECT review_Idx 
+         FROM Reviews 
+         WHERE item_Idx = oi.item_Idx 
+           AND is_hide = 0) AS rIdx
+    FROM OrderItems oi
+    WHERE oi.order_Idx = #{orderIdx}
+</select>
 
 
   <!-- 주문 수정 -->

@@ -18,6 +18,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
      				   VALUES (#{reviewIdx}, #{reviewImg} )
     </insert>
     
+    
  <select id="REVIEWLIST" parameterType="long" resultType="com.mbcTeam.user.ReviewVO">
     SELECT 
         r.review_Idx       AS reviewIdx,
@@ -28,10 +29,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         r.Rating           AS rating,
         r.is_Hide          AS isHide,
         r.Reg_Date         AS regDate,
-        r.item_Idx         AS itemIdx,  items.color        AS color,    items.size         AS size      FROM Reviews r
+        r.item_Idx         AS itemIdx,
+        items.color        AS color,
+        items.size         AS size
+    FROM Reviews r
     INNER JOIN OrderItems items ON r.item_Idx = items.item_Idx
-    WHERE r.user_Idx = #{userIdx}
-    ORDER BY r.Reg_Date DESC
+    WHERE r.user_Idx = #{userIdx} 
+      AND r.is_Hide = 0  ORDER BY r.Reg_Date DESC
 </select>
 <select id="getReviewOne" parameterType="long" resultType="com.mbcTeam.user.ReviewVO">
     SELECT 
@@ -83,7 +87,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     ORDER BY r.Reg_Date DESC
 </select>
 
-
+<update id="HIDE_REVIEW" parameterType="long">
+    UPDATE Reviews 
+    SET IS_HIDE = 1 
+    WHERE review_Idx = #{reviewIdx}
+</update>
 
 </mapper>
 

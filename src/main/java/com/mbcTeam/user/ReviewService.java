@@ -26,4 +26,8 @@ public interface ReviewService {
     List<ReviewImageVO> getReviewImages(long reviewIdx);
     
     public List<ReviewVO> getReviewListByProduct(long productIdx);
+    ///후기 숨김
+    int hideReview(long reviewIdx);
+
+
 }

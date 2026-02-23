@@ -65,10 +65,20 @@
                     </tr>
                     
                     <tr>
-                        <td colspan="2" align="center" style="padding: 20px;">
-                            <button type="submit" style="padding: 10px 30px; cursor: pointer;">수정완료</button>
-                            <button type="button" onclick="history.back()" style="padding: 10px 30px; cursor: pointer; margin-left: 10px;">취소</button>
-                        </td>
+                       <td colspan="2" align="center" style="padding: 20px;">
+    <button type="submit" style="padding: 10px 30px; cursor: pointer;">수정완료</button>
+    
+  <button type="button" 
+        onclick="confirmDelete(${reviewVO.reviewIdx}, '${param.orderIdx}')" 
+        style="padding: 10px 30px; cursor: pointer; margin-left: 10px; background-color: #ff4d4d; color: white; border: none; border-radius: 4px;">
+    삭제하기
+</button>
+    
+    <button type="button" onclick="history.back()" 
+            style="padding: 10px 30px; cursor: pointer; margin-left: 10px;">
+        취소
+    </button>
+</td>
                     </tr>
                 </table>
             </form>
@@ -79,6 +89,21 @@
 <br><br>
 
 <script>
+/** 후기 숨기기!!! 
+
+ *
+ */
+ function confirmDelete(rIdx, oIdx) {
+	    if (confirm("정말로 이 후기를 삭제하시겠습니까?")) {
+	        // oIdx(주문번호)를 주소에 포함시켜 전송
+	        location.href = "${path}/user/reviewDelete.do?reviewIdx=" + rIdx + "&orderIdx=" + oIdx;
+	    }
+	}
+
+
+
+
+
 /**
  * 폼 제출 시 통합 유효성 검사 (개수 + 용량)
  */

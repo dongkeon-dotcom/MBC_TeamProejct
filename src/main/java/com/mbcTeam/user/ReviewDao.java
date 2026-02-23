@@ -26,4 +26,9 @@ public interface ReviewDao {
     List<ReviewImageVO> getReviewImages(long reviewIdx);
     
     List<ReviewVO> getReviewListByProduct(long productIdx); 
+    ///후기 숨김
+    int hideReview(long reviewIdx);
+    
+    
+    
 }
