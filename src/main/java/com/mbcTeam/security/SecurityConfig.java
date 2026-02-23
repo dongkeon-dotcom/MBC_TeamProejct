@@ -77,7 +77,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
             response.sendRedirect(request.getContextPath() + "/user/member.do");
         };
     }
-   
+   //그만하자 제발 
         @Override
         protected void configure(HttpSecurity http) throws Exception {
             // 1. CSRF 비활성화
