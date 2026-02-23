@@ -31,6 +31,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.mbcTeam.product.ProductService;
+import com.mbcTeam.product.ProductVO;
 import com.mbcTeam.security.MemberMapper;
 import com.mbcTeam.shop.DeliveryService;
 import com.mbcTeam.shop.DeliveryVO;
@@ -53,7 +55,8 @@ public class UserController {
 
 	@Autowired
 MemberMapper memberMapper;
-	
+	@Autowired
+	private ProductService pservice;
 	@Autowired
 	private UserService service;
 	
@@ -185,6 +188,7 @@ MemberMapper memberMapper;
     }
     
     
+
     @GetMapping(value = "/orderDetailList.do")
     public String orderDetailList(@RequestParam("orderIdx") long orderIdx, Model model) {
         UserVO login = getLoginUser();
@@ -200,14 +204,16 @@ MemberMapper memberMapper;
             return "redirect:/user/orderList.do";
         }
 
-        // ⭐ 3. Map 생성 (상품Idx와 리뷰Idx 매칭)
-        // Key: itemIdx (Long), Value: reviewIdx (Long)
+        // 3. 맵 생성 (리뷰 매칭용 + 상품 실제 존재 체크용)
         Map<Long, Long> reviewMap = new HashMap<>();
+        
+        // ⭐ 중요: JSP에서 item.productIdx(long)를 사용하므로 Key를 Long으로 설정
+        Map<Long, Boolean> productExistMap = new HashMap<>();
 
         for (OrderItemedVO item : detailList) {
+            // [리뷰 매칭 로직]
             long itemIdx = item.getItemIdx();
-            long foundReviewIdx = 0; // 기본값: 리뷰 없음(0)
-
+            long foundReviewIdx = 0;
             for (ReviewVO review : myReviews) {
                 if (review.getItemIdx() == itemIdx) {
                     foundReviewIdx = review.getReviewIdx();
@@ -215,16 +221,30 @@ MemberMapper memberMapper;
                 }
             }
             reviewMap.put(itemIdx, foundReviewIdx);
+
+            // ⭐ [실제 상품 존재 여부 체크]
+            ProductVO pVo = new ProductVO();
+            // ItemIdx 테이블의 productIdx가 int면 형변환, long이면 그대로 세팅
+            pVo.setProductIdx((int)item.getProductIdx()); 
+            
+            // ProductService(또는 pservice)를 통해 DB에 실제로 있는지 조회
+            // pservice가 위에서 @Autowired 되어 있어야 합니다.
+            ProductVO realProduct = pservice.adminProductEdit(pVo); 
+            
+            // 상품이 존재하면 true, 없으면 false (null인 경우)
+            productExistMap.put(item.getProductIdx(), realProduct != null);
         }
 
-        // 4. Model에 담기
+        // 4. Model에 데이터 담기
         model.addAttribute("order", order);
         model.addAttribute("detailList", detailList);
-        model.addAttribute("reviewMap", reviewMap); // JSP에서 사용할 맵
+        model.addAttribute("reviewMap", reviewMap);
+        model.addAttribute("productExistMap", productExistMap); // JSP에서 사용할 맵
 
         return "user/orderDetailList";
     }
-	
+    
+    
 	// 로그인 페이지 이동
     @GetMapping("/login.do")
     public String login() {
