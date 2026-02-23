@@ -189,11 +189,16 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 </select>
    
   <!--  회원 탈퇴 숨김 처리  -->  
-    <update id="updateIsDeleted" parameterType="String">
+ <update id="updateIsDeleted" parameterType="String">
     UPDATE users 
     SET is_deleted = 1 
-    WHERE id = #{userId}
+    WHERE id = #{userId} 
+   
 </update>
+
+
+
+
 
 
 </mapper>

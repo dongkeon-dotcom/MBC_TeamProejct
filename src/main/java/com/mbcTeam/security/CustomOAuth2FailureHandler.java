@@ -10,6 +10,7 @@ import java.net.URLEncoder;
 import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
 import org.springframework.stereotype.Component;
 @Component
@@ -21,25 +22,27 @@ public class CustomOAuth2FailureHandler extends SimpleUrlAuthenticationFailureHa
 	                                    AuthenticationException exception) throws IOException, ServletException {
 
 	    String errorMessage = "아이디 또는 비밀번호가 일치하지 않습니다.";
+	    String msg = (exception != null && exception.getMessage() != null) ? exception.getMessage() : "";
 
-	    // 1. 예외 분석 (로그에 찍힌 InternalAuthenticationServiceException 대응)
-	    if (exception instanceof InternalAuthenticationServiceException) {
-	        // 내부 원인이 DisabledException인지 확인
-	        if (exception.getCause() instanceof DisabledException || 
-	            exception.getMessage().contains("탈퇴")) {
-	            errorMessage = "탈퇴 처리 중인 계정입니다.";
-	        }
-	    } else if (exception instanceof DisabledException) {
+	    // 로그 확인용
+	    System.out.println("--- 실패 분석 ---");
+	    System.out.println("Type: " + exception.getClass().getSimpleName());
+	    System.out.println("Msg: " + msg);
+
+	    // 1. 메시지에 키워드가 포함되어 있거나, 
+	    // 2. 메시지가 비어있더라도 OAuth2AuthenticationException 라면 (위에서 던진 것)
+	    if (msg.contains("deleted_user") || msg.contains("ALREADY_WITHDRAWN") || 
+	        exception instanceof OAuth2AuthenticationException) {
+	        
+	        // OAuth2AuthenticationException가 발생했다는 건 
+	        // 우리가 UserService에서 탈퇴 로직으로 던졌을 확률이 매우 높음
+	        errorMessage = "탈퇴 처리 중인 계정입니다.";
+	    } 
+	    else if (exception instanceof DisabledException) {
 	        errorMessage = "탈퇴 처리 중인 계정입니다.";
 	    }
 
-	    System.out.println("===> 로그인 실패 처리 메시지: " + errorMessage);
-
-	    // 2. 한글 인코딩
 	    String encodedMsg = java.net.URLEncoder.encode(errorMessage, "UTF-8");
-
-	    // 3. 리다이렉트 (이 주소로 가야 JSP의 스크립트가 돌아갑니다)
-	    // contextPath가 /main 이라면 결과는 /main/user/login.do?... 가 됩니다.
 	    response.sendRedirect(request.getContextPath() + "/user/login.do?error=true&exception=" + encodedMsg);
 	}
 }

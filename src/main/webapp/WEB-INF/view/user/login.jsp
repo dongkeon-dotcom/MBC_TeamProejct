@@ -78,13 +78,18 @@
         console.log("Current URL Params:", window.location.search);
 
         const urlParams = new URLSearchParams(window.location.search);
-        let errorMsg = urlParams.get('exception');
         
+        // 1. 로그인 실패 시 (FailureHandler에서 보낸 메시지)
+        let errorMsg = urlParams.get('exception');
         if (errorMsg) {
-            // 디코딩 후 alert 실행
-            alert(decodeURIComponent(errorMsg));
-            
-            // 주소창 정리 (필요시 주석 처리해서 파라미터가 유지되는지 먼저 확인하세요)
+            alert(decodeURIComponent(errorMsg.replace(/\+/g, ' '))); // + 기호 공백 치환 처리
+            window.history.replaceState({}, document.title, window.location.pathname);
+        }
+
+        // 2. 회원탈퇴 버튼 클릭 직후 (Controller에서 보낸 메시지)
+        let status = urlParams.get('status');
+        if (status === 'withdrawn') {
+            alert("회원 탈퇴가 정상적으로 처리되었습니다.");
             window.history.replaceState({}, document.title, window.location.pathname);
         }
     }

@@ -9,9 +9,10 @@ import java.util.Map;
 import java.util.UUID;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpServletRequest;
+
 
 import javax.servlet.http.HttpSession;
+
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -585,28 +586,44 @@ MemberMapper memberMapper;
         // 2. 전달받은 orderIdx를 사용하여 주문 상세 페이지로 리다이렉트
         return "redirect:/user/orderDetailList.do?orderIdx=" + orderIdx;
     }
+    
+    
+
+    
+    
     @GetMapping("/Memberdelete.do")
-    public String memberDelete(HttpServletRequest request, HttpServletResponse response) {
-        // 1. 현재 로그인된 유저의 정보(SecurityContext) 가져오기
+    public String memberDelete(HttpServletRequest request, HttpServletResponse response, HttpSession session) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         
-        if (auth != null && auth.isAuthenticated()) {
-            String userId = auth.getName(); // 유저 아이디(이메일)
-            
-            // 2. DB의 is_deleted를 1로 업데이트
+        // 1. 세션에서 "id" 꺼내기 (이제 null이 아니어야 함)
+        String userId = (String) session.getAttribute("id");
+
+        // 2. 만약 세션에 없다면 시큐리티 Principal에서 꺼내기
+        if (userId == null && auth != null) {
+            if (auth.getPrincipal() instanceof OAuth2User) {
+                // 소셜 로그인인 경우 attributes에서 email 추출
+                OAuth2User oAuth2User = (OAuth2User) auth.getPrincipal();
+                userId = (String) oAuth2User.getAttributes().get("email");
+            } else {
+                userId = auth.getName();
+            }
+        }
+
+        System.out.println("============== [탈퇴 시도 결과] ==============");
+        System.out.println("최종 매칭된 ID: " + userId); 
+        System.out.println("=============================================");
+
+        if (userId != null && !userId.isEmpty()) {
             service.updateIsDeleted(userId);
-            
-            // 3. 스프링 시큐리티 로그아웃 강제 실행
+        }
+
+        // 로그아웃 처리
+        if (auth != null) {
             new SecurityContextLogoutHandler().logout(request, response, auth);
         }
         
-        // 4. 탈퇴 알림을 위해 파라미터를 들고 메인으로 이동
         return "redirect:/index.do?status=withdrawn";
     }
-    
-    
-    
-    
 	
 }
 
