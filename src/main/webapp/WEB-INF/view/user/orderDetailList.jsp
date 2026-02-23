@@ -49,23 +49,36 @@
         <td class="text-end fw-bold">
             <fmt:formatNumber value="${item.price * item.quantity}" />원
         </td>
-        <td class="text-center">
-            <%-- ⭐ 컨트롤러에서 보낸 reviewMap에서 현재 아이템의 리뷰 번호를 바로 꺼냅니다. --%>
+       <td class="text-center">
+    <%-- 
+       productIdx는 주문 테이블에 항상 있으므로, 
+       상품 테이블에서 Join으로 가져온 productName이 있는지 확인합니다.
+    --%>
+    <c:choose>
+        <%-- 상품 테이블에 데이터가 살아있다면 (Join 성공 시) --%>
+        <c:when test="${not empty item.productName}">
+            
             <c:set var="rIdx" value="${reviewMap[item.itemIdx]}" />
 
             <c:choose>
-                <%-- 리뷰 번호(rIdx)가 존재하고 0이 아니면 수정 버튼 --%>
                 <c:when test="${not empty rIdx && rIdx != 0}">
                     <button type="button" class="btn btn-outline-secondary btn-sm" 
                             onclick="editReview('${rIdx}', '${order.orderIdx}')">후기수정</button>
                 </c:when>
-                <%-- 그 외엔 후기쓰기 버튼 --%>
                 <c:otherwise>
                     <button type="button" class="btn btn-primary btn-sm" 
                             onclick="review('${item.productIdx}', '${order.orderIdx}', '${item.itemIdx}')">후기쓰기</button>
                 </c:otherwise>
             </c:choose>
-        </td>
+            
+        </c:when>
+        
+        <%-- 상품 테이블에서 데이터가 삭제되었다면 (Join 실패 시 productName이 없음) --%>
+        <c:otherwise>
+            <span class="text-muted" style="font-size: 0.85em;">판매 중단 상품</span>
+        </c:otherwise>
+    </c:choose>
+</td>
     </tr>
 </c:forEach>
         </tbody>
