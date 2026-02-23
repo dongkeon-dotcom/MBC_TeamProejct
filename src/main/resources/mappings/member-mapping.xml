@@ -20,7 +20,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
          user_phone AS userPhone,user_role  AS userRole, easy_login  AS easyLogin,deleted, user_reg_date  AS userRegDate
         FROM member WHERE user_email = #{userEmail} AND user_pw = #{userPW} AND deleted = false
     </select>
-
+ 
     <!-- 회원 단건 조회 -->
     <select id="getById" parameterType="int" resultType="MemberVO">
         SELECT

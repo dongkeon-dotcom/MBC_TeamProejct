@@ -33,4 +33,6 @@ UserVO getUserById(String id);
 
 // 마이페이지 회원정보 수정에서 주소확인ㅇ르 위한 메소드 
 DeliveryVO getDelivery(long userIdx);
+
+void updateIsDeleted(String userId);
 }

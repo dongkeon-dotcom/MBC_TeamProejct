@@ -61,6 +61,7 @@
                 <td colspan="2" class="button-group">
                     <input type="button" value="수정하기" class="btn-update" onclick="memberUpdate()"/> 
                     <input type="button" value="뒤로가기" class="btn-back" onclick="memberBack()"/>
+                     <input type="button" value="탈퇴하기" class="btn-del" onclick="memberDel()"/>
                 </td>
             </tr>
         </table>
@@ -68,6 +69,19 @@
 </section>
 
 <script>
+
+
+////회원 탈퇴 숨김 처리하기 
+function memberDel() {
+    if (confirm("정말로 탈퇴하시겠습니까?")) {
+        // 탈퇴 처리 컨트롤러로 이동
+        location.href = "${path}/user/Memberdelete.do";
+    }
+}
+
+
+
+
 // 페이지 로드 시 기존 전화번호 분리해서 세팅하기
 window.onload = function() {
     const originPhone = "${m.userPhone}"; // 예: 010-1111-2222
