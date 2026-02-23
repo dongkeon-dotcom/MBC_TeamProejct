@@ -86,6 +86,12 @@ public class UserServiceImpl implements UserService  {
 		return dao.getDelivery(userIdx);
 	}
 
+	@Override
+	public void updateIsDeleted(String userId) {
+		// TODO Auto-generated method stub
+		dao.updateIsDeleted(userId);
+	}
+
 	
 
 }

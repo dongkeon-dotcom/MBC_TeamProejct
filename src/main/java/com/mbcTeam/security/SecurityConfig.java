@@ -102,51 +102,29 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 
             // 3. 일반 폼 로그인 설정
             .formLogin()
-                .loginPage("/user/login.do")
-                .loginProcessingUrl("/user/loginOK.do")
-                .defaultSuccessUrl("/index.do", true)
-                .usernameParameter("id")
-                .passwordParameter("password")
-                .permitAll()
-                .and()
+            .loginPage("/user/login.do")
+            .loginProcessingUrl("/user/loginOK.do")
+            .defaultSuccessUrl("/index.do", true)
+            .usernameParameter("id")
+            .passwordParameter("password")
+            // ★ 이 줄이 없어서 파라미터가 전달되지 않았던 것입니다!
+            .failureHandler(customOAuth2FailureHandler) 
+            .permitAll()
+            .and()
 
             // 4. 소셜 로그인 설정 (핵심 수정본)
             .oauth2Login()
-                .loginPage("/user/login.do")
-                .redirectionEndpoint()
-                    // 시큐리티가 카카오 응답을 가로채는 통로
-                    .baseUri("/login/oauth2/code/**") 
-                    .and()
-                .userInfoEndpoint()
-                    // 정상 인증 시 사용자 정보를 가져오는 서비스
-                    .userService(customOAuth2UserService) 
-                    .and()
-                .defaultSuccessUrl("/index.do", true)
-                // [수정] 단순 failureUrl 대신 핸들러를 달아 원인을 분석합니다.
-                .failureHandler((request, response, exception) -> {
-                    System.out.println("========================================");
-                    System.out.println("===> OAuth2 로그인 실패 이유: " + exception.getMessage());
-                    // 에러의 상세 원인(Stacktrace)을 보고 싶다면 아래 주석을 해제하세요.
-                    // exception.printStackTrace(); 
-                    System.out.println("========================================");
-                    
-                    // 에러 확인 후 원래 가려던 회원가입 페이지로 리다이렉트
-                    response.sendRedirect(request.getContextPath() + "/user/member.do");
-                })
-                .and().oauth2Login()
-                .loginPage("/user/login.do")
-                .redirectionEndpoint()
-                    .baseUri("/login/oauth2/code/**") 
-                    .and()
-                .userInfoEndpoint()
-                    .userService(customOAuth2UserService) 
-                    .and()
-                .defaultSuccessUrl("/index.do", true)
-                
-                // [수정된 부분] 람다식 대신 미리 만든 customOAuth2FailureHandler를 연결합니다.
-                .failureHandler(customOAuth2FailureHandler) 
-                
+            .loginPage("/user/login.do")
+            .redirectionEndpoint()
+                .baseUri("/login/oauth2/code/**") 
                 .and()
+            .userInfoEndpoint()
+                .userService(customOAuth2UserService) 
+                .and()
+            .defaultSuccessUrl("/index.do", true)
+            // [중요] 소셜 로그인 실패 시 동작할 핸들러 연결
+            .failureHandler(customOAuth2FailureHandler) 
+            .and()
 
             // 5. 로그아웃 설정
             .logout()

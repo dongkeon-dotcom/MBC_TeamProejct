@@ -170,7 +170,7 @@ function joinCheck() {
         form.submit();
     }
 }
-
+//이메일 중복처리를 위한 곳 
 function checkEmail() {
     const email = document.getElementById("id").value.trim();
     const msg = document.getElementById("emailMsg");
@@ -183,14 +183,25 @@ function checkEmail() {
         return;
     }
 
+    // 서버에 중복 체크 요청
     fetch(path + "/user/checkEmail.do?id=" + encodeURIComponent(email))
         .then(res => res.json())
         .then(data => {
+            // data.exists가 true인 경우 중 이미 탈퇴한(isDeleted가 true) 경우 확인
             if (data.exists) {
-                msg.innerHTML = "이미 사용 중인 이메일입니다 ❌";
-                msg.style.color = "red";
+                if (data.isDeleted) {
+                    // ★ 1. 탈퇴 처리 중인 경우
+                   
+                    msg.innerHTML = "탈퇴 처리 중인 이메일입니다 ❌";
+                    msg.style.color = "orange";
+                } else {
+                    // ★ 2. 실제 사용 중인 경우
+                    msg.innerHTML = "이미 사용 중인 이메일입니다 ❌";
+                    msg.style.color = "red";
+                }
                 emailChecked = false;
             } else {
+                // ★ 3. 사용 가능한 경우
                 msg.innerHTML = "사용 가능한 이메일입니다 ✅";
                 msg.style.color = "green";
                 emailChecked = true;
@@ -202,6 +213,5 @@ function checkEmail() {
             msg.style.color = "orange";
         });
 }
-
 </script>
 <c:import url="/WEB-INF/view/include/bottom.jsp" />

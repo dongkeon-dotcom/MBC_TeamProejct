@@ -71,21 +71,22 @@
         </div>
     </div>
 </div>
-<c:import url="/WEB-INF/view/include/bottom.jsp" />
 
 <script>
     window.onload = function() {
-        // 1. URL에서 파라미터 추출
+        // 현재 URL 확인용 로그
+        console.log("Current URL Params:", window.location.search);
+
         const urlParams = new URLSearchParams(window.location.search);
-        const errorMsg = urlParams.get('exception');
+        let errorMsg = urlParams.get('exception');
         
-        // 2. exception 파라미터가 있으면 alert 띄우기
         if (errorMsg) {
-            // URLEncoder로 인코딩된 메시지를 다시 한글로 변환하여 출력
+            // 디코딩 후 alert 실행
             alert(decodeURIComponent(errorMsg));
             
-            // 3. (선택) 알림 확인 후 주소창의 에러 파라미터를 제거하여 새로고침 시 중복 팝업 방지
+            // 주소창 정리 (필요시 주석 처리해서 파라미터가 유지되는지 먼저 확인하세요)
             window.history.replaceState({}, document.title, window.location.pathname);
         }
     }
 </script>
+<c:import url="/WEB-INF/view/include/bottom.jsp" />

@@ -90,6 +90,13 @@ public class UserDaoImpl implements UserDao {
 		return mybatis.selectOne("USER.getDelivery",userIdx);
 	}
 
+	@Override
+	public void updateIsDeleted(String userId) {
+		// TODO Auto-generated method stub
+		mybatis.update("USER.updateIsDeleted", userId);
+	
+	}
+
 
 	
 }

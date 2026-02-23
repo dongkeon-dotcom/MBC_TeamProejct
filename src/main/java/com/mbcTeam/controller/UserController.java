@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import javax.servlet.http.HttpServletRequest;
-
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpServletRequest;
 
 import javax.servlet.http.HttpSession;
@@ -21,6 +21,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.security.oauth2.core.user.OAuth2User;
+import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -30,6 +31,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.mbcTeam.security.MemberMapper;
 import com.mbcTeam.shop.DeliveryService;
@@ -339,18 +341,32 @@ MemberMapper memberMapper;
  }
 
  
- 
-    @ResponseBody
-    @RequestMapping(value="/checkEmail.do", method=RequestMethod.GET, produces="application/json; charset=UTF-8")
-    public Map<String, Object> checkEmail(@RequestParam("id") String id) {
-        System.out.println("중복확인 요청 아이디: " + id);
-        boolean exists = service.existsByEmail(id);
-        System.out.println("중복여부: " + exists);
-        
-        Map<String, Object> res = new HashMap<>();
-        res.put("exists", exists);
-        return res;
-    }
+ @ResponseBody
+ @RequestMapping(value="/checkEmail.do", method=RequestMethod.GET, produces="application/json; charset=UTF-8")
+ public Map<String, Object> checkEmail(@RequestParam("id") String id) {
+     System.out.println("중복확인 요청 아이디: " + id);
+     
+     // 1. 이메일로 유저 정보 전체를 조회합니다.
+     UserVO user = service.getUserById(id); 
+     
+     Map<String, Object> res = new HashMap<>();
+     
+     if (user != null) {
+         // 유저가 존재함
+         res.put("exists", true);
+         // UserVO에 있는 isDeleted 값을 가져와서 전달 (true면 탈퇴한 회원)
+         res.put("isDeleted", user.isDeleted()); 
+         System.out.println("중복여부: true, 탈퇴여부: " + user.isDeleted());
+     } else {
+         // 유저가 존재하지 않음 (가입 가능)
+         res.put("exists", false);
+         res.put("isDeleted", false);
+         System.out.println("중복여부: false");
+     }
+     
+     return res;
+ }
+
     
    
  // 4. 주문 내역 (페이징)
@@ -569,6 +585,28 @@ MemberMapper memberMapper;
         // 2. 전달받은 orderIdx를 사용하여 주문 상세 페이지로 리다이렉트
         return "redirect:/user/orderDetailList.do?orderIdx=" + orderIdx;
     }
+    @GetMapping("/Memberdelete.do")
+    public String memberDelete(HttpServletRequest request, HttpServletResponse response) {
+        // 1. 현재 로그인된 유저의 정보(SecurityContext) 가져오기
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        
+        if (auth != null && auth.isAuthenticated()) {
+            String userId = auth.getName(); // 유저 아이디(이메일)
+            
+            // 2. DB의 is_deleted를 1로 업데이트
+            service.updateIsDeleted(userId);
+            
+            // 3. 스프링 시큐리티 로그아웃 강제 실행
+            new SecurityContextLogoutHandler().logout(request, response, auth);
+        }
+        
+        // 4. 탈퇴 알림을 위해 파라미터를 들고 메인으로 이동
+        return "redirect:/index.do?status=withdrawn";
+    }
+    
+    
+    
+    
 	
 }
 
