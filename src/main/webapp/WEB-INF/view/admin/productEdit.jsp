@@ -233,9 +233,17 @@
 					onclick="addRow()">+ 옵션 추가</button>
 			</div>
 
-			<div class="submit-btn-wrapper">
-				<button type="submit"
-					class="btn btn-primary btn-lg py-3 fw-bold w-50">상품 수정하기</button>
+			<div class="submit-btn-wrapper d-flex justify-content-center gap-3 mx-auto" style="max-width: 600px;">
+			    <button type="submit"
+			        class="btn btn-primary btn-lg py-3 fw-bold flex-fill">
+			        상품 수정하기
+			    </button>
+			    
+			    <button type="button" 
+			        class="btn btn-outline-danger btn-lg py-3 fw-bold flex-fill" 
+			        onclick="deleteProduct('${m.productIdx}')">
+			        상품 삭제하기
+			    </button>
 			</div>
 		</form>
 	</div>
@@ -730,6 +738,25 @@ function handleFormSubmit(e) {
 
     // 모든 검사 통과 시 true 반환하여 폼 제출 허용
     return true;
+}
+
+
+//상품 삭제 함수
+function deleteProduct(productIdx) {
+    if (confirm("정말로 이 상품을 삭제하시겠습니까?")) {
+        const form = document.createElement('form');
+        form.method = 'POST';
+        form.action = '${path}/admin/adminProductDeleteOK.do';
+
+        const input = document.createElement('input');
+        input.type = 'hidden';
+        input.name = 'productIdx';
+        input.value = productIdx;
+
+        form.appendChild(input);
+        document.body.appendChild(form);
+        form.submit();
+    }
 }
 
 </script>

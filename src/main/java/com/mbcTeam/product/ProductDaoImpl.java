@@ -1,10 +1,9 @@
 package com.mbcTeam.product;
 
-import java.util.HashMap; 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Collections;
-
 
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,8 +43,8 @@ public class ProductDaoImpl implements ProductDao {
 	}
 
 	@Override
-	public void delete(ProductVO vo) {
-		mybatis.delete("PRODUCT.DELETE_PRODUCT", vo);
+	public void delete(int productIdx) {
+		mybatis.delete("PRODUCT.DELETE_PRODUCT", productIdx);
 	}
 
 	@Override
@@ -78,25 +77,18 @@ public class ProductDaoImpl implements ProductDao {
 		return mybatis.selectList("PRODUCT.SELECT_ALL_PRODUCTS");
 	}
 
-
-	
 	@Override
 	public List<ProductVO> selectByCategory(String category) {
-	    return mybatis.selectList("PRODUCT.SELECT_BY_CATEGORY", 
-	                              Collections.singletonMap("category", category));
+		return mybatis.selectList("PRODUCT.SELECT_BY_CATEGORY", Collections.singletonMap("category", category));
 	}
 
-	
-	
 	@Override
 	public List<ProductVO> selectByCategoryAndSub(String category, String subCategory) {
-	    Map<String, Object> params = new HashMap<>();
-	    params.put("category", category);
-	    params.put("subCategory", subCategory);
-	    return mybatis.selectList("PRODUCT.SELECT_BY_CATEGORY", params);
+		Map<String, Object> params = new HashMap<>();
+		params.put("category", category);
+		params.put("subCategory", subCategory);
+		return mybatis.selectList("PRODUCT.SELECT_BY_CATEGORY", params);
 	}
-
-	
 
 	@Override
 	public int totalCount(ProductVO vo) {
@@ -126,7 +118,7 @@ public class ProductDaoImpl implements ProductDao {
 
 	@Override
 	public List<ProductDescImgVO> adminProductEditDescImg(int productIdx) {
-		return mybatis.selectList("PRODUCT.EDIT_PRODUCT_DESC_IMG", productIdx);		
+		return mybatis.selectList("PRODUCT.EDIT_PRODUCT_DESC_IMG", productIdx);
 	}
 
 	@Override
@@ -146,38 +138,38 @@ public class ProductDaoImpl implements ProductDao {
 
 	@Override
 	public void deleteImg(int productImgIdx) {
-		mybatis.delete("PRODUCT.DELETE_IMG",productImgIdx);
-		
+		mybatis.delete("PRODUCT.DELETE_IMG", productImgIdx);
+
 	}
 
 	@Override
 	public void deleteDescImg(int productDescImgIdx) {
-		mybatis.delete("PRODUCT.DELETE_DESC_IMG",productDescImgIdx);
-		
+		mybatis.delete("PRODUCT.DELETE_DESC_IMG", productDescImgIdx);
+
 	}
-	
+
 	@Override
 	public void deleteOption(int optionIdx) {
 		mybatis.delete("PRODUCT.DELETE_PRODUCT_OPTION", optionIdx);
-		
+
 	}
 
 	@Override
 	public void updateImgOrder(ProductImgVO vo) {
 		mybatis.update("PRODUCT.UPDATE_IMG_ORDER", vo);
-		
+
 	}
 
 	@Override
 	public void updateDescImgOrder(ProductDescImgVO vo) {
-		mybatis.update("PRODUCT.UPDATE_DESC_IMG_ORDER",vo);
-		
+		mybatis.update("PRODUCT.UPDATE_DESC_IMG_ORDER", vo);
+
 	}
-	
+
 	@Override
 	public void updateOption(ProductOptionVO vo) {
 		mybatis.update("PRODUCT.UPDATE_PRODUCT_OPTION", vo);
-		
+
 	}
 
 	@Override
@@ -192,18 +184,32 @@ public class ProductDaoImpl implements ProductDao {
 
 	@Override
 	public List<ProductVO> getRecommendedProducts() {
-	    return mybatis.selectList("PRODUCT.GET_RECOMMENDED_PRODUCTS");
+		return mybatis.selectList("PRODUCT.GET_RECOMMENDED_PRODUCTS");
 	}
 
 	@Override
 	public List<ProductVO> getSaleProducts() {
-	    return mybatis.selectList("PRODUCT.GET_SALE_PRODUCTS");
-	}
-	
-	@Override
-	public List<ProductVO> searchProducts(String keyword) {
-	    return mybatis.selectList("PRODUCT.SEARCH_PRODUCTS", keyword);
+		return mybatis.selectList("PRODUCT.GET_SALE_PRODUCTS");
 	}
 
+	@Override
+	public List<ProductVO> searchProducts(String keyword) {
+		return mybatis.selectList("PRODUCT.SEARCH_PRODUCTS", keyword);
+	}
+
+	@Override
+	public List<Integer> getProductImgIdxList(int productIdx) {
+		return mybatis.selectList("PRODUCT.SELECT_IMGS", productIdx);
+	}
+
+	@Override
+	public List<Integer> getProductDescImgIdxList(int productIdx) {
+		return mybatis.selectList("PRODUCT.SELECT_DESC_IMGS", productIdx);
+	}
+
+	@Override
+	public List<Integer> getProductOptionIdxList(int productIdx) {
+		return mybatis.selectList("PRODUCT.SELECT_OPTIONS", productIdx);
+	}
 
 }
