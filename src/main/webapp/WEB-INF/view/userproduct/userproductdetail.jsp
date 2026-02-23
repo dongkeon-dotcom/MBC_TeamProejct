@@ -55,17 +55,7 @@
                         </c:otherwise>
                     </c:choose>
                 </div>
-                
-				<div class="product-rating">
-				    <c:forEach begin="1" end="5" var="i">
-				        <span style="color: ${i <= (product.avgRating) ? '#ffc107' : '#e4e5e9'}; font-size: 20px;">★</span>
-				    </c:forEach>
-				    <span class="rating-text" style="color: #888; margin-left: 5px;">
-				        (${product.reviewCount})
-				    </span>
-				</div>
-				
-				
+  
                 <%-- 자바스크립트 계산용 Hidden 값 (VO의 절삭된 단가를 기준가로 사용) --%>
                 <input type="hidden" id="finalUnitPrice" value="${product.discountedPrice}">
                 <hr class="divider">

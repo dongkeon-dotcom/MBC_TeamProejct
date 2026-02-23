@@ -8,11 +8,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
+import javax.servlet.http.HttpServletRequest;
 
 import javax.servlet.http.HttpSession;
-
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -22,7 +21,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.security.oauth2.core.user.OAuth2User;
-import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -32,7 +30,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.mbcTeam.security.MemberMapper;
 import com.mbcTeam.shop.DeliveryService;
@@ -342,32 +339,18 @@ MemberMapper memberMapper;
  }
 
  
- @ResponseBody
- @RequestMapping(value="/checkEmail.do", method=RequestMethod.GET, produces="application/json; charset=UTF-8")
- public Map<String, Object> checkEmail(@RequestParam("id") String id) {
-     System.out.println("중복확인 요청 아이디: " + id);
-     
-     // 1. 이메일로 유저 정보 전체를 조회합니다.
-     UserVO user = service.getUserById(id); 
-     
-     Map<String, Object> res = new HashMap<>();
-     
-     if (user != null) {
-         // 유저가 존재함
-         res.put("exists", true);
-         // UserVO에 있는 isDeleted 값을 가져와서 전달 (true면 탈퇴한 회원)
-         res.put("isDeleted", user.isDeleted()); 
-         System.out.println("중복여부: true, 탈퇴여부: " + user.isDeleted());
-     } else {
-         // 유저가 존재하지 않음 (가입 가능)
-         res.put("exists", false);
-         res.put("isDeleted", false);
-         System.out.println("중복여부: false");
-     }
-     
-     return res;
- }
-
+ 
+    @ResponseBody
+    @RequestMapping(value="/checkEmail.do", method=RequestMethod.GET, produces="application/json; charset=UTF-8")
+    public Map<String, Object> checkEmail(@RequestParam("id") String id) {
+        System.out.println("중복확인 요청 아이디: " + id);
+        boolean exists = service.existsByEmail(id);
+        System.out.println("중복여부: " + exists);
+        
+        Map<String, Object> res = new HashMap<>();
+        res.put("exists", exists);
+        return res;
+    }
     
    
  // 4. 주문 내역 (페이징)
@@ -585,44 +568,6 @@ MemberMapper memberMapper;
         
         // 2. 전달받은 orderIdx를 사용하여 주문 상세 페이지로 리다이렉트
         return "redirect:/user/orderDetailList.do?orderIdx=" + orderIdx;
-    }
-    
-    
-
-    
-    
-    @GetMapping("/Memberdelete.do")
-    public String memberDelete(HttpServletRequest request, HttpServletResponse response, HttpSession session) {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        
-        // 1. 세션에서 "id" 꺼내기 (이제 null이 아니어야 함)
-        String userId = (String) session.getAttribute("id");
-
-        // 2. 만약 세션에 없다면 시큐리티 Principal에서 꺼내기
-        if (userId == null && auth != null) {
-            if (auth.getPrincipal() instanceof OAuth2User) {
-                // 소셜 로그인인 경우 attributes에서 email 추출
-                OAuth2User oAuth2User = (OAuth2User) auth.getPrincipal();
-                userId = (String) oAuth2User.getAttributes().get("email");
-            } else {
-                userId = auth.getName();
-            }
-        }
-
-        System.out.println("============== [탈퇴 시도 결과] ==============");
-        System.out.println("최종 매칭된 ID: " + userId); 
-        System.out.println("=============================================");
-
-        if (userId != null && !userId.isEmpty()) {
-            service.updateIsDeleted(userId);
-        }
-
-        // 로그아웃 처리
-        if (auth != null) {
-            new SecurityContextLogoutHandler().logout(request, response, auth);
-        }
-        
-        return "redirect:/index.do?status=withdrawn";
     }
 	
 }

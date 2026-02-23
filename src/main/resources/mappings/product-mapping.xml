@@ -309,43 +309,42 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
 	<!-- 상품 상세 조회 (사용자용) -->
 	<select id="SELECT_PRODUCT_DETAIL_USER" parameterType="int" resultType="ProductVO">
-	    SELECT p.product_Idx AS productIdx,
-	           p.category,
-	           p.subCategory,
-	           p.product_Name AS productName,
-	           p.price,
-	           p.reg_Date AS regDate,
-	           p.product_Desc AS productDesc,
-	           p.discount_Rate AS discountRate,
-	           p.is_Recommended AS isRecommended,
-	           p.product_main_img AS productMainImg,
-	           p.product_size_img AS productSizeImg,
-	           IFNULL(ROUND(AVG(r.Rating)), 0) AS avgRating,
-	           COUNT(r.review_Idx) AS reviewCount
-	    FROM Products p
-	    LEFT JOIN Reviews r ON p.product_Idx = r.product_Idx
-	    WHERE p.product_Idx = #{productIdx}
-	    GROUP BY p.product_Idx
-	</select>
+    SELECT p.product_Idx AS productIdx,
+           p.category,
+           p.subCategory,
+           p.product_Name AS productName,
+           p.price,
+           p.reg_Date AS regDate,
+           p.product_Desc AS productDesc,
+           p.discount_Rate AS discountRate,
+           p.is_Recommended AS isRecommended,
+           p.product_main_img AS productMainImg,
+           p.product_size_img AS productSizeImg,
+           IFNULL(ROUND(AVG(r.Rating)), 0) AS avgRating,
+           COUNT(r.review_Idx) AS reviewCount
+    FROM Products p
+    LEFT JOIN Reviews r ON p.product_Idx = r.product_Idx AND r.is_Hide = 0
+    WHERE p.product_Idx = #{productIdx}
+    GROUP BY p.product_Idx
+</select>
 
 	<!-- 카테고리 + 서브카테고리별 상품 조회 -->
-	<select id="SELECT_BY_CATEGORY" parameterType="map"
-        resultType="ProductVO">
+	<select id="SELECT_BY_CATEGORY" parameterType="map" resultType="ProductVO">
     SELECT
-    	p.product_Idx AS productIdx,
-    	p.category AS category,
-    	p.subCategory AS subCategory,
-    	p.product_Name AS productName,
-    	p.price AS price,
-    	p.reg_Date AS regDate,
-    	p.product_Desc AS productDesc,
-    	p.product_main_img AS productMainImg,
-    	p.discount_rate AS discountRate,
-    	p.is_Recommended AS isRecommended,
-    	IFNULL(ROUND(AVG(r.rating)),0) as avgRating,
-    	COUNT(r.product_Idx) as reviewCount
+        p.product_Idx AS productIdx,
+        p.category AS category,
+        p.subCategory AS subCategory,
+        p.product_Name AS productName,
+        p.price AS price,
+        p.reg_Date AS regDate,
+        p.product_Desc AS productDesc,
+        p.product_main_img AS productMainImg,
+        p.discount_rate AS discountRate,
+        p.is_Recommended AS isRecommended,
+        IFNULL(ROUND(AVG(r.rating)),0) as avgRating,
+        COUNT(r.review_Idx) as reviewCount
     FROM Products p
-    LEFT JOIN Reviews r ON p.product_Idx = r.product_Idx
+    LEFT JOIN Reviews r ON p.product_Idx = r.product_Idx AND r.is_Hide = 0
     <where>
         <if test="category != null and category != ''">
             AND p.category = #{category}
@@ -355,34 +354,24 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         </if>
     </where>
     GROUP BY
-    	p.product_Idx,
-    	p.category,
-    	p.subCategory,
-    	p.product_Name,
-    	p.price,
-    	p.reg_Date,
-    	p.product_Desc,
-    	p.product_main_img,
-    	p.discount_rate,
-    	p.is_Recommended 
+        p.product_Idx, p.category, p.subCategory, p.product_Name, p.price,
+        p.reg_Date, p.product_Desc, p.product_main_img, p.discount_rate, p.is_Recommended 
     ORDER BY p.reg_Date DESC
 </select>
 
 	<!-- 리뷰 조회 -->
-	<select id="SELECT_PRODUCT_REVIEWS" parameterType="int"
-		resultType="ReviewVO">
-		SELECT r.review_Idx,
-		r.product_Idx,
-		r.user_Idx,
-		r.user_Name,
-		r.review,
-		r.Rating,
-		r.is_Hide,
-		r.reg_Date
-		FROM Reviews r
-		WHERE
-		r.product_Idx = #{productIdx}
-		ORDER BY r.reg_Date DESC
+	<select id="SELECT_PRODUCT_REVIEWS" parameterType="int" resultType="ReviewVO">
+	    SELECT r.review_Idx,
+	           r.product_Idx,
+	           r.user_Idx,
+	           r.user_Name,
+	           r.review,
+	           r.Rating,
+	           r.is_Hide,
+	           r.reg_Date
+	    FROM Reviews r
+	    WHERE r.product_Idx = #{productIdx} 
+	      AND r.is_Hide = 0  ORDER BY r.reg_Date DESC
 	</select>
 
 	<!-- 추천 상품 조회 -->
@@ -399,57 +388,51 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	</select>
 	
 	<!-- 세일 상품 조회 -->
-	<select id="GET_SALE_PRODUCTS" resultType="com.mbcTeam.product.ProductVO">
-	    SELECT 
-	        p.product_idx AS productIdx,
-	        p.product_name AS productName,
-	        p.category AS category,
-	        p.price,
-	        p.product_main_img AS productMainImg,
-	        p.discount_rate AS discountRate,
-	        IFNULL(ROUND(AVG(r.rating)), 0) as avgRating,
-	        COUNT(r.product_Idx) as reviewCount
-	    FROM Products p
-	    LEFT JOIN Reviews r ON p.product_Idx = r.product_Idx
-	    WHERE p.discount_rate > 0
-	    GROUP BY 
-	        p.product_idx, p.product_name, p.category, p.price, 
-	        p.product_main_img, p.discount_rate
-	    ORDER BY p.product_idx DESC
-	</select>
+<select id="GET_SALE_PRODUCTS" resultType="com.mbcTeam.product.ProductVO">
+    SELECT 
+        p.product_idx AS productIdx,
+        p.product_name AS productName,
+        p.category AS category,
+        p.price,
+        p.product_main_img AS productMainImg,
+        p.discount_rate AS discountRate,
+        IFNULL(ROUND(AVG(r.rating)), 0) as avgRating,
+        COUNT(r.review_Idx) as reviewCount
+    FROM Products p
+    LEFT JOIN Reviews r ON p.product_Idx = r.product_Idx AND r.is_Hide = 0
+    WHERE p.discount_rate > 0
+    GROUP BY 
+        p.product_idx, p.product_name, p.category, p.price, 
+        p.product_main_img, p.discount_rate
+    ORDER BY p.product_idx DESC
+</select>
+	
+	
 	<!-- 상품 검색 카테고리 포함 -->
 	<select id="SEARCH_PRODUCTS" parameterType="string" resultType="ProductVO">
-	    SELECT
-	    	p.product_Idx AS productIdx,
-	    	p.category AS category,
-	    	p.subCategory AS subCategory,
-	    	p.product_Name AS productName,
-	    	p.price AS price,
-	    	p.reg_Date AS regDate,
-	    	p.product_Desc AS productDesc,
-	    	p.product_main_img AS productMainImg,
-	    	p.discount_rate AS discountRate,
-	    	p.is_Recommended AS isRecommended,
-	    	IFNULL(ROUND(AVG(r.rating)),0) as avgRating,
-	    	COUNT(r.product_Idx) as reviewCount
-	    FROM Products p
-	    LEFT JOIN Reviews r ON p.product_Idx = r.product_Idx
-	    WHERE p.category LIKE CONCAT('%', #{keyword}, '%')
-	       OR p.subCategory LIKE CONCAT('%', #{keyword}, '%')
-	       OR p.product_Name LIKE CONCAT('%', #{keyword}, '%')
-	    GROUP BY
-	    	p.product_Idx,
-	    	p.category,
-	    	p.subCategory,
-	    	p.product_Name,
-	    	p.price,
-	    	p.reg_Date,
-	    	p.product_Desc,
-	    	p.product_main_img,
-	    	p.discount_rate,
-	    	p.is_Recommended 	    
-	    ORDER BY p.reg_Date DESC
-	</select>
+    SELECT
+        p.product_Idx AS productIdx,
+        p.category AS category,
+        p.subCategory AS subCategory,
+        p.product_Name AS productName,
+        p.price AS price,
+        p.reg_Date AS regDate,
+        p.product_Desc AS productDesc,
+        p.product_main_img AS productMainImg,
+        p.discount_rate AS discountRate,
+        p.is_Recommended AS isRecommended,
+        IFNULL(ROUND(AVG(r.rating)),0) as avgRating,
+        COUNT(r.review_Idx) as reviewCount
+    FROM Products p
+    LEFT JOIN Reviews r ON p.product_Idx = r.product_Idx AND r.is_Hide = 0
+    WHERE p.category LIKE CONCAT('%', #{keyword}, '%')
+       OR p.subCategory LIKE CONCAT('%', #{keyword}, '%')
+       OR p.product_Name LIKE CONCAT('%', #{keyword}, '%')
+    GROUP BY
+        p.product_Idx, p.category, p.subCategory, p.product_Name, p.price,
+        p.reg_Date, p.product_Desc, p.product_main_img, p.discount_rate, p.is_Recommended      
+    ORDER BY p.reg_Date DESC
+</select>
 		
 	
 
