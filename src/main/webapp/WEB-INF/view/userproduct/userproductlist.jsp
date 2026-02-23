@@ -4,18 +4,19 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 
 <c:import url="/WEB-INF/view/include/top.jsp" />
-
+<br><br>
 
 <link rel="stylesheet" href="${path}/resources/css/userproduct/userproductlist.css">
 <section>
-	
+
 <!-- 검색 결과 안내 -->
+
 <c:if test="${not empty searchKeyword}">
     <div class="search-result-info text-center mb-4">
         <c:choose>
-            <c:when test="${resultCount > 0}">
+            <c:when test="${totalCount > 0}">
                 <strong>"${searchKeyword}"</strong> 검색 결과: 
-                <span>${resultCount}개</span>
+                <span>${totalCount}개</span>
             </c:when>
             <c:otherwise>
                 <strong>"${searchKeyword}"</strong>에 대한 검색 결과가 없습니다.
