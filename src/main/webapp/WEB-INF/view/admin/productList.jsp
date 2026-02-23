@@ -13,20 +13,20 @@
 	<div class="d-flex justify-content-between mb-3">
 	    <form action="${path}/admin/adminProductList.do" class="d-flex gap-2 flex-wrap">
 	        <select class="form-select" name="recommendedFilter" style="width: 130px;">
-	            <option value="all" ${param.recommendedFilter == 'all' ? 'selected' : ''}>전체</option>
-	            <option value="true" ${param.recommendedFilter == 'true' ? 'selected' : ''}>추천제품</option>
-	            <option value="false" ${param.recommendedFilter == 'false' ? 'selected' : ''}>일반제품</option>
+	            <option value="all" ${recommendedFilter == 'all' ? 'selected' : ''}>전체</option>
+	            <option value="true" ${recommendedFilter == 'true' ? 'selected' : ''}>추천제품</option>
+	            <option value="false" ${recommendedFilter == 'false' ? 'selected' : ''}>일반제품</option>
 	        </select>
 	
 	        <select class="form-select" name="discountFilter" style="width: 130px;">
-	            <option value="all" ${param.discountFilter == 'all' ? 'selected' : ''}>전체</option>
-	            <option value="sale" ${param.discountFilter == 'sale' ? 'selected' : ''}>할인중</option>
-	            <option value="normal" ${param.discountFilter == 'normal' ? 'selected' : ''}>정가(0%)</option>
+	            <option value="all" ${discountFilter == 'all' ? 'selected' : ''}>전체</option>
+	            <option value="sale" ${discountFilter == 'sale' ? 'selected' : ''}>할인중</option>
+	            <option value="normal" ${discountFilter == 'normal' ? 'selected' : ''}>정가(0%)</option>
 	        </select>
 	
 	        <select class="form-select search-select" name="search" style="width: 120px;">
-	            <option value="code" ${param.search == 'code' ? 'selected' : ''}>제품코드</option>
-	            <option value="name" ${param.search == 'name' ? 'selected' : ''}>제품이름</option>
+	            <option value="code" ${search == 'code' ? 'selected' : ''}>제품코드</option>
+	            <option value="name" ${search == 'name' ? 'selected' : ''}>제품이름</option>
 	        </select>
 	        
 	        <input type="text" class="form-control" style="width: 200px;" name="keyword" value="${keyword}">
@@ -105,6 +105,8 @@
 		                    <c:param name="startIdx" value="${(listStartPage - pageListSize - 1) * pageSize}" />
 		                    <c:param name="search" value="${search}"/>
 		                    <c:param name="keyword" value="${keyword}"/>
+		                    <c:param name="recommendedFilter" value ="${recommendedFilter }"/>
+		                    <c:param name="discountFilter" value="${discountFilter }" />
 		                </c:url>
 		                <li class="page-item">
 		                    <a class="page-link" href="${beforePageUrl}">이전</a>
@@ -120,6 +122,8 @@
 		                    <c:param name="startIdx" value="${(i-1) * pageSize}"/>
 		                    <c:param name="search" value="${search}"/>
 		                    <c:param name="keyword" value="${keyword}"/>
+							<c:param name="recommendedFilter" value ="${recommendedFilter }"/>
+		                    <c:param name="discountFilter" value="${discountFilter }" />
 		                </c:url>
 						<li class="page-item ${i == (startIdx / pageSize + 1) ? 'active' : ''}">
             				<a class="page-link" href="${forPageUrl}">${i}</a>
@@ -133,6 +137,8 @@
 		                    <c:param name="startIdx" value="${listEndPage * pageSize}" />
 		                    <c:param name="search" value="${search}"/>
 		                    <c:param name="keyword" value="${keyword}"/>
+		                    <c:param name="recommendedFilter" value ="${recommendedFilter }"/>
+		                    <c:param name="discountFilter" value="${discountFilter }" />			                    
 		                </c:url>
 		                <li class="page-item">
 		                    <a class="page-link" href="${afterPageUrl}">다음</a>
@@ -147,6 +153,8 @@
 		            <c:param name="startIdx" value="${(totalPage-1) * pageSize}"/>
 		            <c:param name="search" value="${search}"/>
 		            <c:param name="keyword" value="${keyword}"/>
+                    <c:param name="recommendedFilter" value ="${recommendedFilter }"/>
+                    <c:param name="discountFilter" value="${discountFilter }" />		            
 		        </c:url>
 		        <li class="page-item">
 		            <a class="page-link" href="${endPageUrl}" aria-label="Last">
