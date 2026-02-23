@@ -149,6 +149,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 <select id="getUserManagement" resultType="UserManagementDTO">
 	select
 		u.reg_date,
+		u.is_deleted,
 		u.user_idx,
 		u.id,
 		u.user_phone,

@@ -34,6 +34,7 @@
 					<thead class="table-light">
 						<tr>
 							<th>가입일</th>
+							<th>상태</th>
 							<th>회원번호</th>
 							<th>이메일</th>
 							<th>전화번호</th>
@@ -49,6 +50,16 @@
 								<c:forEach var="m" items="${li}">
 									<tr>
 										<td>${m.regDate}</td>
+										<td>
+										<c:choose>
+											<c:when test="${m.isDeleted == 0 }">
+												<span style="color: green;">● 활동</span>
+											</c:when>
+											<c:otherwise>
+												<span style="color: gray;">● 탈퇴</span>
+											</c:otherwise>
+										</c:choose>
+										</td>
 										<td>${m.userIdx}</td>
 										<td>${m.id}</td>
 										<td>${m.userPhone}</td>
