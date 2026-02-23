@@ -8,6 +8,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.mbcTeam.product.ProductDescImgVO;
 import com.mbcTeam.product.ProductImgVO;
@@ -59,25 +60,49 @@ public class UserProductController {
         return "userproduct/userproductlist";
     }
 
+    
+    
+
     // 2. 유저 상품 상세 페이지 (상품 정보 + 옵션 + 이미지 + 리뷰/리뷰사진)
     @GetMapping("/userproductdetail.do")
-    public String userproductdetail(@RequestParam("productIdx") int productIdx, Model model) {
+    public String userproductdetail(
+            @RequestParam("productIdx") int productIdx, 
+            @RequestParam(value="orderIdx", required=false) Long orderIdx, // 보던 주문번호를 받음
+            Model model, 
+            RedirectAttributes rttr) {
         
-        // (1) 상품 기본 정보 조회 (관리자 수정용 메서드 재활용)
+        System.out.println("==============> [상세보기] productIdx: " + productIdx + ", orderIdx: " + orderIdx);
+
+        // (1) 상품 정보 조회 시도
         ProductVO vo = new ProductVO();
         vo.setProductIdx(productIdx);
         ProductVO product = service.adminProductEdit(vo); 
+
+        // (2) [체크] 상품이 존재하지 않거나 삭제된 경우
+        if (product == null) { 
+            rttr.addFlashAttribute("msg", "더이상 판매하지 않는 상품입니다.");
+            
+            // orderIdx가 넘어왔다면 보던 주문 상세로, 없으면 전체 목록으로 이동
+            if (orderIdx != null) {
+                return "redirect:/user/orderDetailList.do?orderIdx=" + orderIdx;
+            } else {
+                return "redirect:/user/orderList.do"; 
+            }
+        }
+
+        // --- 여기서부터는 상품이 정상적으로 존재할 때 실행되는 로직 ---
+
+        // (3) 상품 기본 정보 담기
         model.addAttribute("product", product);
 
-        // (2) 상품 이미지들 (서브 슬라이드 & 상세 설명 이미지)
+        // (4) 상품 이미지들 (서브 슬라이드 & 상세 설명 이미지)
         model.addAttribute("subImgList", service.adminProductEditImg(productIdx));
         model.addAttribute("descImgList", service.adminProductEditDescImg(productIdx));
 
-        // (3) 상품 옵션 조회 (사이즈, 컬러 등)
+        // (5) 상품 옵션 조회 (사이즈, 컬러 등)
         model.addAttribute("optionList", service.selectOptions(productIdx));
 
-        // (4) 리뷰 및 각 리뷰에 딸린 이미지 리스트 조회
-        // rservice에 구현한 getReviewListByProduct 메서드 사용
+        // (6) 리뷰 및 각 리뷰에 딸린 이미지 리스트 조회
         List<ReviewVO> reviewList = rservice.getReviewListByProduct((long)productIdx);
         
         if (reviewList != null) {
@@ -91,7 +116,10 @@ public class UserProductController {
 
         return "userproduct/userproductdetail"; 
     }
-
+    
+    
+    
+    
     // 3. 상품 검색 기능
     @GetMapping("/search.do")
     public String search(@RequestParam("keyword") String keyword, Model model) {
