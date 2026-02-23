@@ -34,13 +34,13 @@
         <tbody>
            <c:forEach var="item" items="${detailList}">
     <tr>
-        <td class="text-center">
-            <a href="${path}/userproduct/userproductdetail.do?productIdx=${item.productIdx}">
-                <img src="${path}/resources/images/ProductMainImg/${item.productMainImg}" 
-                     class="product-img" 
-                     style="width:80px; height:80px; object-fit:cover; cursor:pointer;">
-            </a>
-        </td>
+       <td class="text-center">
+    <a href="${path}/userproduct/userproductdetail.do?productIdx=${item.productIdx}&orderIdx=${order.orderIdx}">
+        <img src="${path}/resources/images/ProductMainImg/${item.productMainImg}" 
+             class="product-img" 
+             style="width:80px; height:80px; object-fit:cover; cursor:pointer;">
+    </a>
+</td>
         <td>
             <div class="fw-bold">${item.productName}</div>
             <div class="text-secondary small">옵션: ${item.color} / ${item.size}</div>
@@ -96,9 +96,26 @@ function editReview(rIdx, oIdx) { // 함수가 받을 때 이름을 rIdx, oIdx�
     }
 }
 
-
+function checkProductStatus(productIdx, isDeleted) {
+    // isDeleted가 'true', 'Y', 1 등 삭제를 의미하는 값인지 확인
+    if (isDeleted === 'true' || isDeleted === '1' || isDeleted === 'Y') {
+        alert("더이상 판매하지 않는 상품입니다.");
+        // 아무것도 하지 않음 (현재 페이지 유지)
+    } else {
+        // 삭제되지 않은 경우 상세 페이지로 이동
+        location.href = "${path}/userproduct/userproductdetail.do?productIdx=" + productIdx;
+    }
+}
 </script>
-
+<script>
+    // 페이지 로드 시 실행
+    document.addEventListener("DOMContentLoaded", function() {
+        var message = "${msg}";
+        if (message) {
+            alert(message);
+        }
+    });
+</script>
 
 
 
