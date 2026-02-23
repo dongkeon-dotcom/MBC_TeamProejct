@@ -51,13 +51,14 @@
         </td>
        <td class="text-center">
     <%-- 
-       productIdx는 주문 테이블에 항상 있으므로, 
-       상품 테이블에서 Join으로 가져온 productName이 있는지 확인합니다.
+       OrderItems 테이블은 상품이 삭제되어도 이름이 남아있으므로, 
+       우리가 컨트롤러에서 DB를 직접 찔러보고 만든 productExistMap을 사용해야 합니다.
     --%>
+    <c:set var="isExists" value="${productExistMap[item.productIdx]}" />
+
     <c:choose>
-        <%-- 상품 테이블에 데이터가 살아있다면 (Join 성공 시) --%>
-        <c:when test="${not empty item.productName}">
-            
+        <%-- 실제 상품 테이블(PRODUCT)에 데이터가 있을 때만 --%>
+        <c:when test="${isExists == true}">
             <c:set var="rIdx" value="${reviewMap[item.itemIdx]}" />
 
             <c:choose>
@@ -70,12 +71,11 @@
                             onclick="review('${item.productIdx}', '${order.orderIdx}', '${item.itemIdx}')">후기쓰기</button>
                 </c:otherwise>
             </c:choose>
-            
         </c:when>
-        
-        <%-- 상품 테이블에서 데이터가 삭제되었다면 (Join 실패 시 productName이 없음) --%>
+
+        <%-- 실제 상품 테이블에서 삭제되었다면 --%>
         <c:otherwise>
-            <span class="text-muted" style="font-size: 0.85em;">판매 중단 상품</span>
+            <span class="text-muted" style="font-size: 0.85em;">판매 종료된 상품</span>
         </c:otherwise>
     </c:choose>
 </td>
