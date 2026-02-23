@@ -25,7 +25,7 @@
 			<!-- 좌측 로고 -->
 			<div class="logo">
 				<h1>
-					<a href="${path}/index.do">로고</a>
+					<a href="${path}/index.do"><img src="${path}/resources/images/MainLogo/IMG_3004.PNG" size = 30></a>
 				</h1>
 			</div>
 

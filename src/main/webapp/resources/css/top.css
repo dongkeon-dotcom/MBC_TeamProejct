@@ -1,7 +1,6 @@
 @charset "UTF-8";
 
 /* ===== 기본 설정 ===== */
-
 html, body {
   height: 100%;          /* 전체 높이 */
   margin: 0;
@@ -9,14 +8,14 @@ html, body {
   flex-direction: column;
 }
 
-
 body {
   min-height: 100vh;
 }
 
-/* 본문 영역 */
+/* 본문 영역 - 상단바가 fixed이므로 padding-top으로 여백 확보 */
 .main-content {
   flex: 1; /* 남는 공간을 채움 */
+  padding-top: 80px; /* 상단바 높이에 맞춰 본문 가려짐 방지 */
 }
 
 /* footer */
@@ -30,22 +29,16 @@ footer {
   margin-top: auto;      /* 본문이 짧을 때는 하단에 붙음 */
 }
 
-
-
 /* 모든 링크 기본 밑줄 제거 */
 a {
   text-decoration: none !important;
-   /* 글자색은 부모 요소 따라가게 */
 }
 
 /* hover 시에도 밑줄 제거 */
 a:hover {
   text-decoration: none !important;
   color: #4a4a4a;
-  
 }
-
-
 
 /* ===== 상단바 (Header) ===== */
 .top-header {
@@ -56,37 +49,38 @@ a:hover {
   width: 100%;
   z-index: 1000;
   box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-  padding: 10px 0;
+  padding: 5px 0; /* 패딩을 약간 줄여서 슬림하게 조정 */
 }
-
 
 .top-header .container {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  max-width: 1200px; /* 컨테이너 최대 너비 설정 (선택사항) */
+  margin: 0 auto;
+  padding: 0 20px;
   flex-wrap: nowrap;
   white-space: nowrap;
-  overflow: visible;   /* 여기 수정: 서브메뉴가 잘리지 않도록 */
+  overflow: visible;
 }
 
-
+/* 로고 이미지 사이즈 조절 핵심 코드 */
 .logo h1 {
   margin: 0;
-  font-size: 24px;
-  font-weight: bold;
+  display: flex;
+  align-items: center;
 }
 
-.logo a {
-  color: #fff;
-  text-decoration: none;
-  font-family: 'Arial', sans-serif;
-  letter-spacing: 2px;
+.logo h1 img {
+  height: 50px;        /* 로고 크기: 여기서 원하는 높이로 조절하세요 */
+  width: auto;         /* 비율 유지 */
+  display: block;
+  transition: transform 0.2s;
 }
 
-.logo a:hover {
-  color: #4a4a4a;
+.logo h1 a:hover img {
+  transform: scale(1.05); /* 마우스 올리면 살짝 확대 */
 }
-
 
 /* ===== 네비게이션 (Navigation) ===== */
 nav {
@@ -100,18 +94,12 @@ nav {
   margin: 0;
   padding: 0;
   list-style: none;
-  flex-wrap: nowrap;   /* 줄바꿈 금지 */
+  flex-wrap: nowrap;
 }
-
 
 .main-nav ul.menu li a {
   text-decoration: none !important;
 }
-
-.main-nav ul.menu li a:hover {
-  text-decoration: none !important; /* hover 시에도 밑줄 제거 */
-}
-
 
 /* 메뉴 항목 공통 */
 .has-submenu {
@@ -132,10 +120,6 @@ nav {
   color: #4a4a4a;
 }
 
-.has-submenu:hover .submenu {
-  display: block;
-}
-
 /* ===== 서브메뉴 (Dropdown) ===== */
 .submenu {
   display: none;
@@ -150,10 +134,8 @@ nav {
   border-radius: 4px;
   box-shadow: 0 4px 12px rgba(0,0,0,0.15);
   border: 1px solid #ddd;
-  z-index: 2000; /* 더 높게 설정 */
+  z-index: 2000;
 }
-
-
 
 .submenu li a {
   display: block;
@@ -169,7 +151,6 @@ nav {
   color: #000;
 }
 
-/* 마우스 올리면 서브메뉴 표시 */
 .has-submenu:hover .submenu {
   display: block;
 }
@@ -179,8 +160,8 @@ nav {
   display: flex;
   align-items: center;
   gap: 15px;
-  flex-wrap: nowrap;   /* 줄바꿈 금지 */
-  white-space: nowrap; /* 줄바꿈 방지 */
+  flex-wrap: nowrap;
+  white-space: nowrap;
 }
 
 /* 검색창 스타일 */
@@ -226,6 +207,10 @@ nav {
   font-size: 14px;
   font-weight: normal;
   transition: opacity 0.2s;
+  background: none;
+  border: none;
+  color: #fff;
+  cursor: pointer;
 }
 
 .user-menu button:hover {
