@@ -97,7 +97,7 @@ async function requestPayment() {
     const customerEmail = "${not empty loginUser.id ? loginUser.id : 'test@example.com'}";
     const customerName = "${not empty delivery.receiver ? delivery.receiver : '구매자'}";
     const customerPhone = "${not empty delivery.deliveryPhone ? delivery.deliveryPhone : '01000000000'}";
-	/*
+	
     try {
         const response = await PortOne.requestPayment({
             storeId: "store-2dadb46b-2543-4b52-8149-69728e9d9a99",        
@@ -131,10 +131,7 @@ async function requestPayment() {
         console.error("에러 상세:", e);
         alert("결제창 호출 에러: " + e.message);
     }
-    */
- // 3. 바로 서버로 데이터 전송
-    alert("테스트 모드: 결제창을 건너뛰고 완료 페이지로 이동합니다.");
-    document.getElementById('orderForm').submit();
+
     
 }
 

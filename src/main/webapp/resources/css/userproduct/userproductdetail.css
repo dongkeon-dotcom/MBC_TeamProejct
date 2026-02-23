@@ -314,6 +314,14 @@ body {
     color: #999;
 }
 
+/* 별점 표시 */
+.product-rating {
+    font-size: 14px;
+    color: #ff9800;
+    margin-top: 6px;
+    text-align: left;
+}
+
 /* 별점 시각화 (황금색 별) */
 .star-rating-box {
     display: flex;

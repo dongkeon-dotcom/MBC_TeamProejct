@@ -37,6 +37,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     WHERE r.user_Idx = #{userIdx} 
       AND r.is_Hide = 0  ORDER BY r.Reg_Date DESC
 </select>
+
 <select id="getReviewOne" parameterType="long" resultType="com.mbcTeam.user.ReviewVO">
     SELECT 
         review_Idx AS reviewIdx,
@@ -53,8 +54,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     UPDATE Reviews 
     SET 
         review = #{review},
-        Rating = #{rating},
-        Reg_Date = NOW()  WHERE review_Idx = #{reviewIdx}
+        Rating = #{rating}
+    WHERE review_Idx = #{reviewIdx}
 </update>
 
 <delete id="deleteReviewImgs" parameterType="long">

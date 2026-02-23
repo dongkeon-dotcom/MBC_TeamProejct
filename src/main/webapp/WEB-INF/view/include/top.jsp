@@ -125,7 +125,7 @@
 								href="${path}/userproduct/userproductlist.do?category=원피스&subCategory=니트 원피스">니트
 									원피스</a></li>
 							<li><a
-								href="${path}/userproduct/userproductlist.do?category=원피스&subCategory=점프수트">점프수트</a></li>
+								href="${path}/userproduct/userproductlist.do?category=원피스&subCategory=점프슈트">점프슈트</a></li>
 						</ul></li>
 
 				</ul>

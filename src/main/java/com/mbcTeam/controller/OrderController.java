@@ -49,9 +49,7 @@ public class OrderController {
     @Autowired
     private CartService cartService;
 
-    /**
-     * 1. 결제 페이지 이동
-     */
+    
     @PostMapping("/payment.do")
     public String paymentPage(
             @RequestParam(required = false) Integer productIdx, 

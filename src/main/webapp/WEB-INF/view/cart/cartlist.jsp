@@ -109,10 +109,7 @@
                     <span class="total-label">할인 금액</span>
                     <span class="total-value discount">- <span id="discountDisplay">0</span>원</span>
                 </div>
-                <div class="total-row">
-                    <span class="total-label">배송비</span>
-                    <span class="total-value" id="deliveryFeeDisplay">무료배송</span>
-                </div>
+
                 <hr class="total-divider">
                 <div class="total-row final">
                     <span class="total-label">총 구매 금액</span>
@@ -125,52 +122,30 @@
 </div>
 
 <script>
-/**
- * 1. 실시간 총 금액 및 배송비 계산
- */
 function updateTotalPrice() {
-    const checkboxes = document.querySelectorAll('.chk:checked:not(:disabled)');
-    let totalBase = 0;   // 총 정가 합계
-    let totalFinal = 0;  // 총 할인가(실제 결제할 상품가) 합계
+    const checkboxes = document.querySelectorAll('.chk:checked'); // 선택된 체크박스들
+    let totalBase = 0;   
+    let totalFinal = 0;  
 
     checkboxes.forEach(cb => {
-        const unitPrice = parseInt(cb.dataset.price);
-        const unitOrigin = parseInt(cb.dataset.origin);
-        const quantity = parseInt(cb.dataset.quantity);
+        // dataset에서 값을 가져올 때 값이 비어있으면 0으로 처리
+        const unitPrice = parseInt(cb.dataset.price) || 0;
+        const unitOrigin = parseInt(cb.dataset.origin) || 0;
+        const quantity = parseInt(cb.dataset.quantity) || 0;
+
 
         totalBase += (unitOrigin * quantity);
         totalFinal += (unitPrice * quantity);
     });
 
-    // --- 배송비 계산 로직 ---
-    let deliveryFee = 0;
-    const deliveryDisplay = document.getElementById('deliveryFeeDisplay');
-    
-    // 선택한 상품이 있고, 실 결제금액이 50,000원 미만인 경우 3,000원 부과
-    if (totalFinal > 0 && totalFinal < 50000) {
-        deliveryFee = 3000;
-    }
+    // 화면 업데이트 (ID가 정확한지 다시 한 번 확인하세요)
+    const baseDisp = document.getElementById('basePriceDisplay');
+    const discDisp = document.getElementById('discountDisplay');
+    const totalDisp = document.getElementById('totalPriceDisplay');
 
-    const grandTotal = totalFinal + deliveryFee;
-
-    // 화면 업데이트
-    document.getElementById('basePriceDisplay').innerText = totalBase.toLocaleString();
-    document.getElementById('discountDisplay').innerText = (totalBase - totalFinal).toLocaleString();
-    
-    if (deliveryDisplay) {
-        if (totalFinal === 0) {
-            deliveryDisplay.innerText = "0원";
-            deliveryDisplay.style.color = "#333";
-        } else if (deliveryFee === 0) {
-            deliveryDisplay.innerText = "무료배송";
-            deliveryDisplay.style.color = "#3498db"; // 무료일 때 강조색
-        } else {
-            deliveryDisplay.innerText = deliveryFee.toLocaleString() + "원";
-            deliveryDisplay.style.color = "#333";
-        }
-    }
-
-    document.getElementById('totalPriceDisplay').innerText = grandTotal.toLocaleString();
+    if (baseDisp) baseDisp.innerText = totalBase.toLocaleString();
+    if (discDisp) discDisp.innerText = (totalBase - totalFinal).toLocaleString();
+    if (totalDisp) totalDisp.innerText = totalFinal.toLocaleString();
     
     // 전체 선택 상태 업데이트
     const allEnabled = document.querySelectorAll('.chk:not(:disabled)');
