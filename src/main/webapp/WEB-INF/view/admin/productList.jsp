@@ -224,7 +224,7 @@ document.addEventListener('DOMContentLoaded', function() {
         let actionColumn = "";
         let actionValue = 0;
         
-        // ✨ 변수 오타 수정 완료: action 값에 따라 분기
+        // action 값에 따라 분기
         if (action === 'recommend') {
             actionColumn = 'is_recommended';
             actionValue = 1;
