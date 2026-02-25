@@ -89,20 +89,24 @@
                                 </c:otherwise>
                             </c:choose>
                         </div>
-                       <div class="product-rating">
-                            <span style="color: #f1c40f;">
-                                <c:forEach begin="1" end="5" var="i">
-                                    <c:choose>
-                                        <%-- avgRating이 null이면 0처리 --%>
-                                        <c:when test="${i <= (p.avgRating != null ? p.avgRating : 0)}">★</c:when>
-                                        <c:otherwise>☆</c:otherwise>
-                                    </c:choose>
-                                </c:forEach>
-                            </span>
-                            <span class="rating-text" style="font-size: 0.9em; color: #ff9800;">
-                                (${not empty p.reviewCount ? p.reviewCount : 0})
-                            </span>
-                        </div>
+                       <div class="product-rating" style="display: flex; align-items: center; justify-content: center; gap: 5px; margin-top: 10px;">
+						    <span class="rating-stars" style="color: #FFB800; font-size: 12px; letter-spacing: -1.5px;">
+						        <c:forEach begin="1" end="5" var="i">
+						            <c:choose>
+						                <c:when test="${i <= (p.avgRating != null ? p.avgRating : 0)}">★</c:when>
+						                <c:otherwise>☆</c:otherwise>
+						            </c:choose>
+						        </c:forEach>
+						    </span>
+						
+						    <span class="rating-score" style="font-size: 13px; font-weight: 800; color: #ffb800; margin-left: 2px;">
+						        <fmt:formatNumber value="${p.avgRating != null ? p.avgRating : 0.0}" pattern="0.0" />
+						    </span>
+						
+						    <span class="rating-count" style="font-size: 12px; color: #b0b0b0; font-weight: 400;">
+						        (${not empty p.reviewCount ? p.reviewCount : 0})
+						    </span>
+						</div>
                     </div>
                 </div>
             </div>
