@@ -145,15 +145,30 @@ $(document).ready(function() {
         // 필요한 입력값 가져오기
         var pName = $('#productName').val(); // 상품명 입력란 id
         var pFeature = $('#subCategory').val(); // 특징 입력란 id
+        
+        // 대표이미지 가져오기
+        var fileInput = $('#mainFileList').find('input[type="file"]')[0];
+        var file = fileInput ? fileInput.files[0] : null;
 
         // 입력값 검사
         if(!pName) {
-            alert("상품명을 입력해주세요.");
+            alert("상품명이 필요합니다.");
             return;
         }
         if(pFeature === '-- 하위 카테고리 선택 --'){
-        	alert("하위카테고리를 선택해주세요.");
+        	alert("하위카테고리가 필요합니다.");
         	return;
+        }
+        if(!file){
+        	alert("대표이미지가 필요합니다.");
+        	return
+        }
+        
+        var formData = new FormData();
+        formData.append("name", pName);
+        formData.append("feature", pFeature);
+        if(file){
+        	formData.append("image",file);
         }
 
         // 버튼 상태 변경 (중복 클릭 방지)
@@ -165,11 +180,10 @@ $(document).ready(function() {
         const path = '${path}';
         $.ajax({
             url: path + '/admin/geminiAjax.do',
-            type: 'GET',
-            data: {
-                name: pName,
-                feature: pFeature
-            },
+            type: 'POST',
+            data: formData,
+            processData: false,		//데이터를 쿼리 문자열로 변환하지 않음
+            contentType: false,		// 가상의 form-data 헤더 자동 생성
             success: function(response) {
                 // 결과값을 textarea에 넣기
                 $('#productDesc').val(response);

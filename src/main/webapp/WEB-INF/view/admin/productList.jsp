@@ -224,7 +224,7 @@ document.addEventListener('DOMContentLoaded', function() {
         let actionColumn = "";
         let actionValue = 0;
         
-        // action 값에 따라 분기
+        // action 값에 따라 별도 처리
         if (action === 'recommend') {
             actionColumn = 'is_recommended';
             actionValue = 1;

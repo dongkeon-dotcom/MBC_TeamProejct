@@ -160,7 +160,7 @@ function drawCategoryChart(dataList) {
             aspectRatio: 1.5, // 숫자가 클수록 높이가 낮아짐 (1이면 정사각형, 2면 가로가 2배)
             plugins: {
                 legend: {
-                    position: 'right', // 범례를 오른쪽으로 보내면 공간 활용이 좋습니다
+                    position: 'right'
                 }
             }
         }

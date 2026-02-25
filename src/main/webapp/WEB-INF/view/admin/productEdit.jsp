@@ -269,36 +269,50 @@ $(document).ready(function(){
 });
 $(document).ready(function() {
     $('.ai-gen-btn').on('click', function() {
-        // 1. 필요한 입력값 가져오기 (input 태그의 id를 확인하세요!)
+        // 필요한 입력값 가져오기
         var pName = $('#productName').val(); // 상품명 입력란 id
         var pFeature = $('#subCategory').val(); // 특징 입력란 id
+        
+        // 대표이미지 가져오기
+        var fileInput = $('#mainFileList').find('input[type="file"]')[0];
+        var file = fileInput ? fileInput.files[0] : null;
 
+        // 입력값 검사
         if(!pName) {
-            alert("상품명을 입력해주세요.");
+            alert("상품명이 필요합니다.");
             return;
         }
-        if(!pFeature){
-        	alert("하위카테고리를 선택해주세요.");
+        if(pFeature === '-- 하위 카테고리 선택 --'){
+        	alert("하위카테고리가 필요합니다.");
         	return;
         }
+        if(!file){
+        	alert("대표이미지가 필요합니다.");
+        	return
+        }
+        
+        var formData = new FormData();
+        formData.append("name", pName);
+        formData.append("feature", pFeature);
+        if(file){
+        	formData.append("image",file);
+        }
 
-        // 2. 버튼 상태 변경 (중복 클릭 방지)
+        // 버튼 상태 변경 (중복 클릭 방지)
         var $btn = $(this);
         $btn.prop('disabled', true).text('생성 중...');
 
         
-        // 3. Ajax 호출
-        
+        // Ajax 호출
         const path = '${path}';
         $.ajax({
             url: path + '/admin/geminiAjax.do',
-            type: 'GET',
-            data: {
-                name: pName,
-                feature: pFeature
-            },
+            type: 'POST',
+            data: formData,
+            processData: false,		//데이터를 쿼리 문자열로 변환하지 않음
+            contentType: false,		// 가상의 form-data 헤더 자동 생성
             success: function(response) {
-                // 4. 결과값을 textarea에 넣기
+                // 결과값을 textarea에 넣기
                 $('#productDesc').val(response);
             },
             error: function(xhr, status, error) {
@@ -306,12 +320,12 @@ $(document).ready(function() {
                 alert("AI 설명 생성에 실패했습니다. 다시 시도해주세요.");
             },
             complete: function() {
-                // 5. 버튼 복구
+                // 버튼 복구
                 $btn.prop('disabled', false).text('ai 생성');
             }
         });
     });
-});	
+});
 	
 //카테고리쪽
 

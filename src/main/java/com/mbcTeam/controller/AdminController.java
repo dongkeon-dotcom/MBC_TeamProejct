@@ -1,6 +1,7 @@
 package com.mbcTeam.controller;
 
 import java.io.File;
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
@@ -428,8 +429,8 @@ public class AdminController {
 		for (Integer optionIdx : productService.getProductOptionIdxList(productIdx)) {
 			productService.deleteOption(optionIdx);
 		}
-		
-		//상품 제거
+
+		// 상품 제거
 		productService.delete(productIdx);
 
 		return "redirect:/admin/adminProductList.do";
@@ -456,10 +457,21 @@ public class AdminController {
 	}
 
 	@ResponseBody
-	@RequestMapping(value = "/geminiAjax.do", method = RequestMethod.GET, produces = "text/plain;charset=UTF-8")
-	public String GeminiAjax(@RequestParam String name, @RequestParam String feature) {
-		System.out.println("GeminiAjax.DO");
-		return geminiService.getAiDescription(name, feature);
+	@RequestMapping(value = "/geminiAjax.do", method = RequestMethod.POST, produces = "text/plain;charset=UTF-8")
+	public String GeminiAjax(@RequestParam String name, @RequestParam String feature,
+			@RequestParam(value = "image", required = false) MultipartFile file) {
+		System.out.println("GeminiAjax.DO 호출됨");
+
+		try {
+			byte[] bytes = file.getBytes();
+			String mimeType = file.getContentType();
+			// 이미지 분석 포함 메서드 호출
+			return geminiService.getAiDescription(name, feature, bytes, mimeType);
+
+		} catch (IOException e) {
+			e.printStackTrace();
+			return "파일 읽기 실패: " + e.getMessage();
+		}
 	}
 
 	@GetMapping("/salesChart.do")

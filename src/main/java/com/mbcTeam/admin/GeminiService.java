@@ -2,6 +2,8 @@ package com.mbcTeam.admin;
 
 import java.util.*;
 
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -11,24 +13,43 @@ import org.springframework.web.client.RestTemplate;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+@PropertySource("classpath:config/gemini.properties")
 @Service
 public class GeminiService {
 	
-	//private final String API_KEY ="AIzaSyBj-RUDCmDC7pR0o56MqlpePQvgX21vcXg"; // 본인
-	private final String API_KEY = "AIzaSyCvNxfI8ulzslKRyHdWvEGxnA-XfllJe9s"; // 학원
-	private final String URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=" + API_KEY;
 
-    public String getAiDescription(String productName, String features) {
+	@Value("${gemini.api.key}")
+	private String API_KEY;
+	
+	@Value("${gemini.api.url}")
+	private String URL;
+
+    public String getAiDescription(String productName, String features, byte[] imageBytes, String mimeType) {
         RestTemplate restTemplate = new RestTemplate();
         ObjectMapper mapper = new ObjectMapper();
 
+        String API = URL+"?key="+API_KEY; 
         try {
-        	Map<String, String> parts = new HashMap<>();
-            parts.put("text", "상품명: " + productName + ", 특징: " + features + ". 200자 이내 홍보 문구 작성.");
+        	
+        	// 이미지 Base64 인코딩
+        	String base64Img = Base64.getEncoder().encodeToString(imageBytes);
+        	
+        	List<Map<String, Object>> partsList = new ArrayList<>();
+        	
+        	// 텍스트
+        	Map<String, Object> textPart = new HashMap<>();
+        	textPart.put("text", "상품명: " + productName + ", 특징: " + features + ". 제공된 이미지를 분석하여 300자 이내 홍보 문구 작성해줘.");        	
+            partsList.add(textPart);
+            
+            // 이미지
+            Map<String, Object> imagePart = new HashMap<>();
+            Map<String, Object> inlineData = new HashMap<>();
+            inlineData.put("mime_type", mimeType); // 예: "image/jpeg"
+            inlineData.put("data", base64Img);
+            imagePart.put("inline_data", inlineData);
+            partsList.add(imagePart);
 
-            List<Map<String, String>> partsList = new ArrayList<>();
-            partsList.add(parts);
-
+            // 구조 생성(contents -> parts)
             Map<String, Object> content = new HashMap<>();
             content.put("parts", partsList);
 
@@ -49,7 +70,7 @@ public class GeminiService {
             HttpEntity<String> entity = new HttpEntity<>(jsonRequest, headers);
 
             // API 호출 (Post)
-            String jsonResponse = restTemplate.postForObject(URL, entity, String.class);
+            String jsonResponse = restTemplate.postForObject(API, entity, String.class);
 
             // 결과 파싱 (이전과 동일)
             JsonNode root = mapper.readTree(jsonResponse);
