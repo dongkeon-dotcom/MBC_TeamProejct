@@ -105,6 +105,7 @@ public class UserProductController {
         // (6) 리뷰 및 각 리뷰에 딸린 이미지 리스트 조회
         List<ReviewVO> reviewList = rservice.getReviewListByProduct((long)productIdx);
         
+        
         if (reviewList != null) {
             for (ReviewVO rvo : reviewList) {
                 // 각 리뷰 번호(reviewIdx)로 해당 리뷰의 사진들을 가져와 VO에 셋팅

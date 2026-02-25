@@ -76,14 +76,37 @@
     font-size: 13px;
     text-align: left;
 }
-
-/* 별점 표시 */
+/* 전체 컨테이너 */
 .product-rating {
-    font-size: 14px;
-    color: #ff9800;
-    margin-top: 6px;
-    text-align: left;
+    display: flex;
+    align-items: center;
+    gap: 6px; /* 요소들 사이의 일정한 간격 */
+    margin-top: 8px;
+    line-height: 1; /* 텍스트 높이 정렬을 위해 1로 설정 */
 }
+
+/* 별 스타일: 하나의 유닛처럼 보이게 간격 조정 */
+.rating-stars {
+    color: #ffb800; /* 고급스러운 골드빛 노랑 */
+    font-size: 12px;
+    letter-spacing: -1.5px; /* 별 사이를 붙여서 훨씬 세련되게 보임 */
+}
+
+/* 평점 숫자: 가장 강조됨 */
+.rating-score {
+    font-size: 14px;
+    font-weight: 800; /* 아주 두껍게 하여 시선 고정 */
+    color: #ffb800;      
+    margin-left: 2px;
+}
+
+/* 리뷰 개수: 서브 정보로 처리 */
+.rating-count {
+    font-size: 13px;
+    color: #b0b0b0;   /* 연한 회색으로 흐리게 처리 */
+    font-weight: 400;
+}
+
 
 .search-result-info {
   font-size: 16px;
