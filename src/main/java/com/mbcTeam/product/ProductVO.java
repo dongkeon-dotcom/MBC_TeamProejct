@@ -42,7 +42,7 @@ public class ProductVO {
 	// 옵션 리스트 포함
 	private List<ProductOptionVO> options;
 
-	private Integer avgRating; // 평균 평점
+	private Double avgRating; // 평균 평점
 	private Integer reviewCount; // 리뷰 개수
 	
 	public int getDiscountedPrice() {

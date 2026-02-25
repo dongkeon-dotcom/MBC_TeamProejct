@@ -78,17 +78,23 @@
 
 
 					<div class="product-rating">
-					    <span class="rating-stars">
+					        <span class="rating-stars" style="color: #FFB800;">
 					        <c:forEach begin="1" end="5" var="i">
 					            <c:choose>
-					                <c:when test="${i <= (p.avgRating != null ? p.avgRating : 0)}">★</c:when>
-					                <c:otherwise>☆</c:otherwise>
+					                
+					                <c:when test="${i <= (p.avgRating - (p.avgRating % 1))}">
+					                    ★
+					                </c:when>
+					                <c:otherwise>
+					                    ☆
+					                </c:otherwise>
 					            </c:choose>
 					        </c:forEach>
 					    </span>
-					
+					    
+					    
 					    <span class="rating-score">
-					        <fmt:formatNumber value="${p.avgRating != null ? p.avgRating : 0.0}" pattern="0.0" />
+					        <fmt:formatNumber value="${p.avgRating}" pattern="0.0" />
 					    </span>
 					
 					    <span class="rating-count">

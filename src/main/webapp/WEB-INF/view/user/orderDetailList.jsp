@@ -64,7 +64,7 @@
             <c:choose>
                 <c:when test="${not empty rIdx && rIdx != 0}">
                     <button type="button" class="btn btn-outline-secondary btn-sm" 
-                            onclick="editReview('${rIdx}', '${order.orderIdx}')">후기수정</button>
+                             onclick="editReview('${rIdx}', '${order.orderIdx}')">후기수정</button>
                 </c:when>
                 <c:otherwise>
                     <button type="button" class="btn btn-primary btn-sm" 

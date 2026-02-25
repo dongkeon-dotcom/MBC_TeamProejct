@@ -92,7 +92,7 @@ async function requestPayment() {
     	}
     	return;	
     }
-
+    /*
     // 고객 정보 (loginUser 데이터가 확실히 넘어오는지 확인)
     const customerEmail = "${not empty loginUser.id ? loginUser.id : 'test@example.com'}";
     const customerName = "${not empty delivery.receiver ? delivery.receiver : '구매자'}";
@@ -131,9 +131,25 @@ async function requestPayment() {
         console.error("에러 상세:", e);
         alert("결제창 호출 에러: " + e.message);
     }
-
+	*/
+	
+alert("테스트를 위해 결제창 없이 바로 주문을 진행합니다.");
     
+    // 서버에서 paymentId(결제번호)를 요구할 경우를 대비해 임시 값을 생성해서 추가
+    const form = document.getElementById('orderForm');
+    const dummyPaymentId = "TEST_ORDER_" + new Date().getTime();
+    
+    let hiddenInput = document.createElement('input');
+    hiddenInput.type = 'hidden';
+    hiddenInput.name = 'paymentId'; // 서버에서 받는 파라미터명과 맞춰주세요
+    hiddenInput.value = dummyPaymentId;
+    form.appendChild(hiddenInput);
+
+    // 실제 서버(order/complete.do)로 데이터 전송
+    form.submit();
 }
+    
+
 
 </script>
 
