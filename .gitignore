@@ -357,3 +357,9 @@ gradle-app.setting
 *.hprof
 src/main/webapp/META-INF/MANIFEST.MF
 src/main/webapp/META-INF/maven/com.mbcTeam/main/pom.properties
+
+#IMAGES
+src/main/webapp/resources/images/
+
+#DATA
+src/main/resources/config/
