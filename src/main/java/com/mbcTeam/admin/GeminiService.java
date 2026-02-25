@@ -14,8 +14,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @Service
 public class GeminiService {
 	
-	//private final String API_KEY ="AIzaSyBj-RUDCmDC7pR0o56MqlpePQvgX21vcXg"; // 내꺼
-	private final String API_KEY = "AIzaSyCvNxfI8ulzslKRyHdWvEGxnA-XfllJe9s"; // 강사님꺼
+	//private final String API_KEY ="AIzaSyBj-RUDCmDC7pR0o56MqlpePQvgX21vcXg"; // 본인
+	private final String API_KEY = "AIzaSyCvNxfI8ulzslKRyHdWvEGxnA-XfllJe9s"; // 학원
 	private final String URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=" + API_KEY;
 
     public String getAiDescription(String productName, String features) {
@@ -38,20 +38,20 @@ public class GeminiService {
             Map<String, Object> requestBodyMap = new HashMap<>();
             requestBodyMap.put("contents", contentsList);
 
-            // 2. [핵심] Map을 진짜 JSON 문자열로 변환
+            // Map을 JSON 문자열로 변환
             String jsonRequest = mapper.writeValueAsString(requestBodyMap);
 
-            // 3. 헤더 설정 (Content-Type을 application/json으로 명시)
+            // 헤더 설정 (Content-Type을 application/json으로 명시)
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);
 
-            // 4. 요청 엔티티 생성
+            // 요청 엔티티 생성
             HttpEntity<String> entity = new HttpEntity<>(jsonRequest, headers);
 
-            // 5. API 호출 (Post)
+            // API 호출 (Post)
             String jsonResponse = restTemplate.postForObject(URL, entity, String.class);
 
-            // 6. 결과 파싱 (이전과 동일)
+            // 결과 파싱 (이전과 동일)
             JsonNode root = mapper.readTree(jsonResponse);
             System.out.println("********************************************");
             System.out.println(root);
