@@ -268,7 +268,7 @@ $(document).ready(function(){
 	});	
 });
 $(document).ready(function() {
-    $('.ai-gen-btn').on('click', function() {
+    $('.ai-gen-btn').on('click', async function() {
         // 필요한 입력값 가져오기
         var pName = $('#productName').val(); // 상품명 입력란 id
         var pFeature = $('#subCategory').val(); // 특징 입력란 id
@@ -277,6 +277,22 @@ $(document).ready(function() {
         var fileInput = $('#mainFileList').find('input[type="file"]')[0];
         var file = fileInput ? fileInput.files[0] : null;
 
+        // 새로 추가된 파일이 없는경우 기존 이미지 가져오기
+        if(!file){
+        	const existingImg = $('#mainFileList').find('.img-preview')[0];
+        	if(existingImg && existingImg.src){
+        		try{
+        			//이미지 URL을 Blob으로 변환
+        			const response = await fetch(existingImg.src);
+                    const blob = await response.blob();
+                    // Blob을 File 객체로 변환 (Gemini 전송용)
+                    file = new File([blob], "existing_image.jpg", { type: blob.type });
+        		}catch (e) {
+                    console.error("기존 이미지를 불러오는데 실패했습니다.", e);
+                }
+        	}
+        }
+        
         // 입력값 검사
         if(!pName) {
             alert("상품명이 필요합니다.");
