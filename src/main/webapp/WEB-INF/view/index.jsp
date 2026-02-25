@@ -7,7 +7,7 @@
 <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css"/>
 <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick-theme.css"/>
 <link href="${path}/resources/css/main.css" rel="stylesheet">
-
+<br> 
 <section class="main-recommend-section">
     <c:if test="${not empty recommendedProducts}">
         <div class="slider-container">
