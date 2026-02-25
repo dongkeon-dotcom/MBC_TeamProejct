@@ -14,8 +14,8 @@
 	    <form action="${path}/admin/adminProductList.do" class="d-flex gap-2 flex-wrap">
 	        <select class="form-select" name="recommendedFilter" style="width: 130px;">
 	            <option value="all" ${recommendedFilter == 'all' ? 'selected' : ''}>전체</option>
-	            <option value="true" ${recommendedFilter == 'true' ? 'selected' : ''}>추천제품</option>
-	            <option value="false" ${recommendedFilter == 'false' ? 'selected' : ''}>일반제품</option>
+	            <option value="true" ${recommendedFilter == 'true' ? 'selected' : ''}>추천상품</option>
+	            <option value="false" ${recommendedFilter == 'false' ? 'selected' : ''}>일반상품</option>
 	        </select>
 	
 	        <select class="form-select" name="discountFilter" style="width: 130px;">
@@ -25,8 +25,8 @@
 	        </select>
 	
 	        <select class="form-select search-select" name="search" style="width: 120px;">
-	            <option value="code" ${search == 'code' ? 'selected' : ''}>제품코드</option>
-	            <option value="name" ${search == 'name' ? 'selected' : ''}>제품이름</option>
+	            <option value="code" ${search == 'code' ? 'selected' : ''}>상품코드</option>
+	            <option value="name" ${search == 'name' ? 'selected' : ''}>상품이름</option>
 	        </select>
 	        
 	        <input type="text" class="form-control" style="width: 200px;" name="keyword" value="${keyword}">
@@ -39,8 +39,8 @@
             <thead>
                 <tr>
                     <th><input type="checkbox" id="selectAll" class="form-check-input"></th>
-                    <th>제품코드</th>
-                    <th>제품이름</th>
+                    <th>상품코드</th>
+                    <th>상품이름</th>
                     <th>추천유무</th>
                     <th>할인정보</th>
                     <th>카테고리</th>
