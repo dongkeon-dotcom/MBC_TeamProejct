@@ -6,7 +6,7 @@
 <section class="review-wrapper"> <div class="product-detail">
         <div align="center">
             <h2>상품 후기 작성 </h2>
-            <p>작성하신 후기를 수정하실 수 있습니다.</p>
+
             
             <form action="${path}/user/reviewInsert.do" method="post" enctype="multipart/form-data" onsubmit="return validateForm()">
               <input type="hidden" name="orderIdx" value="${not empty orderIdx ? orderIdx : reviewVO.orderIdx}">

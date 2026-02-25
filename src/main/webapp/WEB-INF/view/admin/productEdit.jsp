@@ -48,6 +48,7 @@
 					<div class="row">
 					<div class="col-6 mb-4">
 						<label class="main-label">추천</label>
+						<input type="hidden" name="recommended" id="recommendedInput" value = "${m.recommended }">
 						<c:choose>
 							<c:when test="${!m.recommended}">
 								<button type="button" class="btn btn-sm btn-outline-primary recommend-btn"
@@ -254,7 +255,9 @@ $(document).ready(function(){
 	$('.recommend-btn').on('click', function(){
 		const btn = $(this);
 		const currentStatus = btn.data('status');
-		const nextStatus = currentStatus === false ? true : false;
+		const nextStatus = !currentStatus;
+		
+		$('#recommendedInput').val(nextStatus);
 		
 		if(nextStatus === true){
 			btn.text('추천').removeClass('btn-outline-primary').addClass('btn-success').data('status', true);

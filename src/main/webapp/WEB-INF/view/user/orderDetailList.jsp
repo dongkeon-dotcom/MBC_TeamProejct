@@ -49,23 +49,36 @@
         <td class="text-end fw-bold">
             <fmt:formatNumber value="${item.price * item.quantity}" />원
         </td>
-        <td class="text-center">
-            <%-- ⭐ 컨트롤러에서 보낸 reviewMap에서 현재 아이템의 리뷰 번호를 바로 꺼냅니다. --%>
+       <td class="text-center">
+    <%-- 
+       OrderItems 테이블은 상품이 삭제되어도 이름이 남아있으므로, 
+       우리가 컨트롤러에서 DB를 직접 찔러보고 만든 productExistMap을 사용해야 합니다.
+    --%>
+    <c:set var="isExists" value="${productExistMap[item.productIdx]}" />
+
+    <c:choose>
+        <%-- 실제 상품 테이블(PRODUCT)에 데이터가 있을 때만 --%>
+        <c:when test="${isExists == true}">
             <c:set var="rIdx" value="${reviewMap[item.itemIdx]}" />
 
             <c:choose>
-                <%-- 리뷰 번호(rIdx)가 존재하고 0이 아니면 수정 버튼 --%>
                 <c:when test="${not empty rIdx && rIdx != 0}">
                     <button type="button" class="btn btn-outline-secondary btn-sm" 
                             onclick="editReview('${rIdx}', '${order.orderIdx}')">후기수정</button>
                 </c:when>
-                <%-- 그 외엔 후기쓰기 버튼 --%>
                 <c:otherwise>
                     <button type="button" class="btn btn-primary btn-sm" 
                             onclick="review('${item.productIdx}', '${order.orderIdx}', '${item.itemIdx}')">후기쓰기</button>
                 </c:otherwise>
             </c:choose>
-        </td>
+        </c:when>
+
+        <%-- 실제 상품 테이블에서 삭제되었다면 --%>
+        <c:otherwise>
+            <span class="text-muted" style="font-size: 0.85em;">판매 종료된 상품</span>
+        </c:otherwise>
+    </c:choose>
+</td>
     </tr>
 </c:forEach>
         </tbody>
