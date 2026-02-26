@@ -9,4 +9,6 @@ public interface ProductOptionDao {
     ProductOptionVO findById(int optionIdx);
     List<ProductOptionVO> findByProduct(int productIdx);
     
+    long getOptionStock(long optionIdx);
+    
 }

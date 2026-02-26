@@ -16,11 +16,6 @@ public class OrderServiceImpl implements OrderService {
     private OrderDao dao;
 
     @Override
-    public void insertOrder(OrderVO order, OrderItemVO item) {
-        dao.insertOrder(order, item);
-    }
-
-    @Override
     public void insert(OrderVO vo) {
         dao.insert(vo);
     }
@@ -45,6 +40,8 @@ public class OrderServiceImpl implements OrderService {
 		// TODO Auto-generated method stub
 		return dao.selectOrderByOrderIdx(orderIdx);
 	}
+	
+	
 
 
 	@Override
@@ -69,6 +66,13 @@ public class OrderServiceImpl implements OrderService {
 	        item.setOrderIdx(order.getOrderIdx()); 
 	        dao.insertOrderItem(item);
 	    }
+	}
+
+	@Override
+	@Transactional(rollbackFor = Exception.class) // 추가
+	public void Test() {
+		dao.insertTest();
+		dao.insertTest();
 	}
 	
 	

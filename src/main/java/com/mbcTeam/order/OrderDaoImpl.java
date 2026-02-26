@@ -19,14 +19,7 @@ public class OrderDaoImpl implements OrderDao {
     }
 
     @Override
-    public void insertOrder(OrderVO order, OrderItemVO item) {
-        mybatis.insert("ORDER.insertOrder", order);
-        item.setOrderIdx(order.getOrderIdx());
-        mybatis.insert("ORDER.insertOrderItem", item);
-    }
-
-    @Override
-    public void insertOrderItem(OrderItemVO item) { // ✅ 새로 추가
+    public void insertOrderItem(OrderItemVO item) {
         mybatis.insert("ORDER.insertOrderItem", item);
     }
 
@@ -59,6 +52,11 @@ public class OrderDaoImpl implements OrderDao {
 	    map.put("quantity", quantity);
 	    // 쿼리 실행 후 영향을 받은 행(row)의 수를 반환 (성공하면 1, 재고부족 시 0)
 	    return mybatis.update("ORDER.deductStock", map);
+	}
+
+	@Override
+	public void insertTest() {
+		mybatis.insert("ORDER.INSERT_TEST");		
 	}
 
 

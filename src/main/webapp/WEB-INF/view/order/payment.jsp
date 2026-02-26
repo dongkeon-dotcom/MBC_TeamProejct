@@ -27,7 +27,12 @@
             <option value="경비실에 맡겨주세요">경비실에 맡겨주세요</option>
         </select>
     </div>
-
+<div class="test-container">
+    <h3>트랜잭션 롤백 테스트</h3>
+    <p>버튼을 누르면 동일한 PK 값이 두 번 삽입되어 에러가 발생해야 합니다.</p>
+    
+    <button type="button" onclick="runTransactionTest()">트랜잭션 테스트 실행</button>
+</div>
     <div class="checkout-box checkout-items">
         <h4>주문상품</h4>
         <c:forEach var="item" items="${orderItems}">
@@ -77,6 +82,13 @@
 <script src="https://cdn.portone.io/v2/browser-sdk.js"></script>
 
 <script>
+function runTransactionTest() {
+    if(confirm("테스트를 실행하시겠습니까? (DB에 중복 데이터 삽입 시도)")) {
+        // GET 방식으로 컨트롤러 호출
+        location.href = "${path}/order/Test.do";
+    }
+}
+
 async function requestPayment() {
     // 금액 확인 (서버 변수 totalAmount 사용)
     const totalAmount = parseInt("${totalAmount}"); 
@@ -123,6 +135,11 @@ async function requestPayment() {
         if (response.code != null) {
             return alert("결제 실패: " + response.message);
         }
+        
+        //if("뭔가 에러를 처리할 부분"){
+        	//return alert(errorMsg);
+        //}        
+        
 
         alert("결제가 완료되었습니다.");
         document.getElementById('orderForm').submit();
