@@ -281,6 +281,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		FROM ProductOption
 		WHERE option_Idx = #{optionIdx}
 	</select>
+	
+	<select id="SELECT_OPTION_STOCK" parameterType="long" resultType="long">
+		SELECT stock
+		FROM ProductOption
+		WHERE option_Idx = #{optionIdx}	
+	</select>
 
 
 

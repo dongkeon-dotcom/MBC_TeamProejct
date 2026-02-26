@@ -28,4 +28,9 @@ public class ProductOptionServiceImpl implements ProductOptionService {
 		
 	}
 
+	@Override
+	public long getOptionStock(long optionIdx) {
+		return optionDao.getOptionStock(optionIdx);
+	}
+
 }

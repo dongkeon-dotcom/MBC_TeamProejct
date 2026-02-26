@@ -9,4 +9,6 @@ public interface ProductOptionService {
     List<ProductOptionVO> getOptionsByProduct(int productIdx);
     
     void insertOption(ProductOptionVO vo);
+    
+    long getOptionStock(long optionIdx);
 }

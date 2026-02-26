@@ -7,7 +7,6 @@ import java.util.List;
 public interface OrderService {
 		
 	    void insert(OrderVO vo); 
-	    void insertOrder(OrderVO order, OrderItemVO item);
 	    
 	    
 	    void update(OrderVO vo); 
@@ -19,6 +18,7 @@ public interface OrderService {
 	    
 	    void insertOrder(OrderVO order, List<OrderItemVO> items);
 	    
+	    void Test();
 
 	
 }

@@ -27,4 +27,9 @@ public class ProductOptionDaoImpl implements ProductOptionDao {
     public void insertOption(ProductOptionVO vo) {
         mybatis.insert("PRODUCT.INSERT_PRODUCT_OPTION", vo);
     }
+
+	@Override
+	public long getOptionStock(long optionIdx) {
+		return mybatis.selectOne("PRODUCT.SELECT_OPTION_STOCK", optionIdx);
+	}
 }
