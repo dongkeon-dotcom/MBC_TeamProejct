@@ -77,27 +77,24 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
             response.sendRedirect(request.getContextPath() + "/user/member.do");
         };
     }
-   //그만하자 제발 
+
         @Override
         protected void configure(HttpSecurity http) throws Exception {
-            // 1. CSRF 비활성화
+            // 1. CSRF 비활성화, 실제로는 배포전 활성화 해야하나 테스트 상 비활성화 활성화 후 일반폼의 경우 <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/> 추가 필요 
             http.csrf().disable(); 
-
             // 2. 권한 설정
             http.authorizeRequests()
             // [Admin 전용] 관리자 페이지는 ADMIN 롤만 접근 가능
             .antMatchers("/admin/**").hasRole("ADMIN")
-
             // [User 전용] 장바구니, 주문, 결제 등은 로그인한 유저(USER, ADMIN)만 가능
             // Guest(로그인 안 한 사용자)는 아래 주소로 접근 시 로그인 페이지로 튕김
             .antMatchers("/cart/**", "/order/**","/delivery/**", "/user/reivew.do", "/user/member.do", "/user/orderList.do", "/user/orderDetailList.do").hasAnyRole("USER", "ADMIN")
 
             // [공통] 상품 목록, 상세 페이지, 로그인/회원가입 등은 누구나 접근 가능
             .antMatchers("/", "/index.do", "/user/login.jsp", "/user/login.do", "/user/member.do", "/userproduct/**", "/resources/**").permitAll()
-
             // 그 외 나머지는 인증된 사용자만 (선택 사항)
-            // .anyRequest().authenticated() 
-            .anyRequest().permitAll() // 일단 개발 편의를 위해 나머지는 열어둠
+           
+            .anyRequest().permitAll() 
             .and()
 
             // 3. 일반 폼 로그인 설정
@@ -106,13 +103,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
             .loginProcessingUrl("/user/loginOK.do")
             .defaultSuccessUrl("/index.do", true)
             .usernameParameter("id")
-            .passwordParameter("password")
-            // ★ 이 줄이 없어서 파라미터가 전달되지 않았던 것입니다!
             .failureHandler(customOAuth2FailureHandler) 
             .permitAll()
             .and()
-
-            // 4. 소셜 로그인 설정 (핵심 수정본)
+            // 4. 소셜 로그인 설정
             .oauth2Login()
             .loginPage("/user/login.do")
             .redirectionEndpoint()
@@ -122,19 +116,16 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
                 .userService(customOAuth2UserService) 
                 .and()
             .defaultSuccessUrl("/index.do", true)
-            // [중요] 소셜 로그인 실패 시 동작할 핸들러 연결
             .failureHandler(customOAuth2FailureHandler) 
             .and()
-
             // 5. 로그아웃 설정
             .logout()
             .logoutRequestMatcher(new AntPathRequestMatcher("/user/logout.do")) // 이 주소가 호출되면 로그아웃
             .logoutSuccessUrl("/index.do")
-            .invalidateHttpSession(true) // 세션 무효화
-            .deleteCookies("JSESSIONID") // 쿠키 삭제
+            .invalidateHttpSession(true) 
+            .deleteCookies("JSESSIONID") 
             .permitAll()
             .and()
-
             // 6. 세션 관리 (데이터 유실 방지)
             .sessionManagement()
                 .sessionFixation().none(); 
@@ -185,9 +176,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 
     private ClientRegistration kakaoClientRegistration() {
         return ClientRegistration.withRegistrationId("kakao")
-            .clientId(kakaoClientId)             // REST API 키
-            .clientSecret(kakaoClientSecret)     // 보안 메뉴의 Client Secret 코드
-            // ★ [핵심] 카카오는 인증 정보를 POST 본문에 담아 보내는 방식을 주로 사용합니다.
+            .clientId(kakaoClientId)             
+            .clientSecret(kakaoClientSecret)     
             .clientAuthenticationMethod(ClientAuthenticationMethod.POST) 
             .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
             .redirectUri("{baseUrl}/login/oauth2/code/kakao")

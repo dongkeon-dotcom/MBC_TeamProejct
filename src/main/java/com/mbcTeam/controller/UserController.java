@@ -420,7 +420,7 @@ MemberMapper memberMapper;
             @RequestParam("itemIdx") long itemIdx, 
             Model model) {
         
-        // 이 이름들이 JSP의 ${itemIdx} 등과 일치해야 함!
+       
         model.addAttribute("productIdx", productIdx);
         model.addAttribute("orderIdx", orderIdx);
         model.addAttribute("itemIdx", itemIdx);

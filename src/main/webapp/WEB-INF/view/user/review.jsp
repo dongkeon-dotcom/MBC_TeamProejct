@@ -66,22 +66,19 @@
 <br>
 
 <script>
-/**
- * 폼 전송 시 개수와 용량을 모두 체크
- */
+/**폼 전송 시 개수와 용량을 모두 체크**/
 function validateForm() {
     const fileInput = document.getElementById('reviewFiles');
     const files = fileInput.files;
     const maxCount = 3;
-    const maxSize = 10 * 1024 * 1024; // 10MB 바이트 환산
+    const maxSize = 10 * 1024 * 1024; // 10MB 바이트로 제한두기 
     
-    // 1. 개수 체크
+
     if (files.length > maxCount) {
         alert("사진은 최대 " + maxCount + "장까지만 업로드 가능합니다.");
         return false;
     }
 
-    // 2. 용량 체크
     let totalSize = 0;
     for (let i = 0; i < files.length; i++) {
         totalSize += files[i].size;
