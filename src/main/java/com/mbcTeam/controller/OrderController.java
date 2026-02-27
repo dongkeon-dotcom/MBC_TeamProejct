@@ -1,9 +1,19 @@
 package com.mbcTeam.controller;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -11,14 +21,17 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.mbcTeam.order.OrderService;
 import com.mbcTeam.order.OrderVO;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mbcTeam.cart.CartService;
 import com.mbcTeam.cart.CartVO;
 import com.mbcTeam.order.OrderItemVO;
@@ -239,24 +252,134 @@ public class OrderController {
 
 		} catch (RuntimeException e) {
 			e.printStackTrace();
-			rttr.addFlashAttribute("errorMsg", e.getMessage());
+			String customMsg = e.getMessage();
+			if(customMsg.contains("재고")) {
+				customMsg += " 결제된 금액은 즉시 환불 처리됩니다. (최대 1~3일 소요)";
+			}
+			rttr.addFlashAttribute("errorMsg", customMsg);
 			return "redirect:/order/payment.do";
 		} catch (Exception e) {
 			e.printStackTrace();
 			return "redirect:/index.do?error=system";
 		}
 	}
+	
+	@ResponseBody
+	@PostMapping("/webhook.do")
+	public ResponseEntity<String> portoneWebhook(@RequestBody(required = false) Map<String, Object> data, HttpServletRequest request) {
+		
+		if(data == null) return ResponseEntity.ok("OK");
+		
+		// 실제 포트원 데이터가 들어왔을 때
+	    System.out.println("PortOne Check: " + data.toString());
+		
+		String status = String.valueOf(data.get("status"));
+		String paymentId = String.valueOf(data.get("payment_id"));
+		String apiSecret = "MS7CAm0513FIhXHFJ27c75jp4UH0EAZLqxvjXWODxAyD2L5hDBz84gr6kKLPfTypFTuzAhfsEmkGdPFw";
+		
+		if("Paid".equals(status)) {
+			RestTemplate restTemplate = new RestTemplate();
+			ObjectMapper objectMapper = new ObjectMapper(); // JSON 파싱용
+			
+			
+			HttpHeaders headers = new HttpHeaders();
+			headers.set("Authorization", "PortOne " + apiSecret);
+			headers.setContentType(MediaType.APPLICATION_JSON);
 
-	@GetMapping("/Test.do")
-	public String StockCheck() {
-		System.out.println("TRANSACTIONAL TEST");
-		try {
-			orderService.Test();
-		} catch (Exception e) {
-			System.out.println(e);
-		}
+			try {
+	            // [STEP 1] 포트원 서버에서 결제 상세 정보 조회
+	            // 웹훅 데이터에는 customData가 없으므로 직접 조회해야 함
+	            HttpEntity<String> getEntity = new HttpEntity<>(headers);
+	            ResponseEntity<Map> response = restTemplate.exchange(
+	                "https://api.portone.io/payments/" + paymentId,
+	                HttpMethod.GET,
+	                getEntity,
+	                Map.class
+	            );
 
-		return "redirect:/index.do";
+	            Map<String, Object> paymentDetail = response.getBody();
+	            if (paymentDetail == null || paymentDetail.get("customData") == null) {
+	                System.out.println("조회된 결제 상세 정보나 customData가 없습니다.");
+	                return ResponseEntity.ok("OK_NO_DATA");
+	            }
+
+	            // [STEP 2] customData 파싱 (JSON String -> Map 변환)
+	            Object rawCustomData = paymentDetail.get("customData");
+	            Map<String, Object> customDataMap;
+
+	            if (rawCustomData instanceof String) {
+	                customDataMap = objectMapper.readValue((String) rawCustomData, Map.class);
+	            } else {
+	                customDataMap = (Map<String, Object>) rawCustomData;
+	            }
+
+	            // customData 안의 items 리스트 추출
+	            List<Map<String, Object>> items = (List<Map<String, Object>>) customDataMap.get("items");
+	            boolean isOutOfStock = false;
+	            String outOfStockReason = "";
+
+	            // 재고 체크 루프
+	            for (Map<String, Object> item : items) {
+	                long optionIdx = Long.parseLong(String.valueOf(item.get("optionIdx")));
+	                int quantity = Integer.parseInt(String.valueOf(item.get("quantity")));
+	                String productName = String.valueOf(item.get("productName"));
+	                
+	                // DB에서 현재 재고 가져오기 (기존 서비스 사용)
+	                long currentStock = optionService.getOptionStock(optionIdx);
+
+	                if (currentStock < quantity) {
+	                    isOutOfStock = true;
+	                    outOfStockReason = productName + " 재고 부족 (요청:" + quantity + ", 잔여:" + currentStock + ")";
+	                    break; 
+	                }
+	            }
+
+	            // [STEP 3] 재고 부족 시 환불 실행
+	            if (isOutOfStock) {
+	                System.out.println("!!! 재고 부족 감지: " + outOfStockReason);
+	                
+	                // 환불 요청 바디 생성
+	                Map<String, String> refundBody = new HashMap<>();
+	                refundBody.put("reason", "재고 부족 자동 취소: " + outOfStockReason);
+
+	                // 반드시 헤더와 바디를 함께 전달
+	                HttpEntity<Map<String, String>> refundEntity = new HttpEntity<>(refundBody, headers);
+	                
+	                ResponseEntity<Map> refundResponse = restTemplate.postForEntity(
+	                    "https://api.portone.io/payments/" + paymentId + "/cancel",
+	                    refundEntity,
+	                    Map.class
+	                );
+
+	                System.out.println("포트원 환불 결과: " + refundResponse.getBody());
+	                System.out.println("====== 환불 처리 완료 ======");
+	                
+	                return ResponseEntity.ok("CANCELLED_BY_STOCK");
+	            } else {
+	                System.out.println("재고 확인 완료: 정상 주문 건입니다.");
+	            }
+
+	        } catch (Exception e) {
+	            System.err.println("웹훅 처리 중 에러 발생: " + e.getMessage());
+	            e.printStackTrace();
+	            // 포트원 재시도를 막기 위해 에러 발생 시에도 200 OK를 보내거나 로그만 남김
+	            return ResponseEntity.ok("ERROR_BUT_STILL_OK");
+	        }
+	    }
+
+	    return ResponseEntity.ok("OK");
 	}
+
+//	@GetMapping("/Test.do")
+//	public String StockCheck() {
+//		System.out.println("TRANSACTIONAL TEST");
+//		try {
+//			orderService.Test();
+//		} catch (Exception e) {
+//			System.out.println(e);
+//		}
+//
+//		return "redirect:/index.do";
+//	}
 
 }

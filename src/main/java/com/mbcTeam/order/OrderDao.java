@@ -13,7 +13,7 @@ public interface OrderDao {
     OrderVO selectOrderByOrderIdx(long orderIdx);
     int deductStock(int optionIdx, int quantity); // 재고 차감 확인용
     
-    void insertTest();
+    //void insertTest();
     
     
 }

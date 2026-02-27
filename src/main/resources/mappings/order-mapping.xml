@@ -21,7 +21,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 <!-- TRANSACTIONAL TEST -->
 <insert id="INSERT_TEST">
 	INSERT INTO Orders(order_Idx, user_Idx, total_Price, receiver, delivery_Phone, address, Zipcode, status)
-	VALUES ('111111','111111','111111','111111','111111','111111','111111','0')	
+	VALUES ('100093','111111','111111','111111','111111','111111','111111','0')	
 </insert>
 
 

@@ -81,9 +81,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
         @Override
         protected void configure(HttpSecurity http) throws Exception {
             // 1. CSRF 비활성화, 실제로는 배포전 활성화 해야하나 테스트 상 비활성화 활성화 후 일반폼의 경우 <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/> 추가 필요 
-            http.csrf().disable(); 
+            http.csrf()
+            	.ignoringAntMatchers("/order/webhook.do") //해당 주소 예외처리
+            	.disable(); 
             // 2. 권한 설정
             http.authorizeRequests()
+            // [PortOne WEBHOOK 용]
+            .antMatchers("/order/webhook.do").permitAll()
             // [Admin 전용] 관리자 페이지는 ADMIN 롤만 접근 가능
             .antMatchers("/admin/**").hasRole("ADMIN")
             // [User 전용] 장바구니, 주문, 결제 등은 로그인한 유저(USER, ADMIN)만 가능

@@ -67,13 +67,13 @@ public class OrderServiceImpl implements OrderService {
 	        dao.insertOrderItem(item);
 	    }
 	}
-
-	@Override
-	@Transactional(rollbackFor = Exception.class) // 추가
-	public void Test() {
-		dao.insertTest();
-		dao.insertTest();
-	}
+//
+//	@Override
+//	@Transactional(rollbackFor = Exception.class) // 추가
+//	public void Test() {
+//		dao.insertTest();
+//		dao.insertTest();
+//	}
 	
 	
 	

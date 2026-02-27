@@ -54,10 +54,10 @@ public class OrderDaoImpl implements OrderDao {
 	    return mybatis.update("ORDER.deductStock", map);
 	}
 
-	@Override
-	public void insertTest() {
-		mybatis.insert("ORDER.INSERT_TEST");		
-	}
+//	@Override
+//	public void insertTest() {
+//		mybatis.insert("ORDER.INSERT_TEST");		
+//	}
 
 
 }
